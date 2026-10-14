@@ -25,5 +25,8 @@ Draft queries from `RIPPLE_PLAN.md` §4.4 (untested until the smoke-test issue c
 | `fact_current.cypher` | current version of a fact (Concierge answers only from it) |
 | `earlier_told.cypher` | episodic memory: last older version this person was told |
 | `record_answer.cypher` | log Answer + ANSWERED + WAS_TOLD {at, channel, answer_id} + FEEDS |
+| `algos_wcc_people.cypher` | (f) chat communities: `algo.WCC` on `TALKS_WITH` (dark pockets) |
+| `algos_betweenness_people.cypher` | (f) chat bridges: betweenness on `TALKS_WITH` (pocket hub) |
+| `resolved_by.cypher` | entities that RESOLVED a change |
 
 Load a query from Python with `graph.cypher.cypher("<name>")`.
