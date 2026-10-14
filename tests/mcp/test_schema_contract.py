@@ -6,19 +6,19 @@ from pathlib import Path
 
 import pytest
 
-from ripple_mcp.server import READ_ONLY_TOOLS, build_server
+from ripple_mcp.server import READ_ONLY_TOOLS, WRITE_TOOLS, build_server
 
 CONTRACT = json.loads((Path(__file__).resolve().parents[2] / "contracts" / "mcp-tools.json").read_text())
 
 
-def _listed():
-    return {t.name: t for t in asyncio.run(build_server().list_tools())}
+def _listed(with_writes: bool = True):
+    return {t.name: t for t in asyncio.run(build_server(with_writes=with_writes).list_tools())}
 
 
-def test_exposes_exactly_the_read_only_tools():
-    assert set(_listed()) == set(READ_ONLY_TOOLS)
-    contract_names = {t["name"] for t in CONTRACT["tools"] if not t["write"]}
-    assert set(READ_ONLY_TOOLS) <= contract_names
+def test_exposes_the_contract_tools():
+    assert set(_listed()) == {t["name"] for t in CONTRACT["tools"]}
+    assert set(_listed(with_writes=False)) == set(READ_ONLY_TOOLS)
+    assert {t["name"] for t in CONTRACT["tools"] if t["write"]} == set(WRITE_TOOLS)
 
 
 @pytest.mark.skipif(

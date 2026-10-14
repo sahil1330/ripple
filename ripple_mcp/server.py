@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 
+from agents import concierge, tasks
 from agents.ranking import rank
 from graph import algos
 from graph import tools as graph_tools
@@ -71,12 +72,40 @@ def dark_pockets(tenant: str, change_id: str) -> list[dict]:
     return algos.dark_pockets(tenant, change_id)
 
 
-def build_server(port: int = 8001):
+# --- write tools (agents coordinate through Task nodes; Concierge logs answers) -------------------
+
+
+def claim_task(tenant: str, agent_id: str, kinds: list[str]) -> dict | None:
+    """Atomically claim the highest-priority open task of the given kinds. null = nothing to claim."""
+    return tasks.claim_task(tenant, agent_id, kinds)
+
+
+def complete_task(tenant: str, agent_id: str, task_id: str, outcome: str, failed: bool = False) -> dict:
+    """Mark a task this agent claimed as done (or failed) and record the outcome."""
+    return {"ok": tasks.complete_task(tenant, agent_id, task_id, outcome, failed=failed)}
+
+
+def record_answer(
+    tenant: str, person_id: str, question: str, version_ids: list[str], text: str = "", channel: str = "web"
+) -> dict:
+    """Log a Concierge answer as an Answer node + WAS_TOLD edges (episodic memory)."""
+    return {"answer_id": concierge.record_answer(tenant, person_id, question, text, version_ids, channel)}
+
+
+WRITE_TOOLS = ("claim_task", "complete_task", "record_answer")
+
+
+def build_server(port: int = 8001, with_writes: bool = True):
+    """MCP server. ``with_writes=False`` gives a strictly read-only server (e.g. for judges)."""
     from mcp.server.fastmcp import FastMCP
 
     server = FastMCP("ripple-mcp", port=port)
-    for fn in (impact_of, who_holds, check_fresh, explain_path, coverage, rank_amplifiers, dark_pockets):
+    read_only = (impact_of, who_holds, check_fresh, explain_path, coverage, rank_amplifiers, dark_pockets)
+    for fn in read_only:
         server.tool(name=fn.__name__, description=fn.__doc__)(fn)
+    if with_writes:
+        for fn in (claim_task, complete_task, record_answer):
+            server.tool(name=fn.__name__, description=f"[write] {fn.__doc__}")(fn)
     return server
 
 
@@ -84,8 +113,11 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Run the ripple-mcp server")
     parser.add_argument("--http", action="store_true", help="streamable HTTP instead of stdio")
     parser.add_argument("--port", type=int, default=8001)
+    parser.add_argument("--read-only", action="store_true", help="expose read-only tools only")
     args = parser.parse_args(argv)
-    build_server(args.port).run(transport="streamable-http" if args.http else "stdio")
+    build_server(args.port, with_writes=not args.read_only).run(
+        transport="streamable-http" if args.http else "stdio"
+    )
 
 
 if __name__ == "__main__":
