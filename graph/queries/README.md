@@ -36,5 +36,16 @@ Draft queries from `RIPPLE_PLAN.md` §4.4 (untested until the smoke-test issue c
 | `worker_pending_actions.cypher` | pending actions a worker agent owns |
 | `action_set_status.cypher` | worker outcome: done / blocked (+ reason) |
 | `change_for_version.cypher` | the Change that superseded a version |
+| `fix_stale_deps.cypher` | Fixer: dependencies of a plan/action that lead to the old version |
+| `fix_replace_derived.cypher` | Fixer: recompute a DerivedFact from the new version and swap the dependency |
+| `fix_repoint_dependency.cypher` | Fixer: re-point a direct version dependency to the current version |
+| `fix_replan_actions.cypher` | Fixer: cancel actions built on the stale rule, plan → replanned |
+| `fix_plan_of.cypher` | plan an action belongs to |
+| `fix_refresh_agent_cache.cypher` | Fixer: agent memory now CACHED the current version |
+| `fix_doc_patch.cypher` | Fixer: markdown patch draft on a Doc (+ re-point real handbook pages) |
+| `fix_last_question.cypher` | question a person asked when told the old version |
+| `fix_resolve.cypher` | write RESOLVED {at, by, how} → Change |
+| `version_text.cypher` | value + excerpt of a FactVersion |
+| `doc_title.cypher` | title of a Doc |
 
 Load a query from Python with `graph.cypher.cypher("<name>")`.
