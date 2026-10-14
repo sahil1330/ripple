@@ -1,0 +1,236 @@
+{
+  "$comment": "Human-verifiable extraction of real changes in content/handbook/finance/expenses.md of the public GitLab handbook (https://gitlab.com/gitlab-com/content-sites/handbook), (c) GitLab B.V. Short excerpts + permanent links only. 'observed_only' = valid_from is the date of the commit where we observed the old text, not when it was introduced. Times are epoch ms.",
+  "page_url": "https://handbook.gitlab.com/handbook/finance/expenses/",
+  "attribution": "GitLab B.V.",
+  "facts": [
+    {
+      "key": "expense.vpn.personal_subscription",
+      "topic": "expenses",
+      "title": "Personal VPN subscriptions",
+      "section": "VPN",
+      "versions": [
+        {
+          "id": "fv:vpn:v1",
+          "value": "reimbursable up to $150 per year",
+          "unit": "USD/year",
+          "excerpt": "Policy is set at $150 per year. Yearly subscription can be submitted in one claim.",
+          "commit_sha": "513d7f5347609cc9ca089f607794e362237e4fc7",
+          "mr_url": null,
+          "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/513d7f5347609cc9ca089f607794e362237e4fc7/content/handbook/finance/expenses.md",
+          "valid_from": 1784041513000,
+          "observed_only": true
+        },
+        {
+          "id": "fv:vpn:v2",
+          "value": "not reimbursable; use NordLayer (company VPN)",
+          "unit": null,
+          "excerpt": "Starting July 15, 2026, GitLab no longer reimburses personal VPN subscriptions (such as ExpressVPN, Proton, Mullvad, and similar services) through expense claims. Team members who need VPN access should use NordLayer, GitLab's company-provisioned VPN solution.",
+          "commit_sha": "ddd395971ee181bee9e00d23d34e1001489d76ef",
+          "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20421",
+          "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/ddd395971ee181bee9e00d23d34e1001489d76ef/content/handbook/finance/expenses.md",
+          "valid_from": 1784046483000,
+          "observed_only": false
+        }
+      ]
+    },
+    {
+      "key": "expense.travel.meals_daily_limit",
+      "topic": "travel",
+      "title": "Meals while travelling (daily limit)",
+      "section": "Meals",
+      "versions": [
+        {
+          "id": "fv:meals:v1",
+          "value": "100",
+          "unit": "USD/day",
+          "excerpt": "Meals while traveling on Company business are reimbursable, up to $100 USD (or local equivalent currency) per day.",
+          "commit_sha": "a47f8fb61931b2dbddd43b19bd6fb2106dc57a00",
+          "mr_url": null,
+          "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/a47f8fb61931b2dbddd43b19bd6fb2106dc57a00/content/handbook/finance/expenses.md",
+          "valid_from": 1778777849000,
+          "observed_only": true
+        },
+        {
+          "id": "fv:meals:v2",
+          "value": "120",
+          "unit": "USD/day",
+          "excerpt": "Meals while traveling on Company business are reimbursable, up to $120 USD (or local equivalent currency) per day.",
+          "commit_sha": "6eb1a977ed006bf256e5fdeb7422d06ff14d1cf3",
+          "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20015",
+          "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/6eb1a977ed006bf256e5fdeb7422d06ff14d1cf3/content/handbook/finance/expenses.md",
+          "valid_from": 1781880145000,
+          "observed_only": false
+        }
+      ]
+    },
+    {
+      "key": "expense.home_internet_phone.monthly_limit",
+      "topic": "expenses",
+      "title": "Home internet and mobile phone (monthly limit)",
+      "section": "Internet / Phone Service",
+      "versions": [
+        {
+          "id": "fv:netphone:v1",
+          "value": "80 (exceptions considered)",
+          "unit": "USD/month",
+          "excerpt": "Policy is set at $80, anything over that amount will still be considered for approval as we know there are exceptions, and will be checked and approved on an individual basis.",
+          "commit_sha": "a47f8fb61931b2dbddd43b19bd6fb2106dc57a00",
+          "mr_url": null,
+          "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/a47f8fb61931b2dbddd43b19bd6fb2106dc57a00/content/handbook/finance/expenses.md",
+          "valid_from": 1778777849000,
+          "observed_only": true
+        },
+        {
+          "id": "fv:netphone:v2",
+          "value": "100 (hard cap, no exceptions)",
+          "unit": "USD/month",
+          "excerpt": "Policy is set at $100 - claims above this amount will not be reimbursed. ... individual exceptions are no longer assessed at the claim stage.",
+          "commit_sha": "6eb1a977ed006bf256e5fdeb7422d06ff14d1cf3",
+          "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20015",
+          "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/6eb1a977ed006bf256e5fdeb7422d06ff14d1cf3/content/handbook/finance/expenses.md",
+          "valid_from": 1781880145000,
+          "observed_only": false
+        }
+      ]
+    },
+    {
+      "key": "expense.coworking.rules",
+      "topic": "expenses",
+      "title": "Co-working space rules",
+      "section": "Co-Working Space",
+      "versions": [
+        {
+          "id": "fv:cowork:v1",
+          "value": "single category; $700/month; up to 5 one-off days without approval",
+          "unit": null,
+          "excerpt": "Coworking space is reimbursable for monthly space and one-off days during business travel. $700.00 Limit per month.",
+          "commit_sha": "a47f8fb61931b2dbddd43b19bd6fb2106dc57a00",
+          "mr_url": null,
+          "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/a47f8fb61931b2dbddd43b19bd6fb2106dc57a00/content/handbook/finance/expenses.md",
+          "valid_from": 1778777849000,
+          "observed_only": true
+        },
+        {
+          "id": "fv:cowork:v2",
+          "value": "Monthly ($700/month) + Daily Office Pass ($100/day limit)",
+          "unit": null,
+          "excerpt": "Co-Working Space - Daily Office Pass: Up to 5 One-off Days in a calendar month ... do not require Manager or Finance approval. $100.00 Limit per day.",
+          "commit_sha": "6eb1a977ed006bf256e5fdeb7422d06ff14d1cf3",
+          "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20015",
+          "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/6eb1a977ed006bf256e5fdeb7422d06ff14d1cf3/content/handbook/finance/expenses.md",
+          "valid_from": 1781880145000,
+          "observed_only": false
+        },
+        {
+          "id": "fv:cowork:v3",
+          "value": "Monthly + Daily Office Pass ($100/day); pre-approval needed before claiming",
+          "unit": null,
+          "excerpt": "Coworking space is reimbursable for monthly space and one-off days during business travel. Pre-Approval is needed prior to submitting claims.",
+          "commit_sha": "c72b6af5eff911b77604782b2d1f46e95ae9dba0",
+          "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20839",
+          "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/c72b6af5eff911b77604782b2d1f46e95ae9dba0/content/handbook/finance/expenses.md",
+          "valid_from": 1788196251000,
+          "observed_only": false
+        }
+      ]
+    },
+    {
+      "key": "expense.new_hire.home_office_stipend",
+      "topic": "onboarding",
+      "title": "New-hire $1,500 home-office stipend",
+      "section": "Equipment",
+      "versions": [
+        {
+          "id": "fv:stipend:v1",
+          "value": "issued as a virtual card (expires after 1 year)",
+          "unit": "USD 1500",
+          "excerpt": "New hires will receive a 1,500 USD stipend ... This will be issued to you as a Virtual Card ... The virtual card provided will expire after one year of issue.",
+          "commit_sha": "8f22e33feaebe37270dbc3cc3c46bc6c690e95f4",
+          "mr_url": null,
+          "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/8f22e33feaebe37270dbc3cc3c46bc6c690e95f4/content/handbook/finance/expenses.md",
+          "valid_from": 1785247455000,
+          "observed_only": true
+        },
+        {
+          "id": "fv:stipend:v2",
+          "value": "pay with own funds, then claim in Navan",
+          "unit": "USD 1500",
+          "excerpt": "Purchase the items you need using your own funds and submit a claim in Navan for reimbursement.",
+          "commit_sha": "c72b6af5eff911b77604782b2d1f46e95ae9dba0",
+          "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20839",
+          "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/c72b6af5eff911b77604782b2d1f46e95ae9dba0/content/handbook/finance/expenses.md",
+          "valid_from": 1788196251000,
+          "observed_only": false
+        }
+      ]
+    }
+  ],
+  "changes": [
+    {
+      "id": "chg:c1",
+      "label": "C1",
+      "fact_key": "expense.vpn.personal_subscription",
+      "from": "fv:vpn:v1",
+      "to": "fv:vpn:v2",
+      "title": "Personal VPN subscriptions no longer reimbursable",
+      "commit_sha": "ddd395971ee181bee9e00d23d34e1001489d76ef",
+      "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20421",
+      "detected_at": 1784046483000
+    },
+    {
+      "id": "chg:c2",
+      "label": "C2",
+      "fact_key": "expense.travel.meals_daily_limit",
+      "from": "fv:meals:v1",
+      "to": "fv:meals:v2",
+      "title": "Travel meals limit $100 → $120 per day",
+      "commit_sha": "6eb1a977ed006bf256e5fdeb7422d06ff14d1cf3",
+      "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20015",
+      "detected_at": 1781880145000
+    },
+    {
+      "id": "chg:c3",
+      "label": "C3",
+      "fact_key": "expense.home_internet_phone.monthly_limit",
+      "from": "fv:netphone:v1",
+      "to": "fv:netphone:v2",
+      "title": "Internet/phone $80 with exceptions → $100 hard cap",
+      "commit_sha": "6eb1a977ed006bf256e5fdeb7422d06ff14d1cf3",
+      "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20015",
+      "detected_at": 1781880145000
+    },
+    {
+      "id": "chg:c4a",
+      "label": "C4",
+      "fact_key": "expense.coworking.rules",
+      "from": "fv:cowork:v1",
+      "to": "fv:cowork:v2",
+      "title": "Co-working split: Daily Office Pass $100/day",
+      "commit_sha": "6eb1a977ed006bf256e5fdeb7422d06ff14d1cf3",
+      "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20015",
+      "detected_at": 1781880145000
+    },
+    {
+      "id": "chg:c4b",
+      "label": "C4",
+      "fact_key": "expense.coworking.rules",
+      "from": "fv:cowork:v2",
+      "to": "fv:cowork:v3",
+      "title": "Co-working now needs pre-approval",
+      "commit_sha": "c72b6af5eff911b77604782b2d1f46e95ae9dba0",
+      "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20839",
+      "detected_at": 1788196251000
+    },
+    {
+      "id": "chg:c5",
+      "label": "C5",
+      "fact_key": "expense.new_hire.home_office_stipend",
+      "from": "fv:stipend:v1",
+      "to": "fv:stipend:v2",
+      "title": "New-hire stipend: virtual card → own funds + claim",
+      "commit_sha": "c72b6af5eff911b77604782b2d1f46e95ae9dba0",
+      "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20839",
+      "detected_at": 1788196251000
+    }
+  ]
+}
