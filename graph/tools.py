@@ -5,6 +5,7 @@ Return shapes follow ``contracts/mcp-tools.json``. Every query lives in ``graph/
 
 from __future__ import annotations
 
+import os
 import time
 
 from graph.client import tenant_graph
@@ -12,7 +13,9 @@ from graph.cypher import cypher
 
 
 def now_ms() -> int:
-    return int(time.time() * 1000)
+    """Current time in epoch ms, or the fixed demo clock when ``RIPPLE_NOW_MS`` is set."""
+    fixed = os.getenv("RIPPLE_NOW_MS")
+    return int(fixed) if fixed else int(time.time() * 1000)
 
 
 def who_holds(tenant: str, version_id: str) -> list[dict]:
