@@ -194,7 +194,7 @@ def _plans(layer: Layer, roster: dict[str, list[str]]) -> None:
     )
     plans = [
         ("plan:ap-queue", "Expense approvals queue (AP worker agent)", 2 * HOUR, "person:ravi",
-         ["df:ap-vpn-rule", "fv:netphone:v1"]),
+         ["df:ap-vpn-rule"]),  # the phone rule is a dependency of the phone action only
         ("plan:offsite", "Q4 Bengaluru offsite: meal budget", 9 * DAY, eng[1], ["df:offsite-meals"]),
         ("plan:onboard-nov", "Onboard 3 new hires in Nov: stipend cards", 5 * DAY, people[1], ["fv:stipend:v1"]),
         ("plan:emea-trips", "EMEA sales trip bookings", 3 * DAY, sales[0], ["fv:meals:v1", "fv:cowork:v1"]),
