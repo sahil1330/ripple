@@ -8,7 +8,7 @@ Draft queries from `RIPPLE_PLAN.md` §4.4 (untested until the smoke-test issue c
 | File | Purpose |
 |---|---|
 | `impact.cypher` | (a) impact radius: multi-type variable-length traversal from an old FactVersion |
-| `impact_bfs.cypher` | (a') impact radius with `algo.bfs` over materialised `FEEDS` edges |
+| `impact_bfs.cypher` | (a') impact radius: `algo.bfs` over `FEEDS` + hop count (used by `graph/impact.py`) |
 | `who_holds.cypher` | (b) people and agents still holding a superseded version |
 | `check_fresh.cypher` | (c) freshness guard for a plan; any row = stale |
 | `explain_path.cypher` | (d) shortest "why" path between two entities |
@@ -16,6 +16,9 @@ Draft queries from `RIPPLE_PLAN.md` §4.4 (untested until the smoke-test issue c
 | `ingest_fact_version.cypher` | upsert a Fact + FactVersion (handbook ingest) |
 | `ingest_change.cypher` | record a Change: SUPERSEDES, close old `valid_to`, FROM/TO (ingest + Sentinel replay) |
 
-Load a query from Python with `graph.cypher.cypher("<name>")`.
 | `current_versions.cypher` | current FactVersion id per fact key (doc ingest) |
 | `algo_pagerank_docs.cypher` | (f) PageRank over real handbook `LINKS_TO` (doc authority) |
+| `change_versions.cypher` | old (FROM) and new (TO) version of a Change |
+| `write_impacts.cypher` | Tracer output: MERGE `IMPACTS {hops, risk, tth_ms, severity, urgency, reach}` |
+
+Load a query from Python with `graph.cypher.cypher("<name>")`.
