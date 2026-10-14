@@ -13,3 +13,7 @@ Draft queries from `RIPPLE_PLAN.md` §4.4 (untested until the smoke-test issue c
 | `check_fresh.cypher` | (c) freshness guard for a plan; any row = stale |
 | `explain_path.cypher` | (d) shortest "why" path between two entities |
 | `coverage.cypher` | (e) impacted vs resolved per kind for a Change |
+| `ingest_fact_version.cypher` | upsert a Fact + FactVersion (handbook ingest) |
+| `ingest_change.cypher` | record a Change: SUPERSEDES, close old `valid_to`, FROM/TO (ingest + Sentinel replay) |
+
+Load a query from Python with `graph.cypher.cypher("<name>")`.
