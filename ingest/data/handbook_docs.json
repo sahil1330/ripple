@@ -1,0 +1,675 @@
+{
+  "$comment": "Public GitLab handbook pages under /handbook/finance/ (c) GitLab B.V. Titles, short excerpts and links only. Built by ingest/build_handbook_docs.py.",
+  "attribution": "GitLab B.V.",
+  "handbook_commit": "d73b5f007fadfc3bbdcc48e4a3206920adbb7294",
+  "docs": [
+    {
+      "id": "doc:hb:finance",
+      "title": "Finance",
+      "url": "https://handbook.gitlab.com/handbook/finance/",
+      "excerpt": "Welcome to the GitLab Finance Handbook {.h2}",
+      "links": [
+        "doc:hb:finance:spending-company-money",
+        "doc:hb:finance:tax"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:accounting",
+      "title": "Accounting and Reporting",
+      "url": "https://handbook.gitlab.com/handbook/finance/accounting/",
+      "excerpt": "Calculated billings is defined as revenue plus the sequential change in total deferred revenue as presented on the balance sheet.",
+      "links": [
+        "doc:hb:finance:procurement"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:accounting:finance-ops",
+      "title": "Financial Operations",
+      "url": "https://handbook.gitlab.com/handbook/finance/accounting/finance-ops/",
+      "excerpt": "",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:accounting:finance-ops:billing-ops",
+      "title": "Billing Operations",
+      "url": "https://handbook.gitlab.com/handbook/finance/accounting/finance-ops/billing-ops/",
+      "excerpt": "Welcome to the Billing Ops Handbook {.h2}",
+      "links": [
+        "doc:hb:finance:tax"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:accounting:finance-ops:billing-ops-GPO",
+      "title": "Billing Operations, GPO",
+      "url": "https://handbook.gitlab.com/handbook/finance/accounting/finance-ops/billing-ops-GPO/",
+      "excerpt": "Welcome to the Billing Ops, GPO Handbook {.h2}",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:accounting:finance-ops:teck-stack-guide-netsuite",
+      "title": "NetSuite Tech Stack Guide",
+      "url": "https://handbook.gitlab.com/handbook/finance/accounting/finance-ops/teck-stack-guide-netsuite/",
+      "excerpt": "",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:accounts-payable",
+      "title": "Accounts Payable",
+      "url": "https://handbook.gitlab.com/handbook/finance/accounts-payable/",
+      "excerpt": "This page contains GitLab's Accounts Payable department policies, procedures and guidelines. Our goal is to enable payments in a timely manner to both our team members and our external partners. We also provide useful links to other areas o",
+      "links": [
+        "doc:hb:finance:accounts-payable:tech-stack-guide-liquid",
+        "doc:hb:finance:expenses",
+        "doc:hb:finance:procurement",
+        "doc:hb:finance:spending-company-money"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:accounts-payable:corp-credit-cards",
+      "title": "Navan Purchasing Card",
+      "url": "https://handbook.gitlab.com/handbook/finance/accounts-payable/corp-credit-cards/",
+      "excerpt": "**Please note that the policy restricts the use of the card**:",
+      "links": [
+        "doc:hb:finance:expenses"
+      ],
+      "cites": [
+        "expense.travel.meals_daily_limit",
+        "expense.home_internet_phone.monthly_limit",
+        "expense.coworking.rules"
+      ]
+    },
+    {
+      "id": "doc:hb:finance:accounts-payable:coupa-virtual-card-guide-for-accounts-payable",
+      "title": "Virtual Card Guide for Accounts Payable",
+      "url": "https://handbook.gitlab.com/handbook/finance/accounts-payable/coupa-virtual-card-guide-for-accounts-payable/",
+      "excerpt": "This page contains guidelines regarding Accounts Payable (AP) related tasks for Coupa Virtual Cards. Please review the Coupa Virtual Card Guide to understand the end user process.",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:accounts-payable:tech-stack-guide-coupa",
+      "title": "Coupa Tech Stack Guide",
+      "url": "https://handbook.gitlab.com/handbook/finance/accounts-payable/tech-stack-guide-coupa/",
+      "excerpt": "> **Note:** Refer to the **Tech Stack Index** to browse Apps and **Tech Stack Applications** to manage Apps.",
+      "links": [
+        "doc:hb:finance:procurement:coupa-faq"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:accounts-payable:tech-stack-guide-liquid",
+      "title": "Navan Expense Tech Stack Guide",
+      "url": "https://handbook.gitlab.com/handbook/finance/accounts-payable/tech-stack-guide-liquid/",
+      "excerpt": "> **Note:** Refer to the **Tech Stack Index** to browse Apps and **Tech Stack Applications** to manage Apps.",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:authorization-matrix",
+      "title": "Authorization Matrix",
+      "url": "https://handbook.gitlab.com/handbook/finance/authorization-matrix/",
+      "excerpt": "",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:committee-composition",
+      "title": "Committee Composition",
+      "url": "https://handbook.gitlab.com/handbook/finance/committee-composition/",
+      "excerpt": "GitLab has established the disclosure committee (the \"Committee\") to help satisfy its obligation under the Securities Exchange Act of 1934 (Exchange Act) to maintain effective disclosure controls and procedures. GitLab's CEO and CFO adopted",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:expenses",
+      "title": "Global Travel and Expense Policy",
+      "url": "https://handbook.gitlab.com/handbook/finance/expenses/",
+      "excerpt": "GitLab's Global Travel & Expense Policy is meant to provide guidance to all Team Members to ensure that we act in the best interest of our Company at all times. The purpose of this policy is to:",
+      "links": [
+        "doc:hb:finance:accounts-payable:corp-credit-cards",
+        "doc:hb:finance:payroll",
+        "doc:hb:finance:procurement:individual-use-software"
+      ],
+      "cites": [
+        "expense.vpn.personal_subscription",
+        "expense.travel.meals_daily_limit",
+        "expense.home_internet_phone.monthly_limit",
+        "expense.coworking.rules",
+        "expense.new_hire.home_office_stipend"
+      ]
+    },
+    {
+      "id": "doc:hb:finance:finance-team-performance-indicators",
+      "title": "Finance Team Performance Indicators",
+      "url": "https://handbook.gitlab.com/handbook/finance/finance-team-performance-indicators/",
+      "excerpt": "",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:financial-planning-and-analysis",
+      "title": "Financial Planning & Analysis",
+      "url": "https://handbook.gitlab.com/handbook/finance/financial-planning-and-analysis/",
+      "excerpt": "Maximize GitLab's long-term valuation by enabling e-group and FP&A to plan, prioritize, and execute effectively",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:financial-planning-and-analysis:adaptive-insights",
+      "title": "Adaptive Insights",
+      "url": "https://handbook.gitlab.com/handbook/finance/financial-planning-and-analysis/adaptive-insights/",
+      "excerpt": "Adaptive Insights, a Workday company, is a cloud-based corporate performance management platform. The GitLab FP&A team utilizes Adaptive Inisghts to plan, budget, and forecast GitLab's planning cycles.",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:financial-planning-and-analysis:corporate-finance",
+      "title": "Corporate FP&A",
+      "url": "https://handbook.gitlab.com/handbook/finance/financial-planning-and-analysis/corporate-finance/",
+      "excerpt": "Welcome to the Corporate FP&A team page! {.h2}",
+      "links": [
+        "doc:hb:finance:financial-planning-and-analysis"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:financial-planning-and-analysis:fpa-definitions",
+      "title": "FP&A Definitions",
+      "url": "https://handbook.gitlab.com/handbook/finance/financial-planning-and-analysis/fpa-definitions/",
+      "excerpt": "",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:financial-planning-and-analysis:fpa-metrics",
+      "title": "FP&A Metrics",
+      "url": "https://handbook.gitlab.com/handbook/finance/financial-planning-and-analysis/fpa-metrics/",
+      "excerpt": "",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:financial-planning-and-analysis:fpa-processes",
+      "title": "FP&A Processes",
+      "url": "https://handbook.gitlab.com/handbook/finance/financial-planning-and-analysis/fpa-processes/",
+      "excerpt": "",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:financial-planning-and-analysis:ga-finance",
+      "title": "G&A Finance",
+      "url": "https://handbook.gitlab.com/handbook/finance/financial-planning-and-analysis/ga-finance/",
+      "excerpt": "",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:financial-planning-and-analysis:gtm-analytics-hub",
+      "title": "GTM Analytics Hub",
+      "url": "https://handbook.gitlab.com/handbook/finance/financial-planning-and-analysis/gtm-analytics-hub/",
+      "excerpt": "File",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:financial-planning-and-analysis:headcount-metrics-and-processes",
+      "title": "Headcount Metrics and Processes",
+      "url": "https://handbook.gitlab.com/handbook/finance/financial-planning-and-analysis/headcount-metrics-and-processes/",
+      "excerpt": "**Ending Headcount**: As a public company, GitLab forecasts Ending Headcount on a monthly, quarterly, and annual basis. This metric is what headcount-related expenses and our investor guidance are based on, so it is mission-critical to get ",
+      "links": [
+        "doc:hb:finance:financial-planning-and-analysis"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:financial-planning-and-analysis:r-and-d-finance",
+      "title": "R&D Finance",
+      "url": "https://handbook.gitlab.com/handbook/finance/financial-planning-and-analysis/r-and-d-finance/",
+      "excerpt": "Welcome to the R&D Finance Handbook! {.h2}",
+      "links": [
+        "doc:hb:finance:financial-planning-and-analysis"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:financial-planning-and-analysis:r-and-d-finance:hosting-main",
+      "title": "Hosting",
+      "url": "https://handbook.gitlab.com/handbook/finance/financial-planning-and-analysis/r-and-d-finance/hosting-main/",
+      "excerpt": "See the page GCP CUD page of the handbook for a full write-up of the GCP CUD process.",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:financial-planning-and-analysis:team-structure",
+      "title": "FP&A Team Structure",
+      "url": "https://handbook.gitlab.com/handbook/finance/financial-planning-and-analysis/team-structure/",
+      "excerpt": "",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:growth-and-development",
+      "title": "Finance Growth and Development",
+      "url": "https://handbook.gitlab.com/handbook/finance/growth-and-development/",
+      "excerpt": "Welcome to the GitLab Finance Growth and Development Page {.h2}",
+      "links": [
+        "doc:hb:finance:growth-and-development:cfo-shadow-program"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:growth-and-development:career-growth",
+      "title": "Finance Learning and Development",
+      "url": "https://handbook.gitlab.com/handbook/finance/growth-and-development/career-growth/",
+      "excerpt": "Welcome to Learning and Development for the Finance Department at GitLab! The resources in this page are meant to support team members by providing consistent frameworks through which to evaluate their career and role growth. This page comp",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:growth-and-development:cfo-shadow-program",
+      "title": "CFO Shadow Program",
+      "url": "https://handbook.gitlab.com/handbook/finance/growth-and-development/cfo-shadow-program/",
+      "excerpt": "The CFO Shadow Program is an immersive 1 or 2 week assignment where team members can apply to shadow the CFO. The 70:20:10 model for learning shows us that most adults gain ~90% of their knowledge through experiential learning. While formal",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:growth-and-development:finbt-mentorship",
+      "title": "Under Construction - FinBT Mentorship Program",
+      "url": "https://handbook.gitlab.com/handbook/finance/growth-and-development/finbt-mentorship/",
+      "excerpt": "Mentorship is an opportunity to learn from personal experience, background, and perspective. Mentorship builds trust, provides a safe space to make mistakes, and encourages growth for both the mentor and mentee.",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:growth-and-development:learning-development",
+      "title": "Finance Learning and Development",
+      "url": "https://handbook.gitlab.com/handbook/finance/growth-and-development/learning-development/",
+      "excerpt": "Welcome to Learning and Development for the Finance Department at GitLab! The resources in this page are meant to support team members to expand their knowledge and skills. This page compiles content that spans soft and hard skills in diffe",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:growth-and-development:mentorship",
+      "title": "Finance Mentorship Program",
+      "url": "https://handbook.gitlab.com/handbook/finance/growth-and-development/mentorship/",
+      "excerpt": "Update: The Finance Mentorship Program is not currently active. We will update this page in the future if that changes. For information on GitLab Mentorship programs, see this page",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:internal-audit",
+      "title": "The Internal Audit Function",
+      "url": "https://handbook.gitlab.com/handbook/finance/internal-audit/",
+      "excerpt": "",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:internal-audit:sarbanes-oxley",
+      "title": "Sarbanes-Oxley (SOX) Program",
+      "url": "https://handbook.gitlab.com/handbook/finance/internal-audit/sarbanes-oxley/",
+      "excerpt": "",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:investor-relations",
+      "title": "Investor Relations",
+      "url": "https://handbook.gitlab.com/handbook/finance/investor-relations/",
+      "excerpt": "As a public company we share financial results publicly after the close of each fiscal quarter or fiscal year. The key deliverables for each earnings cycle are:",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:jihu-support",
+      "title": "JiHu Support",
+      "url": "https://handbook.gitlab.com/handbook/finance/jihu-support/",
+      "excerpt": "As announced in the blog post GitLab licensed its technology to new independent Chinese company, GitLab Inc. has licensed its technology to JiHu. This page is outlines how the GitLab Inc. team provides support to JiHu.",
+      "links": [
+        "doc:hb:finance:jihu-support:jihu-contribution-process",
+        "doc:hb:finance:jihu-support:jihu-validation-pipelines"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:jihu-support:jihu-contribution-process",
+      "title": "JiHu contribution process",
+      "url": "https://handbook.gitlab.com/handbook/finance/jihu-support/jihu-contribution-process/",
+      "excerpt": "Contributions from the JiHu team will follow two methods depending on whether they have JiHu proprietary changes or not.",
+      "links": [
+        "doc:hb:finance:jihu-support:jihu-database-change-process",
+        "doc:hb:finance:jihu-support:jihu-security-review-process",
+        "doc:hb:finance:jihu-support:release-certification"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:jihu-support:jihu-database-change-process",
+      "title": "JiHu guidelines for database changes",
+      "url": "https://handbook.gitlab.com/handbook/finance/jihu-support/jihu-database-change-process/",
+      "excerpt": "For JiHu contributions that contain database migrations (for PostgreSQL), there are two routes to consider:",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:jihu-support:jihu-security-review-process",
+      "title": "JiHu Security Review Process",
+      "url": "https://handbook.gitlab.com/handbook/finance/jihu-support/jihu-security-review-process/",
+      "excerpt": "In order to make sure that a release with JiHu contributions can be certified, members of the AppSec team need to perform a security review of any JiHu contribution and explicitly approve them. The JiHu team will be contributing code to a n",
+      "links": [
+        "doc:hb:finance:jihu-support",
+        "doc:hb:finance:jihu-support:jihu-contribution-process"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:jihu-support:jihu-validation-pipelines",
+      "title": "JiHu validation pipelines",
+      "url": "https://handbook.gitlab.com/handbook/finance/jihu-support/jihu-validation-pipelines/",
+      "excerpt": "In order to make sure our regular development does not break JiHu's pipelines, we run JiHu validation pipelines in merge requests which we consider it's more likely to break JiHu's pipelines.",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:jihu-support:release-certification",
+      "title": "Release Certification",
+      "url": "https://handbook.gitlab.com/handbook/finance/jihu-support/release-certification/",
+      "excerpt": "Every release with JiHu contributions needs to be certified by a member of the Federal Application Security team. This is required to satisfy PubSec/FedRamp requirements and to handle JiHu's merge request contributions to GitLab Inc reposit",
+      "links": [
+        "doc:hb:finance:jihu-support",
+        "doc:hb:finance:jihu-support:jihu-contribution-process"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:payroll",
+      "title": "Payroll",
+      "url": "https://handbook.gitlab.com/handbook/finance/payroll/",
+      "excerpt": "",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:procurement",
+      "title": "The GitLab Procurement Team",
+      "url": "https://handbook.gitlab.com/handbook/finance/procurement/",
+      "excerpt": "The Procurement team manages GitLab's Supplier Lifecycle through the process of strategically vetting and selecting vendors, negotiating commercial terms, the purchasing of goods and services, and managing the renewal or vendor offboarding ",
+      "links": [
+        "doc:hb:finance:expenses",
+        "doc:hb:finance:procurement:contingent-worker-policy",
+        "doc:hb:finance:procurement:individual-use-software",
+        "doc:hb:finance:procurement:tips-for-submitting-a-zip-request",
+        "doc:hb:finance:procurement:vendor-guidelines",
+        "doc:hb:finance:procurement:vendor-guidelines:vendor-agreement"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:procurement:charitable-contributions",
+      "title": "Charitable Contribution Requests",
+      "url": "https://handbook.gitlab.com/handbook/finance/procurement/charitable-contributions/",
+      "excerpt": "If you have a request to donate GitLab funds to a charitable cause, please refer to the Philanthropy Policy for more information about who we support, how we support, exclusions, and delegations/approvals.",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:procurement:consultants",
+      "title": "External Consultant Orientation & Access Deprovisioning",
+      "url": "https://handbook.gitlab.com/handbook/finance/procurement/consultants/",
+      "excerpt": "GitLab will from time-to-time bring in the expertise of External Consultants to work on a specific task for a pre-defined period. Depending on the nature of this engagement and the tasks at hand, the aforementioned External Consultant(s) ma",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:procurement:contingent-worker-policy",
+      "title": "Contingent Worker Policy",
+      "url": "https://handbook.gitlab.com/handbook/finance/procurement/contingent-worker-policy/",
+      "excerpt": "This policy has been designed to provide Team Members a high-level overview and guidelines on the different types of contingent workers available as well as how and when each should be used.",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:procurement:coupa-faq",
+      "title": "Coupa FAQ",
+      "url": "https://handbook.gitlab.com/handbook/finance/procurement/coupa-faq/",
+      "excerpt": "If there are any issues with setting up a Remit-To account, please email Coupa Support Team (supplier@coupa.com) for assistance.",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:procurement:field-marketing-events",
+      "title": "Field Marketing and Events",
+      "url": "https://handbook.gitlab.com/handbook/finance/procurement/field-marketing-events/",
+      "excerpt": "",
+      "links": [
+        "doc:hb:finance:procurement"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:procurement:individual-use-software",
+      "title": "Individual Use Software",
+      "url": "https://handbook.gitlab.com/handbook/finance/procurement/individual-use-software/",
+      "excerpt": "Individual use software is characterized as software essential for executing job responsibilities and that is distinct from the existing tools and platforms already owned or accessible to your team.",
+      "links": [
+        "doc:hb:finance:procurement"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:procurement:office-equipment-supplies",
+      "title": "Home Office Equipment and Supplies",
+      "url": "https://handbook.gitlab.com/handbook/finance/procurement/office-equipment-supplies/",
+      "excerpt": "For any additional questions about this process or about utilizing your Virtual Card (new hires only), please reach out via Compass or email expenses@gitlab.com.",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:procurement:tips-for-submitting-a-zip-request",
+      "title": "Tips for Submitting a Zip Request",
+      "url": "https://handbook.gitlab.com/handbook/finance/procurement/tips-for-submitting-a-zip-request/",
+      "excerpt": "If purchasing Home Office Equipment and/or Software for your individual work use that is <$5K USD, see Other Services since a Zip Purchase Request is not required in these instances.",
+      "links": [
+        "doc:hb:finance:procurement",
+        "doc:hb:finance:procurement:contingent-worker-policy"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:procurement:trial-agreement",
+      "title": "Non-Cost related Agreements",
+      "url": "https://handbook.gitlab.com/handbook/finance/procurement/trial-agreement/",
+      "excerpt": "If you have documents from a vendor that are not cost-related, such as a Trial/Demo Agreement, Engagement Letter, etc., please open a ZIP request selecting a Request a Demo/Trial ($0 Contracts) workflow and proceed with completing the form.",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:procurement:vendor-guidelines",
+      "title": "Vendor Guidelines",
+      "url": "https://handbook.gitlab.com/handbook/finance/procurement/vendor-guidelines/",
+      "excerpt": "When procuring goods/services, GitLab will enter into an agreement with its vendors. This agreement will take the form of either, (i) a negotiated agreement which establishes the parties rights and obligations, or (ii) reference to the GitL",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:procurement:vendor-guidelines:legacy-vendor-agreement-v1",
+      "title": "Legacy Vendor Terms and Conditions v1",
+      "url": "https://handbook.gitlab.com/handbook/finance/procurement/vendor-guidelines/legacy-vendor-agreement-v1/",
+      "excerpt": "1.1 \"Accepted\" means GitLab's written confirmation of receipt of Deliverables having been provided in a manner deemed appropriate by GitLab. \"Acceptance\" shall be deemed to occur on the date when, in the reasonable opinion of GitLab, the De",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:procurement:vendor-guidelines:mutual-non-disclosure-agreement",
+      "title": "MUTUAL NON-DISCLOSURE AGREEMENT",
+      "url": "https://handbook.gitlab.com/handbook/finance/procurement/vendor-guidelines/mutual-non-disclosure-agreement/",
+      "excerpt": "IMPORTANT: PLEASE READ THIS AGREEMENT CAREFULLY. THIS AGREEMENT BECOMES BINDING WHEN ACCEPTED THROUGH ANY ELECTRONIC INTERFACE OR FORM THAT REFERENCES OR LINKS TO THIS AGREEMENT.",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:procurement:vendor-guidelines:po-terms",
+      "title": "PURCHASE ORDER TERMS AND CONDITIONS",
+      "url": "https://handbook.gitlab.com/handbook/finance/procurement/vendor-guidelines/po-terms/",
+      "excerpt": "1.1 This Purchase Order (\"Order\") constitutes GitLab's offer to purchase Products and/or Services according to the terms and conditions set forth herein. \"Services\" means actions provided by Vendor, Vendor Personnel or Vendor Subcontractor ",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:procurement:vendor-guidelines:vendor-agreement",
+      "title": "Vendor Terms and Conditions",
+      "url": "https://handbook.gitlab.com/handbook/finance/procurement/vendor-guidelines/vendor-agreement/",
+      "excerpt": "These standard vendor terms and conditions (the \"**Agreement**\") is between GitLab Inc. with offices at 268 Bush Street, Suite 350, San Francisco, CA 94104 (or if a different corporate entity is listed as \"GitLab\" on a Transaction Document ",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:procurement:vendor-guidelines:vendor-security-addendum",
+      "title": "GitLab Vendor Security Addendum",
+      "url": "https://handbook.gitlab.com/handbook/finance/procurement/vendor-guidelines/vendor-security-addendum/",
+      "excerpt": "This Security Addendum (\"Addendum\") is incorporated into and made part of the applicable Agreement between Vendor and the GitLab Entity listed in such Agreement. Unless otherwise set forth in the applicable Agreement, Vendor's execution of ",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:procurement:virtual-cards",
+      "title": "Virtual Cards",
+      "url": "https://handbook.gitlab.com/handbook/finance/procurement/virtual-cards/",
+      "excerpt": "",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:readmes",
+      "title": "GitLab Finance Team READMEs",
+      "url": "https://handbook.gitlab.com/handbook/finance/readmes/",
+      "excerpt": "Learn more about working with various members of the Finance team",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:readmes:danielle-ritter",
+      "title": "Danielle Ritter's README",
+      "url": "https://handbook.gitlab.com/handbook/finance/readmes/danielle-ritter/",
+      "excerpt": "",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:readmes:james-gladen",
+      "title": "James (Jim) Gladen's README",
+      "url": "https://handbook.gitlab.com/handbook/finance/readmes/james-gladen/",
+      "excerpt": "Every company is now a software company. GitLab is in a unique space to accelerate software development at each and every one of these companies.",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:readmes:jessica-ross",
+      "title": "Jessica Ross - CFO - READ ME",
+      "url": "https://handbook.gitlab.com/handbook/finance/readmes/jessica-ross/",
+      "excerpt": "I’m drawn to places where values, purpose, and performance come together. Places where the work matters, the people care, and the mission has real impact.",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:readmes:julie-malloy",
+      "title": "Julie Malloy's README",
+      "url": "https://handbook.gitlab.com/handbook/finance/readmes/julie-malloy/",
+      "excerpt": "For me, being at GitLab represents the perfect blend of doing a job I truly enjoy at a fast-paced, growing company with tremendous market potential. What makes it especially rewarding is the opportunity to tackle complex challenges alongsid",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:readmes:simon-mundy",
+      "title": "Simon Mundy's README",
+      "url": "https://handbook.gitlab.com/handbook/finance/readmes/simon-mundy/",
+      "excerpt": "I am at GitLab as I believe in the huge market opportunity and best in class fundamentals that the Company offers. I have always focused on roles at platform based Company’s, and thus GitLab’s mission to replace multiple point solutions res",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:readmes:yao-chew",
+      "title": "Yao Chew's README",
+      "url": "https://handbook.gitlab.com/handbook/finance/readmes/yao-chew/",
+      "excerpt": "I’ve been an investor, observer and advisor to some of the world’s coolest tech companies and have had the privilege of having a front-row seat to the action in the capital markets. GitLab is an incredible business that stands at the conflu",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:readmes:yyugitlab",
+      "title": "yyugitlab",
+      "url": "https://handbook.gitlab.com/handbook/finance/readmes/yyugitlab/",
+      "excerpt": "",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:sales-comp-plan",
+      "title": "Sales Compensation Plan",
+      "url": "https://handbook.gitlab.com/handbook/finance/sales-comp-plan/",
+      "excerpt": "",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:spending-company-money",
+      "title": "Spending Company Money",
+      "url": "https://handbook.gitlab.com/handbook/finance/spending-company-money/",
+      "excerpt": "**All team members and contractors must protect our Company assets, such as equipment, supplies, cash, and information. Treat Company assets with the same care you would if they were your own. No team member or contractor may commit theft, ",
+      "links": [
+        "doc:hb:finance:accounts-payable:corp-credit-cards",
+        "doc:hb:finance:expenses",
+        "doc:hb:finance:procurement"
+      ],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:tax",
+      "title": "The GitLab Tax Team",
+      "url": "https://handbook.gitlab.com/handbook/finance/tax/",
+      "excerpt": "The Tax Team is responsible for GitLab's tax compliance (see here for payroll taxes), tax planning and accounting for business taxes, including income taxes and indirect taxes such as sales taxes and value-added taxes (VAT). Taxation differ",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:timekeeping",
+      "title": "Timekeeping Policies and Procedures",
+      "url": "https://handbook.gitlab.com/handbook/finance/timekeeping/",
+      "excerpt": "",
+      "links": [],
+      "cites": []
+    },
+    {
+      "id": "doc:hb:finance:travel",
+      "title": "Travel Safety and Security",
+      "url": "https://handbook.gitlab.com/handbook/finance/travel/",
+      "excerpt": "Team member safety and security are a top priority for GitLab. If a team member feels uncomfortable or unsafe traveling to a location on GitLab's behalf due to concerns about the location, region, personal health, or other safety or securit",
+      "links": [
+        "doc:hb:finance:expenses"
+      ],
+      "cites": [
+        "expense.vpn.personal_subscription"
+      ]
+    },
+    {
+      "id": "doc:hb:finance:travel:sponsored",
+      "title": "Sponsored Travel",
+      "url": "https://handbook.gitlab.com/handbook/finance/travel/sponsored/",
+      "excerpt": "Related Travel {.h3}",
+      "links": [
+        "doc:hb:finance:spending-company-money",
+        "doc:hb:finance:travel"
+      ],
+      "cites": []
+    }
+  ]
+}
