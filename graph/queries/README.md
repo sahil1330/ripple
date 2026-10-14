@@ -33,5 +33,8 @@ Draft queries from `RIPPLE_PLAN.md` §4.4 (untested until the smoke-test issue c
 | `task_complete.cypher` | finish a task held by this agent |
 | `change_set_status.cypher` | Change status open → resolving → resolved |
 | `direct_exposure.cypher` | which edge types link each impacted entity to the old version (task kind choice) |
+| `worker_pending_actions.cypher` | pending actions a worker agent owns |
+| `action_set_status.cypher` | worker outcome: done / blocked (+ reason) |
+| `change_for_version.cypher` | the Change that superseded a version |
 
 Load a query from Python with `graph.cypher.cypher("<name>")`.

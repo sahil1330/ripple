@@ -52,6 +52,25 @@ def _mr_label(url: str | None) -> str:
     return f"MR !{m.group(1)}" if m else "the handbook"
 
 
+def record_answer(
+    tenant: str,
+    person_id: str,
+    question: str,
+    text: str,
+    version_ids: list[str],
+    channel: str = "web",
+    now: int | None = None,
+) -> str:
+    """Log an answer as episodic memory (Answer + ANSWERED + WAS_TOLD + FEEDS). Returns the answer id."""
+    answer_id = f"ans:{uuid.uuid4().hex[:12]}"
+    at = now_ms() if now is None else now
+    params = {"person_id": person_id, "answer_id": answer_id, "question": question, "text": text,
+              "at": at, "channel": channel, "version_ids": version_ids}  # fmt: skip
+    if not tenant_graph(tenant).query(cypher("record_answer"), params).result_set[0][0]:
+        raise KeyError(f"unknown person or versions: {person_id}, {version_ids}")
+    return answer_id
+
+
 def ask(tenant: str, person_id: str, question: str, channel: str = "web", now: int | None = None) -> dict:
     """Answer ``question`` for ``person_id`` and log it. Returns the /api/ask response shape:
 
@@ -81,11 +100,6 @@ def ask(tenant: str, person_id: str, question: str, channel: str = "web", now: i
     answer = f"{title}: {value}. Policy text: \u201c{excerpt}\u201d (source: {source})"
     if earlier:
         answer = f"{earlier['text']} {answer}"
-    answer_id = f"ans:{uuid.uuid4().hex[:12]}"
-    g.query(
-        cypher("record_answer"),
-        {"person_id": person_id, "answer_id": answer_id, "question": question, "text": answer,
-         "at": at, "channel": channel, "version_ids": [vid]},
-    )  # fmt: skip
+    answer_id = record_answer(tenant, person_id, question, answer, [vid], channel=channel, now=at)
     return {"answer": answer, "versions": [vid], "source_url": source, "earlier_told": earlier,
             "answer_id": answer_id}  # fmt: skip
