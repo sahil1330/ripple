@@ -21,7 +21,8 @@ INDEXES: list[tuple[str, str]] = [
     ("Task(status)", "CREATE INDEX FOR (t:Task) ON (t.status)"),
     ("Action(status)", "CREATE INDEX FOR (a:Action) ON (a.status)"),
     ("WAS_TOLD(at)", "CREATE INDEX FOR ()-[r:WAS_TOLD]-() ON (r.at)"),
-    ("Doc(title) fulltext", "CALL db.idx.fulltext.createNodeIndex('Doc', 'title')"),
+    # DDL form works on both 4.18 and latest; the 2-arg createNodeIndex() call was dropped in newer releases.
+    ("Doc(title) fulltext", "CREATE FULLTEXT INDEX FOR (d:Doc) ON (d.title)"),
 ]
 
 
