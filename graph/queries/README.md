@@ -28,5 +28,8 @@ Draft queries from `RIPPLE_PLAN.md` §4.4 (untested until the smoke-test issue c
 | `algos_wcc_people.cypher` | (f) chat communities: `algo.WCC` on `TALKS_WITH` (dark pockets) |
 | `algos_betweenness_people.cypher` | (f) chat bridges: betweenness on `TALKS_WITH` (pocket hub) |
 | `resolved_by.cypher` | entities that RESOLVED a change |
+| `task_create.cypher` | open a handoff Task (CREATED / ABOUT / TARGETS), idempotent |
+| `task_claim.cypher` | atomic claim of the best open task of given kinds |
+| `task_complete.cypher` | finish a task held by this agent |
 
 Load a query from Python with `graph.cypher.cypher("<name>")`.
