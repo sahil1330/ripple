@@ -1,7 +1,7 @@
 # Graph notes
 
 Results of the Day-1 Cypher syntax smoke tests (plan §4.4 "Syntax uncertainties"). Tested on Oct 15 2026
-against FalkorDB module v4.18.3 locally and `falkordb/falkordb:latest` in CI. The checks live in
+against FalkorDB module v4.18.3 and v6.0.2 locally and `falkordb/falkordb:latest` (v6.0.2) in CI. The checks live in
 `tests/graph/test_smoke.py`; rerun them after any FalkorDB upgrade.
 
 | Item | Result | Decision |
@@ -16,4 +16,5 @@ against FalkorDB module v4.18.3 locally and `falkordb/falkordb:latest` in CI. Th
 | `algo.pageRank(label, relType)` / `algo.betweenness({...})` | ✅ positional / map signatures work | As drafted |
 | Atomic claim (`MATCH ... {status:'open'} SET ...`) | ✅ second identical claim returns no row | Writes are serialised per graph; Task claim needs no extra version check |
 | `CREATE INDEX` run twice | raises `Attribute 'id' is already indexed` | `graph/schema.py` swallows errors containing "already" |
+| ⚠️ v6.0 planner bug | On `falkordb:latest` (v6.0.2) a `WHERE 'X' IN labels(s)` right after `MATCH (s {id:$id})` gets applied to a later scan, silently returning no rows | Put `WITH s` right after that WHERE (done in `check_fresh.cypher`). Local tests now run on both 4.18.3 and 6.0.2 |
 | Params in `LIMIT` | works on 4.18, but docs say unsupported | Still don't use them; inline constant limits |

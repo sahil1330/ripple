@@ -3,6 +3,8 @@
 // directly or a DerivedFact chain (DERIVED_FROM*0..5) that ends in a version closed before $now.
 MATCH (s:Entity {id: $target_id})
 WHERE 'Plan' IN labels(s) OR 'Action' IN labels(s)
+// WITH barrier: FalkorDB v6.0 otherwise pushes the labels() filter onto the wrong scan (see graph/NOTES.md).
+WITH s
 MATCH (s)-[:PART_OF*0..1]->(owner)-[:DEPENDS_ON]->(d)
 MATCH (d)-[:DERIVED_FROM*0..5]->(fv:FactVersion)
 WHERE fv.valid_to IS NOT NULL AND fv.valid_to <= $now
