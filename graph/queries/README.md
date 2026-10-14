@@ -31,5 +31,7 @@ Draft queries from `RIPPLE_PLAN.md` §4.4 (untested until the smoke-test issue c
 | `task_create.cypher` | open a handoff Task (CREATED / ABOUT / TARGETS), idempotent |
 | `task_claim.cypher` | atomic claim of the best open task of given kinds |
 | `task_complete.cypher` | finish a task held by this agent |
+| `change_set_status.cypher` | Change status open → resolving → resolved |
+| `direct_exposure.cypher` | which edge types link each impacted entity to the old version (task kind choice) |
 
 Load a query from Python with `graph.cypher.cypher("<name>")`.
