@@ -16,4 +16,5 @@ against FalkorDB module v4.18.3 locally and `falkordb/falkordb:latest` in CI. Th
 | `algo.pageRank(label, relType)` / `algo.betweenness({...})` | ✅ positional / map signatures work | As drafted |
 | Atomic claim (`MATCH ... {status:'open'} SET ...`) | ✅ second identical claim returns no row | Writes are serialised per graph; Task claim needs no extra version check |
 | `CREATE INDEX` run twice | raises `Attribute 'id' is already indexed` | `graph/schema.py` swallows errors containing "already" |
+| Full-text index | `db.idx.fulltext.createNodeIndex(label, prop)` fails on `falkordb:latest` (expects 1 arg) | Use `CREATE FULLTEXT INDEX FOR (d:Doc) ON (d.title)` (works on both) |
 | Params in `LIMIT` | works on 4.18, but docs say unsupported | Still don't use them; inline constant limits |
