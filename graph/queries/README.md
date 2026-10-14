@@ -20,5 +20,7 @@ Draft queries from `RIPPLE_PLAN.md` §4.4 (untested until the smoke-test issue c
 | `algo_pagerank_docs.cypher` | (f) PageRank over real handbook `LINKS_TO` (doc authority) |
 | `change_versions.cypher` | old (FROM) and new (TO) version of a Change |
 | `write_impacts.cypher` | Tracer output: MERGE `IMPACTS {hops, risk, tth_ms, severity, urgency, reach}` |
+| `tth_due.cypher` | time-to-harm: soonest deadline per impacted entity (own or inherited via OWNS) |
+| `algo_betweenness_feeds.cypher` | (f) betweenness over `FEEDS` (reach factor, amplifiers) |
 
 Load a query from Python with `graph.cypher.cypher("<name>")`.
