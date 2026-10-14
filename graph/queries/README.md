@@ -17,3 +17,5 @@ Draft queries from `RIPPLE_PLAN.md` §4.4 (untested until the smoke-test issue c
 | `ingest_change.cypher` | record a Change: SUPERSEDES, close old `valid_to`, FROM/TO (ingest + Sentinel replay) |
 
 Load a query from Python with `graph.cypher.cypher("<name>")`.
+| `current_versions.cypher` | current FactVersion id per fact key (doc ingest) |
+| `algo_pagerank_docs.cypher` | (f) PageRank over real handbook `LINKS_TO` (doc authority) |
