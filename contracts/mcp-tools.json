@@ -497,6 +497,10 @@
             "type": "string",
             "description": "Tenant id, e.g. handbook-demo"
           },
+          "agent_id": {
+            "type": "string",
+            "description": "must be the agent that claimed the task"
+          },
           "task_id": {
             "type": "string"
           },
@@ -510,6 +514,7 @@
         },
         "required": [
           "tenant",
+          "agent_id",
           "task_id",
           "outcome"
         ],
