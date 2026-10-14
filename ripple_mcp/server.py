@@ -14,11 +14,14 @@ from __future__ import annotations
 import argparse
 
 from agents.ranking import rank
+from graph import algos
 from graph import tools as graph_tools
 from graph.impact import MAX_HOPS
 from graph.impact import impact_of as graph_impact_of
 
-READ_ONLY_TOOLS = ("impact_of", "who_holds", "check_fresh", "explain_path", "coverage")
+READ_ONLY_TOOLS = (
+    "impact_of", "who_holds", "check_fresh", "explain_path", "coverage", "rank_amplifiers", "dark_pockets",
+)  # fmt: skip
 
 
 def impact_of(
@@ -56,11 +59,23 @@ def coverage(tenant: str, change_id: str) -> dict:
     return graph_tools.coverage(tenant, change_id)
 
 
+def rank_amplifiers(tenant: str, change_id: str, algo: str = "betweenness", k: int = 10) -> list[dict]:
+    """Rank entities that spread a stale fact furthest.
+
+    algo=pagerank: impacted Docs by handbook-link authority; algo=betweenness: anything, over FEEDS."""
+    return algos.rank_amplifiers(tenant, change_id, algo=algo, k=k)
+
+
+def dark_pockets(tenant: str, change_id: str) -> list[dict]:
+    """TALKS_WITH components (WCC) where nobody has resolved the change, with the best hub to brief."""
+    return algos.dark_pockets(tenant, change_id)
+
+
 def build_server(port: int = 8001):
     from mcp.server.fastmcp import FastMCP
 
     server = FastMCP("ripple-mcp", port=port)
-    for fn in (impact_of, who_holds, check_fresh, explain_path, coverage):
+    for fn in (impact_of, who_holds, check_fresh, explain_path, coverage, rank_amplifiers, dark_pockets):
         server.tool(name=fn.__name__, description=fn.__doc__)(fn)
     return server
 
