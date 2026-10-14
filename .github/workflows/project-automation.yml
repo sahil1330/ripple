@@ -1,0 +1,16 @@
+# Fallback if the board's built-in "Auto-add" workflow is not enabled.
+# Off by default: set repo variable ENABLE_ADD_TO_PROJECT=true and add secret ADD_TO_PROJECT_PAT
+# (fine-grained token, Projects: read/write on sahil1330's projects).
+name: add-to-project
+on:
+  issues: { types: [opened, reopened] }
+  pull_request_target: { types: [opened, reopened] }
+jobs:
+  add:
+    if: vars.ENABLE_ADD_TO_PROJECT == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@v1.0.2
+        with:
+          project-url: https://github.com/users/sahil1330/projects/5
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}

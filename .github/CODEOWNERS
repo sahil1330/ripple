@@ -1,0 +1,23 @@
+# Person A = @sahil1330: graph, data, agents, MCP, API. Person B = @harsh-gupta-10: web, deploy, docs, demo, CI.
+
+*                       @sahil1330 @harsh-gupta-10
+
+/graph/                 @sahil1330
+/ingest/                @sahil1330
+/agents/                @sahil1330
+/ripple_mcp/            @sahil1330
+/pyproject.toml         @sahil1330
+/requirements*.txt      @sahil1330
+/api/                   @sahil1330
+/fixtures/              @sahil1330 @harsh-gupta-10
+
+/web/                   @harsh-gupta-10
+/deploy/                @harsh-gupta-10
+/docs/                  @harsh-gupta-10
+/README.md              @harsh-gupta-10 @sahil1330
+/.github/               @harsh-gupta-10
+/AGENTS.md              @sahil1330 @harsh-gupta-10
+/.cursor/               @sahil1330 @harsh-gupta-10
+
+# Shared contracts: both must approve
+/contracts/             @sahil1330 @harsh-gupta-10

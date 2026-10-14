@@ -1,0 +1,66 @@
+{
+  "$comment": "Draft v0 from RIPPLE_PLAN.md \u00a76. Finalise as JSON Schemas in #3 (both approve).",
+  "server": "ripple-mcp",
+  "tools": [
+    {
+      "name": "impact_of",
+      "write": false,
+      "params": "tenant, change_id | version_id, max_hops=6",
+      "returns": "[{id, kind, label, hops, risk, tth_ms}]"
+    },
+    {
+      "name": "who_holds",
+      "write": false,
+      "params": "tenant, version_id",
+      "returns": "[{id, name, kind, how: WAS_TOLD|CACHED, at, channel}]"
+    },
+    {
+      "name": "check_fresh",
+      "write": false,
+      "params": "tenant, plan_id | action_id, now?",
+      "returns": "{fresh: bool, stale: [{via, stale_version, current_version, stale_value, current_value, source}]}"
+    },
+    {
+      "name": "explain_path",
+      "write": false,
+      "params": "tenant, from_id, to_id",
+      "returns": "{hops: [..], via: [..], cypher}"
+    },
+    {
+      "name": "coverage",
+      "write": false,
+      "params": "tenant, change_id",
+      "returns": "{impacted, resolved, pct, by_kind: {...}}"
+    },
+    {
+      "name": "rank_amplifiers",
+      "write": false,
+      "params": "tenant, change_id, algo: pagerank|betweenness, k=10",
+      "returns": "[{id, score}]"
+    },
+    {
+      "name": "dark_pockets",
+      "write": false,
+      "params": "tenant, change_id",
+      "returns": "[{component_id, members, hub_id}]"
+    },
+    {
+      "name": "claim_task",
+      "write": true,
+      "params": "tenant, agent_id, kinds[]",
+      "returns": "Task | null"
+    },
+    {
+      "name": "complete_task",
+      "write": true,
+      "params": "tenant, task_id, outcome",
+      "returns": "{ok}"
+    },
+    {
+      "name": "record_answer",
+      "write": true,
+      "params": "tenant, person_id, question, version_ids[]",
+      "returns": "{answer_id}"
+    }
+  ]
+}

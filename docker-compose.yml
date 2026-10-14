@@ -1,0 +1,31 @@
+# Local stack. `docker compose up falkordb` for the graph only; `docker compose --profile app up` for graph + API.
+services:
+  falkordb:
+    image: falkordb/falkordb:latest
+    ports:
+      - "6379:6379"   # Redis protocol (clients)
+      - "3000:3000"   # FalkorDB Browser UI
+    volumes:
+      - falkordb-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 10
+
+  api:
+    profiles: ["app"]
+    build:
+      context: .
+      dockerfile: deploy/api.Dockerfile
+    env_file: .env.example
+    environment:
+      FALKORDB_HOST: falkordb
+      FALKORDB_PORT: "6379"
+    ports:
+      - "8000:8000"
+    depends_on:
+      falkordb:
+        condition: service_healthy
+
+volumes:
+  falkordb-data:

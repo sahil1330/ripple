@@ -1,0 +1,10 @@
+---
+description: Core Ripple project context, ownership and PR rules for every task
+alwaysApply: true
+---
+- Read `AGENTS.md` first. Ripple is a FalkorDB company brain (Graph Hacks, Oct 15–18 2026 IST); FalkorDB holds all core state.
+- Owners: @sahil1330 = graph/ingest/agents/ripple_mcp/api; @harsh-gupta-10 = web/deploy/docs/.github. Both = contracts/, AGENTS.md, .cursor/rules.
+- Only touch files in the area of the assigned issue. Bugs elsewhere become issues for that owner.
+- Branch `<type>/<issue#>-<slug>`, Conventional Commits with `(#N)`, PR body has `Closes #N`, PR template filled, AI disclosure names the Cursor tool used.
+- Never push to `main`, never change `contracts/` shapes inside a feature PR (separate PR, label `contract`, both approve).
+- No secrets, no non-public data; synthetic records carry `synthetic: true`.

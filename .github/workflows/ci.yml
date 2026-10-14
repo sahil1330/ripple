@@ -1,0 +1,75 @@
+# CI for Ripple. Jobs are wired to the kickoff scaffold; extend as code lands.
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      falkordb:
+        image: falkordb/falkordb:latest
+        ports: ["6379:6379"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt -r requirements-dev.txt
+      - run: ruff check . && ruff format --check .
+      - run: pytest -q
+        env: { FALKORDB_HOST: localhost, FALKORDB_PORT: "6379" }
+
+  web:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: web } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20", cache: npm, cache-dependency-path: web/package-lock.json }
+      - run: npm ci
+      - run: npm run lint && npm run typecheck && npm run build
+        env: { NEXT_PUBLIC_API_MODE: mock }
+
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements-dev.txt
+      - run: pip install -r requirements.txt
+      - run: pytest -q tests/contracts   # fixtures validate against contracts/openapi.yaml
+
+  pr-lint:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require "Closes #N" and AI disclosure
+        env: { BODY: "${{ github.event.pull_request.body }}" }
+        run: |
+          echo "$BODY" | grep -Eiq '(closes|fixes|resolves) #[0-9]+' || { echo "PR must reference 'Closes #N'"; exit 1; }
+          echo "$BODY" | grep -Eq '\- \[x\] (AI tools were used|No AI tools were used)' || { echo "Tick an AI-assist disclosure box"; exit 1; }
+
+  gate-check:
+    # Gated paths need an approving review from a human team member (not the author).
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Check gated paths vs human approvals
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HUMANS: "sahil1330 harsh-gupta-10"
+        run: |
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          echo "$CHANGED" | grep -Eq '^(contracts/|graph/schema|fixtures/|deploy/|\.github/workflows/)' || { echo "No gated paths"; exit 0; }
+          APPROVERS=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews --jq '[.[] | select(.state=="APPROVED") | .user.login] | unique | .[]')
+          AUTHOR="${{ github.event.pull_request.user.login }}"
+          OK=0; for h in $HUMANS; do [ "$h" != "$AUTHOR" ] && echo "$APPROVERS" | grep -qx "$h" && OK=1; done
+          [ $OK -eq 1 ] || { echo "Gated paths changed: human approval required"; exit 1; }
+          if echo "$CHANGED" | grep -q '^contracts/'; then
+            for h in $HUMANS; do [ "$h" = "$AUTHOR" ] || echo "$APPROVERS" | grep -qx "$h" || { echo "contracts/ needs both humans"; exit 1; }; done
+          fi

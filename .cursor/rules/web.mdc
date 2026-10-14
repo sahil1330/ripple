@@ -1,0 +1,10 @@
+---
+description: Next.js web app conventions
+globs: web/**
+alwaysApply: false
+---
+- Next.js App Router + TypeScript + Tailwind, single page (plan §8): graph canvas (react-force-graph-2d), before/after panel, time-to-harm queue, coverage meter, ask panel, demo mode `?demo=1`.
+- All data goes through `web/src/lib/api.ts`. `NEXT_PUBLIC_API_MODE=mock` reads `fixtures/demo-c1/`; `live` calls `NEXT_PUBLIC_API_URL`. The UI must never block on the backend.
+- Types in `web/src/lib/types.ts` mirror `contracts/openapi.yaml`; don't invent fields, ask for a contract change.
+- Mark synthetic nodes visibly. Attribute GitLab B.V. for handbook excerpts.
+- `npm run lint && npm run typecheck && npm run build` must pass; UI PRs include a screenshot or GIF.

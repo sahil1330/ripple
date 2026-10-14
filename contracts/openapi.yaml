@@ -1,0 +1,65 @@
+# Draft v0 from RIPPLE_PLAN.md §10.2. Finalise schemas in #4 (both approve, label `contract`).
+openapi: 3.1.0
+info:
+  title: Ripple API
+  version: 0.0.1-draft
+paths:
+  /api/health:
+    get: { summary: Liveness, responses: { "200": { description: ok } } }
+  /api/tenants:
+    get: { summary: List tenants, responses: { "200": { description: "[{id, name}]" } } }
+  /api/graph:
+    get:
+      summary: Graph for the canvas
+      parameters:
+        - { name: tenant, in: query, required: true, schema: { type: string } }
+        - { name: change_id, in: query, required: false, schema: { type: string } }
+      responses:
+        "200":
+          description: Nodes and links
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/GraphResponse" }
+  /api/changes:
+    get: { summary: List changes for a tenant, responses: { "200": { description: todo } } }
+  /api/changes/{id}:
+    get: { summary: Before/after + source for one change, responses: { "200": { description: todo } } }
+  /api/changes/{id}/impact:
+    get: { summary: Time-to-harm queue, responses: { "200": { description: todo } } }
+  /api/changes/{id}/coverage:
+    get: { summary: Coverage meter, responses: { "200": { description: todo } } }
+  /api/explain:
+    get: { summary: explain_path between two entities, responses: { "200": { description: todo } } }
+  /api/ask:
+    post: { summary: Ask the Concierge, responses: { "200": { description: "{answer, versions[], source_url, earlier_told?}" } } }
+  /api/demo/step:
+    post: { summary: Advance the deterministic demo, responses: { "200": { description: todo } } }
+  /api/demo/reset:
+    post: { summary: Reset the demo, responses: { "200": { description: todo } } }
+  /api/stream:
+    get: { summary: SSE stream (see events.md), responses: { "200": { description: text/event-stream } } }
+components:
+  schemas:
+    GraphNode:
+      type: object
+      required: [id, kind, label, synthetic]
+      properties:
+        id: { type: string }
+        kind: { type: string }
+        label: { type: string }
+        synthetic: { type: boolean }
+        risk: { type: number }
+        status: { type: string }
+    GraphLink:
+      type: object
+      required: [source, target, type]
+      properties:
+        source: { type: string }
+        target: { type: string }
+        type: { type: string }
+    GraphResponse:
+      type: object
+      required: [nodes, links]
+      properties:
+        nodes: { type: array, items: { $ref: "#/components/schemas/GraphNode" } }
+        links: { type: array, items: { $ref: "#/components/schemas/GraphLink" } }

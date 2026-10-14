@@ -1,0 +1,12 @@
+---
+description: FalkorDB, Cypher and Python backend conventions
+globs: graph/**,ingest/**,agents/**,ripple_mcp/**,api/**,tests/**
+alwaysApply: false
+---
+- One FalkorDB graph per tenant: `graph.client.tenant_graph(tenant)` → `ripple:<tenant>`. Every node: `:Entity`, `id`, `kind`, `synthetic`.
+- Cypher: parameters only (`$name`), no params in LIMIT/SKIP, epoch-ms integer times, `labels()` checks instead of label expressions, reference relationship aliases when counting.
+- Algorithms run over the materialised `FEEDS {w:1}` edge (dependency → dependent). Write it alongside every dependency edge.
+- Save every product query as `graph/queries/<name>.cypher` and list it in `graph/queries/README.md`.
+- Agents coordinate only via `Task` nodes (atomic claim); worker agents call `check_fresh` before every action.
+- Python 3.12, FastAPI, official `falkordb` client, `sse-starlette`. `ruff check . && ruff format --check . && pytest -q` must pass. Tests needing FalkorDB use the `falkordb` marker and skip when it is down.
+- API responses must match `contracts/openapi.yaml` and `fixtures/demo-c1/` shapes.

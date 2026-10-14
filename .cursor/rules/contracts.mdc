@@ -1,0 +1,7 @@
+---
+description: Shared contracts and fixtures need both humans
+globs: contracts/**,fixtures/**
+alwaysApply: false
+---
+- These files are the seam between the two owners. Change them only in a dedicated PR labelled `contract` (+ `needs-human`), approved by both @sahil1330 and @harsh-gupta-10.
+- Keep `contracts/openapi.yaml`, `contracts/events.md`, `contracts/mcp-tools.json`, `contracts/graph-model.md` and `fixtures/demo-c1/` consistent with each other; `tests/contracts` must pass.
