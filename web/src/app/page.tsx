@@ -16,6 +16,8 @@ import {
 import { GraphCanvas } from "@/components/graph";
 import { BeforeAfterPanel } from "@/components/before-after";
 import { TthQueue } from "@/components/tth-queue";
+import { CoverageMeter } from "@/components/coverage";
+import { subscribeToStream } from "@/lib/sse";
 import {
   AskResponse,
   ChangeDetail,
@@ -24,6 +26,7 @@ import {
   DemoStepResponse,
   GraphResponse,
   ImpactResponse,
+  SseEnvelope,
   Tenant,
 } from "@/lib/types";
 
@@ -46,10 +49,38 @@ export default function Home() {
 
   // Demo stepper state
   const [demoStepInfo, setDemoStepInfo] = useState<DemoStepResponse | null>(null);
+  const [liveEvents, setLiveEvents] = useState<SseEnvelope[]>([]);
 
   useEffect(() => {
     getTenants().then(setTenants).catch(console.error);
   }, []);
+
+  useEffect(() => {
+    if (!activeTenant) return;
+    const unsubscribe = subscribeToStream(
+      activeTenant,
+      (ev) => {
+        setLiveEvents((prev) => [...prev, ev]);
+        if (ev.type === "coverage.updated") {
+          const p = ev.payload as { pct?: number; impacted?: number; resolved?: number };
+          if (p.pct !== undefined) {
+            setCoverageData((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    pct: p.pct ?? prev.pct,
+                    resolved: p.resolved ?? prev.resolved,
+                    impacted: p.impacted ?? prev.impacted,
+                  }
+                : null
+            );
+          }
+        }
+      },
+      { replayMock: false }
+    );
+    return () => unsubscribe();
+  }, [activeTenant]);
 
   useEffect(() => {
     if (!activeTenant) return;
@@ -281,18 +312,7 @@ export default function Home() {
         <aside className="flex w-96 flex-col overflow-y-auto border-l border-slate-800/60 bg-slate-900/30">
           {/* Coverage Meter */}
           <div className="border-b border-slate-800 p-4">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-slate-300">Remediation Coverage</span>
-              <span className="font-mono font-bold text-indigo-400">
-                {coverageData?.pct ?? 0}% ({coverageData?.resolved ?? 0}/{coverageData?.impacted ?? 0})
-              </span>
-            </div>
-            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-800">
-              <div
-                className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 transition-all duration-500"
-                style={{ width: `${coverageData?.pct ?? 0}%` }}
-              />
-            </div>
+            <CoverageMeter coverage={coverageData} events={liveEvents} />
           </div>
 
           {/* Before / After Panel */}
