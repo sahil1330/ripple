@@ -55,6 +55,17 @@ def test_graph_and_changes_before_replay(client, tenant):  # noqa: F811
     validate(changes, array_of="ChangeSummary")
     assert "chg:c1" not in {c["id"] for c in changes}  # C1 is pending until the Sentinel replays it
     assert client.get("/api/changes/chg:c1", params={"tenant": tenant}).status_code == 404
+    # live-mode UI loads chg:c1 views right after a reset: pending change -> whole graph, empty queue
+    q = {"tenant": tenant}
+    scoped = client.get("/api/graph", params={**q, "change_id": "chg:c1"}).json()
+    assert len(scoped["nodes"]) == len(graph["nodes"])
+    impact = client.get("/api/changes/chg:c1/impact", params=q).json()
+    validate(impact, "ImpactResponse")
+    assert impact["total_impacted"] == 0
+    cov = client.get("/api/changes/chg:c1/coverage", params=q).json()
+    validate(cov, "CoverageResponse")
+    assert cov["pct"] == 0.0
+    assert client.get("/api/changes/chg:nope/impact", params=q).status_code == 404
 
 
 def test_full_c1_flow(client, tenant):  # noqa: F811
