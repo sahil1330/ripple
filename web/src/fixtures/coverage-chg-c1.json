@@ -1,0 +1,32 @@
+{
+  "change_id": "chg:c1",
+  "impacted": 24,
+  "resolved": 24,
+  "pct": 100.0,
+  "by_kind": {
+    "Action": {
+      "impacted": 2,
+      "resolved": 2
+    },
+    "Agent": {
+      "impacted": 2,
+      "resolved": 2
+    },
+    "DerivedFact": {
+      "impacted": 1,
+      "resolved": 1
+    },
+    "Doc": {
+      "impacted": 5,
+      "resolved": 5
+    },
+    "Person": {
+      "impacted": 13,
+      "resolved": 13
+    },
+    "Plan": {
+      "impacted": 1,
+      "resolved": 1
+    }
+  }
+}

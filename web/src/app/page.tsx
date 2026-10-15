@@ -23,6 +23,12 @@ import { CoverageMeter } from "@/components/coverage";
 import { WhyDrawer } from "@/components/why-drawer";
 import { AskPanel } from "@/components/ask";
 import { DemoStepper } from "@/components/demo";
+import KeyboardShortcutsModal from "@/components/ui/KeyboardShortcutsModal";
+import {
+  IconBrain,
+  IconHelpCircle,
+  IconRotateCcw,
+} from "@/components/ui/icons";
 import { subscribeToStream } from "@/lib/sse";
 import {
   ChangeDetail,
@@ -49,6 +55,8 @@ export default function Home() {
   const [currentMode, setCurrentMode] = useState<ApiMode>("mock");
   const [liveApiError, setLiveApiError] = useState<string | null>(null);
   const [isDemoModeActive, setIsDemoModeActive] = useState<boolean>(false);
+  const [isShortcutsOpen, setIsShortcutsOpen] = useState<boolean>(false);
+  const [isAskCollapsed, setIsAskCollapsed] = useState<boolean>(false);
 
   const handleSelectNode = (id: string | null) => {
     setSelectedNodeId(id);
@@ -78,7 +86,8 @@ export default function Home() {
       (ev) => {
         setLiveEvents((prev) => [...prev, ev]);
         if (ev.type === "coverage.updated") {
-          const p = ev.payload as { pct?: number; impacted?: number; resolved?: number };
+          const p = ev.payload as { change_id?: string; pct?: number; impacted?: number; resolved?: number };
+          if (p.change_id && p.change_id !== activeChange) return;
           if (p.pct !== undefined) {
             setCoverageData((prev) =>
               prev
@@ -96,7 +105,7 @@ export default function Home() {
       { replayMock: false }
     );
     return () => unsubscribe();
-  }, [activeTenant]);
+  }, [activeTenant, activeChange]);
 
   useEffect(() => {
     if (!activeTenant) return;
@@ -107,69 +116,65 @@ export default function Home() {
     getChangeCoverage(activeTenant, activeChange).then(setCoverageData).catch(console.error);
   }, [activeTenant, activeChange]);
 
-  const applyStepVisuals = (stepNum: number, events?: SseEnvelope[]) => {
-    setGraphData((prev) => {
-      if (!prev) return prev;
-      const updatedNodes = prev.nodes.map((node) => {
-        if (stepNum <= 2) {
-          return { ...node, status: undefined };
-        }
-        if (stepNum === 3) {
-          if (["Action", "Person", "Agent", "Plan", "Doc"].includes(node.kind)) {
-            return { ...node, status: "impacted" };
-          }
-        }
-        if (stepNum === 4) {
-          if (node.id === "agent:ap-approver") return { ...node, status: "blocked" };
-          if (["Action", "Person", "Plan", "Doc"].includes(node.kind)) return { ...node, status: "impacted" };
-        }
-        if (stepNum === 5) {
-          if (node.id === "person:priya") return { ...node, status: "resolved" };
-          if (node.id === "agent:ap-approver") return { ...node, status: "blocked" };
-          if (["Action", "Plan", "Doc"].includes(node.kind)) return { ...node, status: "impacted" };
-        }
-        if (stepNum === 6) {
-          if (node.id === "person:priya" || node.id === "agent:ap-approver") {
-            return { ...node, status: "resolved" };
-          }
-          if (["Action", "Plan", "Doc"].includes(node.kind)) return { ...node, status: "impacted" };
-        }
-        if (stepNum === 7) {
-          if (node.kind === "Doc" || node.id === "person:priya" || node.id === "agent:ap-approver") {
-            return { ...node, status: "resolved" };
-          }
-          if (["Action", "Plan"].includes(node.kind)) return { ...node, status: "impacted" };
-        }
-        if (stepNum >= 8) {
-          if (["Action", "Person", "Agent", "Plan", "Doc"].includes(node.kind)) {
-            return { ...node, status: "resolved" };
-          }
-        }
-        return node;
-      });
-      return { ...prev, nodes: updatedNodes };
-    });
-
-    if (events && events.length > 0) {
-      setLiveEvents((prev) => [...prev, ...events]);
+  // Global '?' hotkey for shortcuts dialog
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement ||
+        e.target instanceof HTMLSelectElement
+      ) {
+        return;
+      }
+      if (e.key === "?" || (e.shiftKey && e.key === "/")) {
+        e.preventDefault();
+        setIsShortcutsOpen((prev) => !prev);
+      }
     }
-  };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const handleDemoStep = async () => {
     try {
       const step = await demoStep(activeTenant, "c1");
       setDemoStepInfo(step);
-      applyStepVisuals(step.step, step.events);
-      const stepCoveragePct = [0, 0, 0, 0, 25, 50, 87.5, 100, 100][step.step - 1] ?? 0;
-      setCoverageData((prev) =>
-        prev
-          ? {
-              ...prev,
-              pct: stepCoveragePct,
-              resolved: Math.round((stepCoveragePct / 100) * prev.impacted),
+
+      // Reload live graph, impact queue, and coverage from API
+      const [g, imp, cov] = await Promise.all([
+        getGraph(activeTenant, activeChange),
+        getChangeImpact(activeTenant, activeChange),
+        getChangeCoverage(activeTenant, activeChange),
+      ]);
+      setGraphData(g);
+      setImpactData(imp);
+      setCoverageData(cov);
+
+      if (step.events && step.events.length > 0) {
+        setLiveEvents((prev) => [...prev, ...step.events]);
+        // Update node statuses dynamically based on real events
+        setGraphData((prev) => {
+          if (!prev) return prev;
+          let updatedNodes = [...prev.nodes];
+          for (const ev of step.events) {
+            const p = ev.payload as Record<string, unknown>;
+            if (ev.type === "action.blocked" && p?.action_id) {
+              updatedNodes = updatedNodes.map((n) =>
+                n.id === p.action_id ? { ...n, status: "blocked" } : n
+              );
+            } else if (ev.type === "task.done" && p?.target_id) {
+              updatedNodes = updatedNodes.map((n) =>
+                n.id === p.target_id ? { ...n, status: "resolved" } : n
+              );
+            } else if (ev.type === "answer.sent" && p?.person_id) {
+              updatedNodes = updatedNodes.map((n) =>
+                n.id === p.person_id ? { ...n, status: "resolved" } : n
+              );
             }
-          : prev
-      );
+          }
+          return { ...prev, nodes: updatedNodes };
+        });
+      }
     } catch (err) {
       console.error("Demo step failed", err);
     }
@@ -179,11 +184,13 @@ export default function Home() {
     try {
       await demoReset(activeTenant);
       setDemoStepInfo(null);
-      const [g, cov] = await Promise.all([
+      const [g, imp, cov] = await Promise.all([
         getGraph(activeTenant, activeChange),
+        getChangeImpact(activeTenant, activeChange),
         getChangeCoverage(activeTenant, activeChange),
       ]);
       setGraphData(g);
+      setImpactData(imp);
       setCoverageData(cov);
       setLiveEvents([]);
     } catch (err) {
@@ -227,91 +234,140 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-screen flex-col bg-slate-950 font-sans text-slate-100 antialiased">
+    <div className="flex h-screen flex-col bg-[#060911] font-sans text-slate-100 antialiased selection:bg-indigo-500/30 selection:text-white">
       {/* Top Navbar */}
-      <header className="flex h-14 shrink-0 items-center justify-between border-b border-slate-800 bg-slate-900/80 px-6 backdrop-blur">
+      <header className="flex h-14 shrink-0 items-center justify-between border-b border-slate-800/80 bg-slate-950/80 px-5 backdrop-blur-md z-20">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-500 font-mono text-xs font-bold text-white shadow">
-              R
-            </span>
-            <span className="text-lg font-bold tracking-tight text-white">Ripple</span>
+          {/* Logo & Brand */}
+          <div className="flex items-center gap-2.5">
+            <div className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 to-sky-500 text-white shadow-lg shadow-indigo-600/30">
+              <IconBrain className="w-4 h-4 text-white" />
+              <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-400"></span>
+              </span>
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-base font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
+                  Ripple
+                </span>
+                <span className="rounded bg-indigo-500/10 border border-indigo-500/30 px-1.5 py-0.2 font-mono text-[9px] font-bold text-indigo-300">
+                  FalkorDB
+                </span>
+              </div>
+            </div>
           </div>
-          <span className="text-xs text-slate-500">|</span>
-          <select
-            value={activeTenant}
-            onChange={(e) => setActiveTenant(e.target.value)}
-            className="rounded border border-slate-700 bg-slate-800 px-2 py-1 text-xs text-slate-200 outline-none focus:border-indigo-500"
-          >
-            {tenants.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
-              </option>
-            ))}
-          </select>
+
+          {/* Hackathon Track Badges */}
+          <div className="hidden lg:flex items-center gap-1.5 border-l border-slate-800/80 pl-3">
+            <span className="rounded-full bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-semibold text-emerald-300">
+              Track 01: Company Brain
+            </span>
+            <span className="rounded-full bg-slate-800/60 border border-slate-700/60 px-2 py-0.5 text-[10px] font-medium text-slate-400">
+              Track 02: Multi-Agent
+            </span>
+            <span className="rounded-full bg-slate-800/60 border border-slate-700/60 px-2 py-0.5 text-[10px] font-medium text-slate-400">
+              Track 03: Explainability
+            </span>
+          </div>
+
+          <span className="text-xs text-slate-700">|</span>
+
+          {/* Tenant Selector */}
+          <div className="flex items-center gap-1.5">
+            <select
+              value={activeTenant}
+              onChange={(e) => setActiveTenant(e.target.value)}
+              className="rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 text-xs text-slate-200 outline-none focus:border-indigo-500 transition"
+            >
+              {tenants.map((t) => (
+                <option key={t.id} value={t.id}>
+                  Tenant: {t.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Policy Change Selector */}
           {changes.length > 0 && (
-            <>
-              <span className="text-xs text-slate-500">|</span>
+            <div className="flex items-center gap-1.5">
               <select
                 value={activeChange}
                 onChange={(e) => setActiveChange(e.target.value)}
-                className="rounded border border-slate-700 bg-slate-800 px-2 py-1 text-xs text-slate-200 outline-none focus:border-indigo-500"
+                className="rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 text-xs text-slate-200 outline-none focus:border-indigo-500 transition max-w-[220px]"
               >
                 {changes.map((c) => (
                   <option key={c.id} value={c.id}>
-                    {c.id}: {c.title.length > 25 ? c.title.slice(0, 23) + "..." : c.title}
+                    Policy: {c.title.length > 25 ? c.title.slice(0, 23) + "..." : c.title}
                   </option>
                 ))}
               </select>
-            </>
+            </div>
           )}
         </div>
 
-        {/* Demo Controls & Mode Switcher */}
-        <div className="flex items-center gap-3">
+        {/* Demo Controls, Keyboard Shortcuts & Mode Switcher */}
+        <div className="flex items-center gap-2.5">
+          {/* Shortcuts Help Button */}
           <button
+            type="button"
+            onClick={() => setIsShortcutsOpen(true)}
+            className="flex items-center gap-1 rounded-lg border border-slate-800 bg-slate-900/80 px-2.5 py-1 text-xs text-slate-400 hover:text-slate-200 hover:border-slate-700 transition"
+            title="Keyboard shortcuts (?)"
+          >
+            <IconHelpCircle className="w-3.5 h-3.5" />
+            <kbd className="hidden sm:inline font-mono text-[9px] text-slate-400">?</kbd>
+          </button>
+
+          {/* Demo Mode Toggle */}
+          <button
+            type="button"
             onClick={() => setIsDemoModeActive(!isDemoModeActive)}
-            className={`rounded px-2.5 py-1 text-xs font-semibold transition ${
+            className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
               isDemoModeActive
                 ? "bg-purple-600 text-white shadow-md shadow-purple-600/30"
-                : "border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white"
+                : "border border-slate-800 bg-slate-900/80 text-slate-300 hover:bg-slate-800 hover:text-white"
             }`}
             title="Toggle Demo Mode (?demo=1)"
           >
-            🎬 Demo Mode
+            <span>🎬 Demo Mode</span>
           </button>
 
           {!isDemoModeActive && (
-            <>
+            <div className="flex items-center gap-1.5">
               {demoStepInfo && (
-                <div className="flex items-center gap-2 rounded bg-indigo-950/70 border border-indigo-800/60 px-2.5 py-1 text-xs text-indigo-300">
-                  <span className="font-semibold">Step {demoStepInfo.step}/{demoStepInfo.total_steps}:</span>
-                  <span>{demoStepInfo.name}</span>
+                <div className="hidden md:flex items-center gap-2 rounded-lg bg-indigo-950/70 border border-indigo-800/60 px-2.5 py-1 text-xs text-indigo-300">
+                  <span className="font-bold">Step {demoStepInfo.step}/{demoStepInfo.total_steps}:</span>
+                  <span className="truncate max-w-[140px]">{demoStepInfo.name}</span>
                 </div>
               )}
               <button
+                type="button"
                 onClick={handleDemoStep}
-                className="rounded bg-indigo-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-indigo-500 active:scale-95"
+                className="flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-1 text-xs font-semibold text-white shadow-sm transition hover:bg-indigo-500 active:scale-95"
               >
-                Demo Next ▶
+                <span>Next ▶</span>
               </button>
               <button
+                type="button"
                 onClick={handleDemoReset}
-                className="rounded border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs text-slate-300 transition hover:bg-slate-700 active:scale-95"
+                className="rounded-lg border border-slate-800 bg-slate-900/80 px-2.5 py-1 text-xs text-slate-300 transition hover:bg-slate-800 active:scale-95"
+                title="Reset scenario (Hotkey: R)"
               >
-                Reset
+                <IconRotateCcw className="w-3.5 h-3.5" />
               </button>
-            </>
+            </div>
           )}
 
           {/* Interactive API Mode Switcher */}
-          <div className="flex items-center gap-1 rounded-lg border border-slate-800 bg-slate-900/90 p-1 text-xs">
-            <span className="px-1.5 font-mono text-[10px] uppercase font-bold text-slate-400">
+          <div className="flex items-center gap-1 rounded-lg border border-slate-800 bg-slate-900/90 p-0.5 text-xs">
+            <span className="px-1.5 font-mono text-[9px] uppercase font-bold text-slate-400">
               API
             </span>
             <button
               onClick={() => handleModeSwitch("mock")}
-              className={`rounded px-2 py-0.5 text-[11px] font-semibold transition ${
+              className={`rounded-md px-2 py-0.5 text-[11px] font-bold transition ${
                 currentMode === "mock"
                   ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm"
                   : "text-slate-400 hover:text-slate-200"
@@ -322,13 +378,14 @@ export default function Home() {
             </button>
             <button
               onClick={() => handleModeSwitch("live")}
-              className={`rounded px-2 py-0.5 text-[11px] font-semibold transition ${
+              className={`rounded-md px-2 py-0.5 text-[11px] font-bold transition flex items-center gap-1 ${
                 currentMode === "live"
                   ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm"
                   : "text-slate-400 hover:text-slate-200"
               }`}
               title={`Connect to live FastAPI backend at ${apiBaseUrl}`}
             >
+              <span className={`h-1.5 w-1.5 rounded-full ${currentMode === "live" ? "bg-emerald-400 animate-pulse" : "bg-slate-500"}`} />
               Live
             </button>
           </div>
@@ -365,28 +422,44 @@ export default function Home() {
       {/* Main Workspace Layout */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left / Center: Graph Canvas Area */}
-        <section className="relative flex flex-1 flex-col border-r border-slate-800 bg-slate-950">
-          <div className="flex h-10 items-center justify-between border-b border-slate-800/80 bg-slate-900/40 px-4 text-xs text-slate-400">
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-slate-300">Graph Canvas</span>
+        <section className="relative flex flex-1 flex-col border-r border-slate-800/80 bg-[#060911]">
+          {/* Subheader bar above Canvas */}
+          <div className="flex h-10 items-center justify-between border-b border-slate-800/80 bg-slate-950/50 px-4 text-xs text-slate-400 backdrop-blur-sm">
+            <div className="flex items-center gap-2.5">
+              <span className="font-bold text-slate-200 flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                Live FalkorDB Graph
+              </span>
               <span>•</span>
-              <span>{graphData?.nodes.length ?? 0} nodes</span>
+              <span className="font-mono text-slate-300">{graphData?.nodes.length ?? 0} nodes</span>
               <span>•</span>
-              <span>{graphData?.links.length ?? 0} relationships</span>
+              <span className="font-mono text-slate-300">{graphData?.links.length ?? 0} edges</span>
             </div>
-            {selectedNodeId && (
-              <div className="flex items-center gap-2">
-                <span className="rounded bg-indigo-500/20 px-2 py-0.5 font-mono text-[10px] text-indigo-300">
-                  Selected: {selectedNodeId}
-                </span>
-                <button
-                  onClick={() => setIsWhyDrawerOpen(true)}
-                  className="rounded border border-indigo-500/40 bg-indigo-600/30 px-2 py-0.5 text-[10px] font-semibold text-indigo-200 transition hover:bg-indigo-600/50"
-                >
-                  Explain (Why?)
-                </button>
-              </div>
-            )}
+
+            <div className="flex items-center gap-2">
+              {selectedNodeId && (
+                <div className="flex items-center gap-2">
+                  <span className="rounded-md bg-indigo-500/20 border border-indigo-500/40 px-2 py-0.5 font-mono text-[10px] text-indigo-300 font-bold">
+                    Selected: {selectedNodeId}
+                  </span>
+                  <button
+                    onClick={() => setIsWhyDrawerOpen(true)}
+                    className="rounded-md border border-indigo-500/40 bg-indigo-600/30 px-2.5 py-0.5 text-[10px] font-bold text-indigo-200 transition hover:bg-indigo-600/50 shadow-sm"
+                  >
+                    Explain (Why?) ↗
+                  </button>
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={() => setIsAskCollapsed(!isAskCollapsed)}
+                className="text-[11px] text-slate-400 hover:text-slate-200 transition"
+                title={isAskCollapsed ? "Expand Concierge Q&A" : "Collapse Concierge Q&A for full graph view"}
+              >
+                {isAskCollapsed ? "▲ Show Concierge" : "▼ Hide Concierge"}
+              </button>
+            </div>
           </div>
 
           {/* Graph Visualization Container */}
@@ -400,7 +473,7 @@ export default function Home() {
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center text-xs text-slate-500 font-mono">
-                Loading graph data...
+                Loading FalkorDB graph topology...
               </div>
             )}
 
@@ -416,21 +489,23 @@ export default function Home() {
           </div>
 
           {/* Bottom Ask Panel (Concierge) */}
-          <AskPanel
-            tenant={activeTenant}
-            onSelectNode={handleSelectNode}
-          />
+          {!isAskCollapsed && (
+            <AskPanel
+              tenant={activeTenant}
+              onSelectNode={handleSelectNode}
+            />
+          )}
         </section>
 
-        {/* Right Sidebar: Before/After, Coverage, Time-To-Harm Queue */}
-        <aside className="flex w-96 flex-col overflow-y-auto border-l border-slate-800/60 bg-slate-900/30">
+        {/* Right Sidebar: Coverage, Before/After, Time-To-Harm Queue */}
+        <aside className="flex w-[400px] flex-col overflow-y-auto border-l border-slate-800/80 bg-slate-950/60 backdrop-blur-md">
           {/* Coverage Meter */}
-          <div className="border-b border-slate-800 p-4">
+          <div className="border-b border-slate-800/80 p-4">
             <CoverageMeter coverage={coverageData} events={liveEvents} />
           </div>
 
           {/* Before / After Panel */}
-          <div className="border-b border-slate-800 p-4">
+          <div className="border-b border-slate-800/80 p-4">
             <BeforeAfterPanel detail={changeDetail} />
           </div>
 
@@ -444,6 +519,12 @@ export default function Home() {
           </div>
         </aside>
       </div>
+
+      {/* Keyboard Shortcuts Dialog */}
+      <KeyboardShortcutsModal
+        isOpen={isShortcutsOpen}
+        onClose={() => setIsShortcutsOpen(false)}
+      />
     </div>
   );
 }

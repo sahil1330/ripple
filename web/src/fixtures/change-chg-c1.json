@@ -1,0 +1,21 @@
+{
+  "id": "chg:c1",
+  "title": "Personal VPN subscriptions no longer reimbursable",
+  "fact_key": "expense.vpn.personal_subscription",
+  "commit_sha": "ddd395971ee181bee9e00d23d34e1001489d76ef",
+  "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20421",
+  "detected_at": 1784046483000,
+  "status": "resolved",
+  "before": {
+    "version_id": "fv:vpn:v1",
+    "value": "reimbursable up to $150 per year",
+    "excerpt": "Policy is set at $150 per year. Yearly subscription can be submitted in one claim.",
+    "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/513d7f5347609cc9ca089f607794e362237e4fc7/content/handbook/finance/expenses.md"
+  },
+  "after": {
+    "version_id": "fv:vpn:v2",
+    "value": "not reimbursable; use NordLayer (company VPN)",
+    "excerpt": "Starting July 15, 2026, GitLab no longer reimburses personal VPN subscriptions (such as ExpressVPN, Proton, Mullvad, and similar services) through expense claims. Team members who need VPN access should use NordLayer, GitLab's company-provisioned VPN solution.",
+    "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/ddd395971ee181bee9e00d23d34e1001489d76ef/content/handbook/finance/expenses.md"
+  }
+}
