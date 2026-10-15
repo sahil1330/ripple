@@ -81,7 +81,25 @@ export async function getChangeCoverage(tenant: string, id: string): Promise<Cov
 }
 
 export async function explainPath(tenant: string, fromId: string, toId: string): Promise<ExplainResponse> {
-  if (apiMode === "mock") return MOCK_EXPLAIN;
+  if (apiMode === "mock") {
+    if (toId && toId !== "person:priya") {
+      const rel = toId.startsWith("agent:")
+        ? "CACHED"
+        : toId.startsWith("doc:")
+        ? "CITES"
+        : toId.startsWith("plan:")
+        ? "DEPENDS_ON"
+        : toId.startsWith("person:")
+        ? "WAS_TOLD"
+        : "FEEDS";
+      return {
+        hops: ["chg:c1", "fv:vpn:v2", "fv:vpn:v1", toId],
+        via: ["CREATES", "SUPERSEDES", rel],
+        cypher: `MATCH (a:Entity {id: '${fromId || "chg:c1"}'}), (b:Entity {id: '${toId}'}),\n      p = shortestPath((a)-[:FEEDS|SUPERSEDES|WAS_TOLD|CACHED|CITES*]-(b))\nRETURN [n in nodes(p) | n.id] AS hops, [r in relationships(p) | type(r)] AS via`,
+      };
+    }
+    return MOCK_EXPLAIN;
+  }
   const q = new URLSearchParams({ tenant, from: fromId, to: toId });
   return getJson<ExplainResponse>(`/api/explain?${q.toString()}`);
 }
