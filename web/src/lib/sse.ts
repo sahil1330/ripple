@@ -1,5 +1,4 @@
-// Server-Sent Events client for real-time Ripple updates.
-import { apiBaseUrl, apiMode } from "./api";
+import { apiBaseUrl, getApiMode } from "./api";
 import { MOCK_DEMO_STEPS } from "./mock-data";
 import { SseEnvelope } from "./types";
 
@@ -10,7 +9,7 @@ export function subscribeToStream(
   onEvent: EventCallback,
   options?: { replayMock?: boolean; replayIntervalMs?: number }
 ): () => void {
-  if (apiMode === "live") {
+  if (getApiMode() === "live") {
     const url = `${apiBaseUrl}/api/stream?tenant=${encodeURIComponent(tenant)}`;
     const eventSource = new EventSource(url);
 
