@@ -13,7 +13,7 @@ gives the same graph state and the same events every time (only Answer ids are r
 | 5 | hero: approval BLOCKED         | worker agents call check_fresh over MCP              |
 | 6 | Fixer works the queue          | Fixer until coverage is 100%                         |
 | 7 | Priya asks again               | Concierge answers v2 with "Earlier I told you ..."   |
-| 8 | Why? + tenant isolation        | coverage snapshot (UI calls /api/explain itself)     |
+| 8 | Why? + tenant isolation        | other tenant runs C1 in its own graph (agents.concurrent) |
 | 9 | closing card                   | nothing                                              |
 
 After step 9 the next call starts over at step 1 with a fresh reset. Step state lives in
@@ -29,7 +29,7 @@ from dataclasses import dataclass
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from agents import concierge, fixer, sentinel, tracer, workers
+from agents import concierge, concurrent, fixer, sentinel, tracer, workers
 from agents.events import event
 from api import bus
 from graph.client import tenant_graph
@@ -64,6 +64,19 @@ def _coverage(tenant: str, now: int) -> list[dict]:
                   resolved=cov["resolved"], pct=cov["pct"])]  # fmt: skip
 
 
+def _other_tenant(tenant: str, now: int) -> list[dict]:
+    """Beat 8: a second company runs the same agents on the same change, in its own graph and its own
+    thread, while this tenant's graph stays untouched (its coverage snapshot is the first event).
+    The other tenant's events are published on *its* stream; the response returns them too so the
+    ticker can show both companies."""
+    from api.main import TENANTS
+
+    other = next(t["id"] for t in TENANTS if t["id"] != tenant)
+    events = _coverage(tenant, now)
+    concurrent.run_concurrently([other], now=now, publish=lambda evs: (events.extend(evs), bus.publish(evs)))
+    return events + _coverage(tenant, now)
+
+
 @dataclass(frozen=True)
 class Step:
     name: str
@@ -88,7 +101,8 @@ STEPS: list[Step] = [
     Step("Priya asks again", "Correct answer from v2, plus memory that corrects itself: \"Earlier I told you "
          "...; that changed on Jul 14, 2026 (MR !20421).\"", _ask),
     Step("Why? and tenant isolation", "Every decision is traceable: open Why? on any node (explain path + "
-         "Cypher). Each company is its own graph.", _coverage),
+         "Cypher). A second company runs the same agents in its own graph; this one is untouched.",
+         _other_tenant),
     Step("Built on FalkorDB", "Tracks 01 / 02 / 03. Demo complete; the next step starts over.",
          lambda t, n: []),
 ]  # fmt: skip

@@ -59,6 +59,11 @@ def test_nine_steps_reproducible_three_times(client, tenant):  # noqa: F811
     cov = [e["payload"]["pct"] for e in steps[5]["events"]
            if e["type"] == "coverage.updated" and e["payload"]["change_id"] == "chg:c1"]  # fmt: skip
     assert cov == sorted(cov) and cov[-1] == 100.0
+    # beat 8: the other tenant ran in its own graph; this tenant's coverage is unchanged (100% before/after)
+    beat8 = steps[7]["events"]
+    assert {e["tenant"] for e in beat8} == {tenant, "handbook-demo"}
+    mine = [e["payload"]["pct"] for e in beat8 if e["tenant"] == tenant]
+    assert mine == [100.0, 100.0]
     first, again = steps[1]["events"][0]["payload"], steps[6]["events"][0]["payload"]
     assert first["version_ids"] == ["fv:vpn:v1"] and first["earlier_told"] is None
     assert again["version_ids"] == ["fv:vpn:v2"] and again["earlier_told"]["version_id"] == "fv:vpn:v1"
