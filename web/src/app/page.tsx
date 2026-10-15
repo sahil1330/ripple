@@ -15,6 +15,7 @@ import {
 } from "@/lib/api";
 import { GraphCanvas } from "@/components/graph";
 import { BeforeAfterPanel } from "@/components/before-after";
+import { TthQueue } from "@/components/tth-queue";
 import {
   AskResponse,
   ChangeDetail,
@@ -301,42 +302,11 @@ export default function Home() {
 
           {/* Time-To-Harm Prioritized Queue */}
           <div className="flex-1 p-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs font-semibold text-slate-300">Time-To-Harm Queue</h3>
-              <span className="text-[11px] text-slate-500">{impactData?.items.length ?? 0} impacted</span>
-            </div>
-            <p className="mt-0.5 text-[11px] text-slate-400">Ranked by risk = severity × urgency × reach</p>
-
-            <div className="mt-3 space-y-2">
-              {impactData?.items.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => setSelectedNodeId(item.id)}
-                  className={`cursor-pointer rounded border p-2.5 text-xs transition ${
-                    selectedNodeId === item.id
-                      ? "border-indigo-500 bg-indigo-950/40"
-                      : "border-slate-800 bg-slate-900/40 hover:border-slate-700"
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-slate-200">{item.label}</span>
-                    <span
-                      className={`rounded px-1.5 py-0.2 font-mono text-[10px] ${
-                        item.status === "blocked"
-                          ? "bg-rose-500/20 text-rose-300 border border-rose-500/30"
-                          : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                      }`}
-                    >
-                      {item.status ?? "open"}
-                    </span>
-                  </div>
-                  <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
-                    <span>Kind: {item.kind}</span>
-                    <span className="font-mono text-indigo-300">Risk: {item.risk}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <TthQueue
+              items={impactData?.items ?? []}
+              selectedId={selectedNodeId}
+              onSelectItem={setSelectedNodeId}
+            />
           </div>
         </aside>
       </div>
