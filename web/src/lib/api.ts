@@ -27,61 +27,124 @@ import {
 
 export type ApiMode = "mock" | "live";
 
-export const apiMode: ApiMode = process.env.NEXT_PUBLIC_API_MODE === "live" ? "live" : "mock";
+function detectInitialApiMode(): ApiMode {
+  if (typeof window !== "undefined") {
+    try {
+      const urlParam = new URLSearchParams(window.location.search).get("mode");
+      if (urlParam === "live" || urlParam === "mock") return urlParam;
+      const stored = localStorage.getItem("ripple_api_mode");
+      if (stored === "live" || stored === "mock") return stored;
+    } catch {
+      // ignore storage/search params access errors
+    }
+  }
+  return process.env.NEXT_PUBLIC_API_MODE === "live" ? "live" : "mock";
+}
+
+let activeApiMode: ApiMode = detectInitialApiMode();
+
+export function getApiMode(): ApiMode {
+  return activeApiMode;
+}
+
+export function setApiMode(mode: ApiMode): void {
+  activeApiMode = mode;
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem("ripple_api_mode", mode);
+      window.dispatchEvent(new CustomEvent("ripple_api_mode_change", { detail: mode }));
+    } catch {
+      // ignore storage errors
+    }
+  }
+}
+
+// Backwards-compatible export
+export const apiMode: ApiMode = activeApiMode;
 export const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
+export async function checkApiHealth(): Promise<{ ok: boolean; status?: number; error?: string }> {
+  try {
+    const res = await fetch(`${apiBaseUrl}/api/health`, { cache: "no-store" });
+    if (!res.ok) return { ok: false, status: res.status };
+    const data = (await res.json()) as { ok?: boolean };
+    return { ok: Boolean(data?.ok), status: res.status };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return { ok: false, error: msg };
+  }
+}
+
 export async function getJson<T>(path: string): Promise<T> {
-  const res = await fetch(`${apiBaseUrl}${path}`, { cache: "no-store" });
-  if (!res.ok) throw new Error(`${path} failed: ${res.status}`);
-  return (await res.json()) as T;
+  const url = `${apiBaseUrl}${path}`;
+  try {
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) {
+      const errText = await res.text().catch(() => "");
+      throw new Error(`HTTP ${res.status}: ${res.statusText} (${path}) ${errText ? `- ${errText}` : ""}`);
+    }
+    return (await res.json()) as T;
+  } catch (err) {
+    console.warn(`[Ripple API Live] GET failed for ${url}:`, err);
+    throw err;
+  }
 }
 
 export async function postJson<T, B = unknown>(path: string, body: B): Promise<T> {
-  const res = await fetch(`${apiBaseUrl}${path}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error(`${path} failed: ${res.status}`);
-  return (await res.json()) as T;
+  const url = `${apiBaseUrl}${path}`;
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const errText = await res.text().catch(() => "");
+      throw new Error(`HTTP ${res.status}: ${res.statusText} (${path}) ${errText ? `- ${errText}` : ""}`);
+    }
+    return (await res.json()) as T;
+  } catch (err) {
+    console.warn(`[Ripple API Live] POST failed for ${url}:`, err);
+    throw err;
+  }
 }
 
 // Typed client operations matching contracts/openapi.yaml
 
 export async function getTenants(): Promise<Tenant[]> {
-  if (apiMode === "mock") return MOCK_TENANTS;
+  if (getApiMode() === "mock") return MOCK_TENANTS;
   return getJson<Tenant[]>("/api/tenants");
 }
 
 export async function getGraph(tenant: string, changeId?: string): Promise<GraphResponse> {
-  if (apiMode === "mock") return MOCK_GRAPH;
+  if (getApiMode() === "mock") return MOCK_GRAPH;
   const q = new URLSearchParams({ tenant });
   if (changeId) q.set("change_id", changeId);
   return getJson<GraphResponse>(`/api/graph?${q.toString()}`);
 }
 
 export async function getChanges(tenant: string): Promise<ChangeSummary[]> {
-  if (apiMode === "mock") return MOCK_CHANGES;
+  if (getApiMode() === "mock") return MOCK_CHANGES;
   return getJson<ChangeSummary[]>(`/api/changes?tenant=${encodeURIComponent(tenant)}`);
 }
 
 export async function getChangeDetail(tenant: string, id: string): Promise<ChangeDetail> {
-  if (apiMode === "mock") return MOCK_CHANGE_DETAIL;
+  if (getApiMode() === "mock") return MOCK_CHANGE_DETAIL;
   return getJson<ChangeDetail>(`/api/changes/${encodeURIComponent(id)}?tenant=${encodeURIComponent(tenant)}`);
 }
 
 export async function getChangeImpact(tenant: string, id: string): Promise<ImpactResponse> {
-  if (apiMode === "mock") return MOCK_IMPACT;
+  if (getApiMode() === "mock") return MOCK_IMPACT;
   return getJson<ImpactResponse>(`/api/changes/${encodeURIComponent(id)}/impact?tenant=${encodeURIComponent(tenant)}`);
 }
 
 export async function getChangeCoverage(tenant: string, id: string): Promise<CoverageResponse> {
-  if (apiMode === "mock") return MOCK_COVERAGE;
+  if (getApiMode() === "mock") return MOCK_COVERAGE;
   return getJson<CoverageResponse>(`/api/changes/${encodeURIComponent(id)}/coverage?tenant=${encodeURIComponent(tenant)}`);
 }
 
 export async function explainPath(tenant: string, fromId: string, toId: string): Promise<ExplainResponse> {
-  if (apiMode === "mock") {
+  if (getApiMode() === "mock") {
     if (toId && toId !== "person:priya") {
       const rel = toId.startsWith("agent:")
         ? "CACHED"
@@ -105,7 +168,7 @@ export async function explainPath(tenant: string, fromId: string, toId: string):
 }
 
 export async function askConcierge(tenant: string, personId: string, question: string): Promise<AskResponse> {
-  if (apiMode === "mock") {
+  if (getApiMode() === "mock") {
     if (personId === "person:alex" || personId === "person:marcus") {
       return {
         answer:
@@ -125,7 +188,7 @@ export async function askConcierge(tenant: string, personId: string, question: s
 let mockCurrentStep = 0;
 
 export async function demoStep(tenant: string, scenario: string = "c1"): Promise<DemoStepResponse> {
-  if (apiMode === "mock") {
+  if (getApiMode() === "mock") {
     const step = MOCK_DEMO_STEPS[mockCurrentStep % MOCK_DEMO_STEPS.length];
     mockCurrentStep = (mockCurrentStep + 1) % MOCK_DEMO_STEPS.length;
     return step;
@@ -134,7 +197,7 @@ export async function demoStep(tenant: string, scenario: string = "c1"): Promise
 }
 
 export async function demoReset(tenant: string): Promise<DemoResetResponse> {
-  if (apiMode === "mock") {
+  if (getApiMode() === "mock") {
     mockCurrentStep = 0;
     return { ok: true, tenant };
   }

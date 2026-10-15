@@ -2,15 +2,19 @@
 
 import { useEffect, useState } from "react";
 import {
-  apiMode,
+  ApiMode,
+  apiBaseUrl,
+  checkApiHealth,
   demoReset,
   demoStep,
+  getApiMode,
   getChangeCoverage,
   getChangeDetail,
   getChanges,
   getChangeImpact,
   getGraph,
   getTenants,
+  setApiMode,
 } from "@/lib/api";
 import { GraphCanvas } from "@/components/graph";
 import { BeforeAfterPanel } from "@/components/before-after";
@@ -41,11 +45,17 @@ export default function Home() {
   const [coverageData, setCoverageData] = useState<CoverageResponse | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [isWhyDrawerOpen, setIsWhyDrawerOpen] = useState<boolean>(false);
+  const [currentMode, setCurrentMode] = useState<ApiMode>("mock");
+  const [liveApiError, setLiveApiError] = useState<string | null>(null);
 
   const handleSelectNode = (id: string | null) => {
     setSelectedNodeId(id);
     setIsWhyDrawerOpen(Boolean(id));
   };
+
+  useEffect(() => {
+    setCurrentMode(getApiMode());
+  }, []);
 
   // Demo stepper state
   const [demoStepInfo, setDemoStepInfo] = useState<DemoStepResponse | null>(null);
@@ -122,6 +132,41 @@ export default function Home() {
     }
   };
 
+  const handleModeSwitch = async (newMode: ApiMode) => {
+    setApiMode(newMode);
+    setCurrentMode(newMode);
+    setLiveApiError(null);
+    try {
+      if (newMode === "live") {
+        const health = await checkApiHealth();
+        if (!health.ok) {
+          throw new Error(health.error || `Health check failed with status ${health.status}`);
+        }
+      }
+      const [tList, cList, g, d, imp, cov] = await Promise.all([
+        getTenants(),
+        getChanges(activeTenant),
+        getGraph(activeTenant, activeChange),
+        getChangeDetail(activeTenant, activeChange),
+        getChangeImpact(activeTenant, activeChange),
+        getChangeCoverage(activeTenant, activeChange),
+      ]);
+      setTenants(tList);
+      setChanges(cList);
+      setGraphData(g);
+      setChangeDetail(d);
+      setImpactData(imp);
+      setCoverageData(cov);
+    } catch (err) {
+      console.warn(`[Mode Switch] Error switching to ${newMode}:`, err);
+      if (newMode === "live") {
+        setLiveApiError(
+          `Unable to connect to live API at ${apiBaseUrl} (${(err as Error).message}). Ensure backend is running.`
+        );
+      }
+    }
+  };
+
   return (
     <div className="flex h-screen flex-col bg-slate-950 font-sans text-slate-100 antialiased">
       {/* Top Navbar */}
@@ -163,7 +208,7 @@ export default function Home() {
           )}
         </div>
 
-        {/* Demo Controls & Mode Badge */}
+        {/* Demo Controls & Mode Switcher */}
         <div className="flex items-center gap-3">
           {demoStepInfo && (
             <div className="flex items-center gap-2 rounded bg-indigo-950/70 border border-indigo-800/60 px-2.5 py-1 text-xs text-indigo-300">
@@ -183,17 +228,53 @@ export default function Home() {
           >
             Reset
           </button>
-          <span
-            className={`rounded px-2 py-0.5 font-mono text-[11px] font-semibold uppercase ${
-              apiMode === "live"
-                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                : "bg-amber-500/20 text-amber-300 border border-amber-500/30"
-            }`}
-          >
-            mode: {apiMode}
-          </span>
+
+          {/* Interactive API Mode Switcher */}
+          <div className="flex items-center gap-1 rounded-lg border border-slate-800 bg-slate-900/90 p-1 text-xs">
+            <span className="px-1.5 font-mono text-[10px] uppercase font-bold text-slate-400">
+              API
+            </span>
+            <button
+              onClick={() => handleModeSwitch("mock")}
+              className={`rounded px-2 py-0.5 text-[11px] font-semibold transition ${
+                currentMode === "mock"
+                  ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm"
+                  : "text-slate-400 hover:text-slate-200"
+              }`}
+              title="Use verified offline fixtures"
+            >
+              Mock
+            </button>
+            <button
+              onClick={() => handleModeSwitch("live")}
+              className={`rounded px-2 py-0.5 text-[11px] font-semibold transition ${
+                currentMode === "live"
+                  ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm"
+                  : "text-slate-400 hover:text-slate-200"
+              }`}
+              title={`Connect to live FastAPI backend at ${apiBaseUrl}`}
+            >
+              Live
+            </button>
+          </div>
         </div>
       </header>
+
+      {/* Live API Offline / Diagnostics Alert */}
+      {liveApiError && (
+        <div className="flex items-center justify-between border-b border-rose-800/60 bg-rose-950/40 px-6 py-2 text-xs text-rose-300">
+          <div className="flex items-center gap-2">
+            <span className="font-bold">⚠️ Live API:</span>
+            <span>{liveApiError}</span>
+          </div>
+          <button
+            onClick={() => handleModeSwitch("mock")}
+            className="rounded border border-rose-700 bg-rose-900/50 px-2 py-0.5 text-[11px] font-semibold text-rose-200 hover:bg-rose-800 transition"
+          >
+            Switch to Mock Mode
+          </button>
+        </div>
+      )}
 
       {/* Main Workspace Layout */}
       <div className="flex flex-1 overflow-hidden">
