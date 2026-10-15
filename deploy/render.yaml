@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: ripple-api
+    runtime: docker
+    dockerfilePath: deploy/api.Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    healthCheckPath: /api/health
+    envVars:
+      - key: FALKORDB_HOST
+        sync: false
+      - key: FALKORDB_PORT
+        value: "6379"
+      - key: FALKORDB_USERNAME
+        value: default
+      - key: FALKORDB_PASSWORD
+        sync: false
+      - key: RIPPLE_DEFAULT_TENANT
+        value: handbook-demo
+      - key: PORT
+        value: "8000"
