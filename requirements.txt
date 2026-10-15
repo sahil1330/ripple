@@ -3,5 +3,5 @@ fastapi>=0.115
 uvicorn[standard]>=0.30
 sse-starlette>=2.1
 pydantic>=2.7
-mcp>=1.2
+mcp>=1.2,<2  # v2 renamed FastMCP -> MCPServer; we use the stable v1 API
 pyyaml>=6.0

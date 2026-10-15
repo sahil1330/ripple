@@ -1,7 +1,7 @@
 # Graph notes
 
 Results of the Day-1 Cypher syntax smoke tests (plan §4.4 "Syntax uncertainties"). Tested on Oct 15 2026
-against FalkorDB module v4.18.3 locally and `falkordb/falkordb:latest` in CI. The checks live in
+against FalkorDB module v4.18.3 and v6.0.2 locally and `falkordb/falkordb:latest` (v6.0.2) in CI. The checks live in
 `tests/graph/test_smoke.py`; rerun them after any FalkorDB upgrade.
 
 | Item | Result | Decision |
@@ -17,4 +17,6 @@ against FalkorDB module v4.18.3 locally and `falkordb/falkordb:latest` in CI. Th
 | Atomic claim (`MATCH ... {status:'open'} SET ...`) | ✅ second identical claim returns no row | Writes are serialised per graph; Task claim needs no extra version check |
 | `CREATE INDEX` run twice | raises `Attribute 'id' is already indexed` | `graph/schema.py` swallows errors containing "already" |
 | Full-text index | `db.idx.fulltext.createNodeIndex(label, prop)` fails on `falkordb:latest` (expects 1 arg) | Use `CREATE FULLTEXT INDEX FOR (d:Doc) ON (d.title)` (works on both) |
+| ⚠️ v6.0 planner bug | On `falkordb:latest` (v6.0.2) a `WHERE 'X' IN labels(s)` right after `MATCH (s {id:$id})` gets applied to a later scan, silently returning no rows | Put `WITH s` right after that WHERE (done in `check_fresh.cypher`). Local tests now run on both 4.18.3 and 6.0.2 |
+| ⚠️ `algo.betweenness` across versions | Raw scores differ between v4.18 and v6 (e.g. 24 vs 4 for the top node), and on v6 `samplingSize: 64` gives a different ranking | Run it exact (no sampling, the graph is small), normalise scores, and only rely on the ranking order |
 | Params in `LIMIT` | works on 4.18, but docs say unsupported | Still don't use them; inline constant limits |
