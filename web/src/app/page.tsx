@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import {
   apiMode,
-  askConcierge,
   demoReset,
   demoStep,
   getChangeCoverage,
@@ -18,9 +17,9 @@ import { BeforeAfterPanel } from "@/components/before-after";
 import { TthQueue } from "@/components/tth-queue";
 import { CoverageMeter } from "@/components/coverage";
 import { WhyDrawer } from "@/components/why-drawer";
+import { AskPanel } from "@/components/ask";
 import { subscribeToStream } from "@/lib/sse";
 import {
-  AskResponse,
   ChangeDetail,
   ChangeSummary,
   CoverageResponse,
@@ -47,12 +46,6 @@ export default function Home() {
     setSelectedNodeId(id);
     setIsWhyDrawerOpen(Boolean(id));
   };
-
-  // Ask panel state
-  const [askQuestion, setAskQuestion] = useState("Can I expense my personal VPN subscription?");
-  const [askPerson, setAskPerson] = useState("person:priya");
-  const [askResult, setAskResult] = useState<AskResponse | null>(null);
-  const [isAsking, setIsAsking] = useState(false);
 
   // Demo stepper state
   const [demoStepInfo, setDemoStepInfo] = useState<DemoStepResponse | null>(null);
@@ -126,20 +119,6 @@ export default function Home() {
       setCoverageData(cov);
     } catch (err) {
       console.error("Demo reset failed", err);
-    }
-  };
-
-  const handleAsk = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!askQuestion.trim()) return;
-    setIsAsking(true);
-    try {
-      const res = await askConcierge(activeTenant, askPerson, askQuestion);
-      setAskResult(res);
-    } catch (err) {
-      console.error("Ask failed", err);
-    } finally {
-      setIsAsking(false);
     }
   };
 
@@ -270,67 +249,10 @@ export default function Home() {
           </div>
 
           {/* Bottom Ask Panel (Concierge) */}
-          <div className="border-t border-slate-800 bg-slate-900/60 p-4">
-            <div className="mb-2 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-                <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
-                <span>Concierge (Episodic Memory Q&A)</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-slate-400">
-                <span>Asking as:</span>
-                <select
-                  value={askPerson}
-                  onChange={(e) => setAskPerson(e.target.value)}
-                  className="rounded border border-slate-700 bg-slate-800 px-1.5 py-0.5 text-xs text-slate-200"
-                >
-                  <option value="person:priya">Priya (Engineering Lead)</option>
-                  <option value="person:alex">Alex (Security Analyst)</option>
-                </select>
-              </div>
-            </div>
-
-            <form onSubmit={handleAsk} className="flex gap-2">
-              <input
-                type="text"
-                value={askQuestion}
-                onChange={(e) => setAskQuestion(e.target.value)}
-                placeholder="Ask a policy question..."
-                className="flex-1 rounded border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 outline-none focus:border-indigo-500"
-              />
-              <button
-                type="submit"
-                disabled={isAsking}
-                className="rounded bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-indigo-500 disabled:opacity-50"
-              >
-                {isAsking ? "Querying..." : "Ask"}
-              </button>
-            </form>
-
-            {askResult && (
-              <div className="mt-3 rounded border border-slate-800 bg-slate-950/80 p-3 text-xs">
-                <p className="text-slate-200 leading-relaxed">{askResult.answer}</p>
-                {askResult.earlier_told && (
-                  <div className="mt-2 rounded bg-amber-950/30 border border-amber-800/40 p-2 text-amber-200">
-                    <span className="font-semibold">Memory Correction: </span>
-                    {askResult.earlier_told.text}
-                  </div>
-                )}
-                <div className="mt-2 flex items-center gap-3 text-[11px] text-slate-400">
-                  <span>Cited version: <code className="text-indigo-400">{askResult.versions.join(", ")}</code></span>
-                  {askResult.source_url && (
-                    <a
-                      href={askResult.source_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-indigo-400 underline hover:text-indigo-300"
-                    >
-                      View Source Diff ↗
-                    </a>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+          <AskPanel
+            tenant={activeTenant}
+            onSelectNode={handleSelectNode}
+          />
         </section>
 
         {/* Right Sidebar: Before/After, Coverage, Time-To-Harm Queue */}
