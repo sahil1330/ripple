@@ -22,6 +22,7 @@ import { TthQueue } from "@/components/tth-queue";
 import { CoverageMeter } from "@/components/coverage";
 import { WhyDrawer } from "@/components/why-drawer";
 import { AskPanel } from "@/components/ask";
+import { DemoStepper } from "@/components/demo";
 import { subscribeToStream } from "@/lib/sse";
 import {
   ChangeDetail,
@@ -47,6 +48,7 @@ export default function Home() {
   const [isWhyDrawerOpen, setIsWhyDrawerOpen] = useState<boolean>(false);
   const [currentMode, setCurrentMode] = useState<ApiMode>("mock");
   const [liveApiError, setLiveApiError] = useState<string | null>(null);
+  const [isDemoModeActive, setIsDemoModeActive] = useState<boolean>(false);
 
   const handleSelectNode = (id: string | null) => {
     setSelectedNodeId(id);
@@ -55,6 +57,10 @@ export default function Home() {
 
   useEffect(() => {
     setCurrentMode(getApiMode());
+    if (typeof window !== "undefined") {
+      const isDemo = new URLSearchParams(window.location.search).get("demo") === "1";
+      if (isDemo) setIsDemoModeActive(true);
+    }
   }, []);
 
   // Demo stepper state
@@ -101,17 +107,69 @@ export default function Home() {
     getChangeCoverage(activeTenant, activeChange).then(setCoverageData).catch(console.error);
   }, [activeTenant, activeChange]);
 
+  const applyStepVisuals = (stepNum: number, events?: SseEnvelope[]) => {
+    setGraphData((prev) => {
+      if (!prev) return prev;
+      const updatedNodes = prev.nodes.map((node) => {
+        if (stepNum <= 2) {
+          return { ...node, status: undefined };
+        }
+        if (stepNum === 3) {
+          if (["Action", "Person", "Agent", "Plan", "Doc"].includes(node.kind)) {
+            return { ...node, status: "impacted" };
+          }
+        }
+        if (stepNum === 4) {
+          if (node.id === "agent:ap-approver") return { ...node, status: "blocked" };
+          if (["Action", "Person", "Plan", "Doc"].includes(node.kind)) return { ...node, status: "impacted" };
+        }
+        if (stepNum === 5) {
+          if (node.id === "person:priya") return { ...node, status: "resolved" };
+          if (node.id === "agent:ap-approver") return { ...node, status: "blocked" };
+          if (["Action", "Plan", "Doc"].includes(node.kind)) return { ...node, status: "impacted" };
+        }
+        if (stepNum === 6) {
+          if (node.id === "person:priya" || node.id === "agent:ap-approver") {
+            return { ...node, status: "resolved" };
+          }
+          if (["Action", "Plan", "Doc"].includes(node.kind)) return { ...node, status: "impacted" };
+        }
+        if (stepNum === 7) {
+          if (node.kind === "Doc" || node.id === "person:priya" || node.id === "agent:ap-approver") {
+            return { ...node, status: "resolved" };
+          }
+          if (["Action", "Plan"].includes(node.kind)) return { ...node, status: "impacted" };
+        }
+        if (stepNum >= 8) {
+          if (["Action", "Person", "Agent", "Plan", "Doc"].includes(node.kind)) {
+            return { ...node, status: "resolved" };
+          }
+        }
+        return node;
+      });
+      return { ...prev, nodes: updatedNodes };
+    });
+
+    if (events && events.length > 0) {
+      setLiveEvents((prev) => [...prev, ...events]);
+    }
+  };
+
   const handleDemoStep = async () => {
     try {
       const step = await demoStep(activeTenant, "c1");
       setDemoStepInfo(step);
-      // Refresh state
-      const [g, cov] = await Promise.all([
-        getGraph(activeTenant, activeChange),
-        getChangeCoverage(activeTenant, activeChange),
-      ]);
-      setGraphData(g);
-      setCoverageData(cov);
+      applyStepVisuals(step.step, step.events);
+      const stepCoveragePct = [0, 0, 0, 0, 25, 50, 87.5, 100, 100][step.step - 1] ?? 0;
+      setCoverageData((prev) =>
+        prev
+          ? {
+              ...prev,
+              pct: stepCoveragePct,
+              resolved: Math.round((stepCoveragePct / 100) * prev.impacted),
+            }
+          : prev
+      );
     } catch (err) {
       console.error("Demo step failed", err);
     }
@@ -127,6 +185,7 @@ export default function Home() {
       ]);
       setGraphData(g);
       setCoverageData(cov);
+      setLiveEvents([]);
     } catch (err) {
       console.error("Demo reset failed", err);
     }
@@ -210,24 +269,40 @@ export default function Home() {
 
         {/* Demo Controls & Mode Switcher */}
         <div className="flex items-center gap-3">
-          {demoStepInfo && (
-            <div className="flex items-center gap-2 rounded bg-indigo-950/70 border border-indigo-800/60 px-2.5 py-1 text-xs text-indigo-300">
-              <span className="font-semibold">Step {demoStepInfo.step}/{demoStepInfo.total_steps}:</span>
-              <span>{demoStepInfo.name}</span>
-            </div>
+          <button
+            onClick={() => setIsDemoModeActive(!isDemoModeActive)}
+            className={`rounded px-2.5 py-1 text-xs font-semibold transition ${
+              isDemoModeActive
+                ? "bg-purple-600 text-white shadow-md shadow-purple-600/30"
+                : "border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white"
+            }`}
+            title="Toggle Demo Mode (?demo=1)"
+          >
+            🎬 Demo Mode
+          </button>
+
+          {!isDemoModeActive && (
+            <>
+              {demoStepInfo && (
+                <div className="flex items-center gap-2 rounded bg-indigo-950/70 border border-indigo-800/60 px-2.5 py-1 text-xs text-indigo-300">
+                  <span className="font-semibold">Step {demoStepInfo.step}/{demoStepInfo.total_steps}:</span>
+                  <span>{demoStepInfo.name}</span>
+                </div>
+              )}
+              <button
+                onClick={handleDemoStep}
+                className="rounded bg-indigo-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-indigo-500 active:scale-95"
+              >
+                Demo Next ▶
+              </button>
+              <button
+                onClick={handleDemoReset}
+                className="rounded border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs text-slate-300 transition hover:bg-slate-700 active:scale-95"
+              >
+                Reset
+              </button>
+            </>
           )}
-          <button
-            onClick={handleDemoStep}
-            className="rounded bg-indigo-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-indigo-500 active:scale-95"
-          >
-            Demo Next ▶
-          </button>
-          <button
-            onClick={handleDemoReset}
-            className="rounded border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs text-slate-300 transition hover:bg-slate-700 active:scale-95"
-          >
-            Reset
-          </button>
 
           {/* Interactive API Mode Switcher */}
           <div className="flex items-center gap-1 rounded-lg border border-slate-800 bg-slate-900/90 p-1 text-xs">
@@ -259,6 +334,17 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {/* Demo Mode Stepper Bar */}
+      {isDemoModeActive && (
+        <div className="border-b border-indigo-950/80 bg-slate-950/90 px-6 py-3">
+          <DemoStepper
+            stepInfo={demoStepInfo}
+            onNext={handleDemoStep}
+            onReset={handleDemoReset}
+          />
+        </div>
+      )}
 
       {/* Live API Offline / Diagnostics Alert */}
       {liveApiError && (
