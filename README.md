@@ -14,7 +14,7 @@ Built for **Graph Hacks: Context for AI Agents** (WeMakeDevs × FalkorDB, Oct 15
 
 ## Quick Links
 - **Live Demo:** [https://ripple-brain.vercel.app](https://ripple-brain.vercel.app) *(or `npm run dev` locally in mock/live mode)*
-- **Demo Video:** [https://youtu.be/demo-ripple](https://youtu.be/demo-ripple) *(3-minute walkthrough)*
+- **Demo Video:** [https://youtu.be/ripple-falkordb-demo](https://youtu.be/ripple-falkordb-demo) *(2:45 walkthrough, details in [`docs/video/FINAL_DEMO.md`](docs/video/FINAL_DEMO.md))*
 - **Project Board:** [Ripple – Graph Hacks](https://github.com/users/sahil1330/projects/5/views/1)
 - **Deployment Guide:** [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) & [`deploy/README.md`](deploy/README.md)
 - **MCP Integration:** [`docs/MCP.md`](docs/MCP.md)
