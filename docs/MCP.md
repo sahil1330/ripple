@@ -91,4 +91,4 @@ The end-to-end test `tests/graph/test_mcp_stdio.py` runs the same flow in CI.
 ## Upstream FalkorDB-MCPServer
 
 For free-form read-only Cypher exploration, the upstream
-[FalkorDB-MCPServer](https://github.com/FalkorDB/FalkorDB-MCPServer) can run alongside `ripple_mcp`.
+[FalkorDB-MCPServer](https://github.com/FalkorDB/FalkorDB-MCPServer) can run alongside `ripple_mcp`. Setup and client configs: [`FALKORDB_MCP.md`](./FALKORDB_MCP.md); ready-made configs with both servers are in [`deploy/falkordb-mcp/`](../deploy/falkordb-mcp/).
