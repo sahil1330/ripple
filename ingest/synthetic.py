@@ -1,4 +1,4 @@
-"""Seeded synthetic layer for tenant ``handbook-demo`` (plan §3.4). Every node is ``synthetic: true``.
+"""Seeded synthetic layer for a tenant (plan §3.4; ``handbook-demo`` and ``acme-synthetic``). Every node is ``synthetic: true``.
 
 The real policy versions come from ``ingest/handbook_changes.py``; this module adds the
 made-up company around them: people, teams, Concierge answers (who was told which
@@ -241,17 +241,26 @@ def generate(seed: int = 42) -> Layer:
     return layer
 
 
-def seed(tenant: str, seed: int = 42) -> dict:
-    """Write the synthetic layer. Needs the handbook versions first (``ingest.handbook_changes``)."""
+# Each tenant is its own company: a different seed gives different people, chat graph and
+# answers around the same public handbook facts. Unknown tenants (tests) use the default seed.
+TENANT_SEEDS = {"handbook-demo": 42, "acme-synthetic": 7}
+
+
+def seed(tenant: str, seed: int | None = None) -> dict:
+    """Write the synthetic layer for ``tenant`` into its own graph (``ripple:<tenant>``).
+
+    Needs the handbook versions first (``ingest.handbook_changes``). ``seed`` defaults to the
+    tenant's entry in ``TENANT_SEEDS`` (42 otherwise).
+    """
     g = tenant_graph(tenant)
-    layer = generate(seed)
+    layer = generate(TENANT_SEEDS.get(tenant, 42) if seed is None else seed)
     return {"nodes": write_nodes(g, layer.nodes), "edges": write_edges(g, layer.edges)}
 
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Write the seeded synthetic layer")
     parser.add_argument("--tenant", default="handbook-demo")
-    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--seed", type=int, default=None, help="default: TENANT_SEEDS[tenant] or 42")
     args = parser.parse_args(argv)
     print(seed(args.tenant, args.seed))
 
