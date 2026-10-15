@@ -17,6 +17,7 @@ import { GraphCanvas } from "@/components/graph";
 import { BeforeAfterPanel } from "@/components/before-after";
 import { TthQueue } from "@/components/tth-queue";
 import { CoverageMeter } from "@/components/coverage";
+import { WhyDrawer } from "@/components/why-drawer";
 import { subscribeToStream } from "@/lib/sse";
 import {
   AskResponse,
@@ -40,6 +41,12 @@ export default function Home() {
   const [impactData, setImpactData] = useState<ImpactResponse | null>(null);
   const [coverageData, setCoverageData] = useState<CoverageResponse | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [isWhyDrawerOpen, setIsWhyDrawerOpen] = useState<boolean>(false);
+
+  const handleSelectNode = (id: string | null) => {
+    setSelectedNodeId(id);
+    setIsWhyDrawerOpen(Boolean(id));
+  };
 
   // Ask panel state
   const [askQuestion, setAskQuestion] = useState("Can I expense my personal VPN subscription?");
@@ -222,9 +229,17 @@ export default function Home() {
               <span>{graphData?.links.length ?? 0} relationships</span>
             </div>
             {selectedNodeId && (
-              <span className="rounded bg-indigo-500/20 px-2 py-0.5 font-mono text-[10px] text-indigo-300">
-                Selected: {selectedNodeId}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="rounded bg-indigo-500/20 px-2 py-0.5 font-mono text-[10px] text-indigo-300">
+                  Selected: {selectedNodeId}
+                </span>
+                <button
+                  onClick={() => setIsWhyDrawerOpen(true)}
+                  className="rounded border border-indigo-500/40 bg-indigo-600/30 px-2 py-0.5 text-[10px] font-semibold text-indigo-200 transition hover:bg-indigo-600/50"
+                >
+                  Explain (Why?)
+                </button>
+              </div>
             )}
           </div>
 
@@ -235,13 +250,23 @@ export default function Home() {
                 nodes={graphData.nodes}
                 links={graphData.links}
                 selectedNodeId={selectedNodeId}
-                onSelectNode={setSelectedNodeId}
+                onSelectNode={handleSelectNode}
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center text-xs text-slate-500 font-mono">
                 Loading graph data...
               </div>
             )}
+
+            {/* Why Drawer (Explain Path) */}
+            <WhyDrawer
+              isOpen={isWhyDrawerOpen}
+              onClose={() => setIsWhyDrawerOpen(false)}
+              selectedNodeId={selectedNodeId}
+              tenant={activeTenant}
+              changeId={activeChange}
+              nodes={graphData?.nodes}
+            />
           </div>
 
           {/* Bottom Ask Panel (Concierge) */}
@@ -325,7 +350,7 @@ export default function Home() {
             <TthQueue
               items={impactData?.items ?? []}
               selectedId={selectedNodeId}
-              onSelectItem={setSelectedNodeId}
+              onSelectItem={handleSelectNode}
             />
           </div>
         </aside>
