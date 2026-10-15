@@ -31,8 +31,10 @@ def test_replay_c1_then_trace(g, tenant):
     ).result_set
     kinds = Counter(r[0] for r in tasks)
     assert kinds == {"reanswer": 13, "fix_doc": 5, "replan": 1, "notify": 2}
-    # top-risk items are the two AP actions (covered by the plan replan), so the agent comes first
-    assert tasks[0] == ["reanswer", "agent:ap-approver", 1]
+    # Top-risk items are the two AP actions (covered by the plan replan), so the AP agent and its plan
+    # come next. Their order depends on betweenness, which v4 and v6 score differently (graph/NOTES.md).
+    top_two = {tuple(t[:2]) for t in tasks[:2]}
+    assert top_two == {("reanswer", "agent:ap-approver"), ("replan", "plan:ap-queue")}
     status = g.query("MATCH (c:Change {id:'chg:c1'}) RETURN c.status").result_set[0][0]
     assert status == "resolving"
     assert tracer.run(tenant, now=DEMO_NOW_MS) == []  # nothing left to trace
