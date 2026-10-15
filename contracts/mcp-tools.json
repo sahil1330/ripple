@@ -1,66 +1,581 @@
 {
-  "$comment": "Draft v0 from RIPPLE_PLAN.md \u00a76. Finalise as JSON Schemas in #3 (both approve).",
+  "$comment": "contracts-v1: ripple-mcp tool schemas (RIPPLE_PLAN.md \u00a76). Change only via a `contract` PR approved by both humans.",
   "server": "ripple-mcp",
+  "transport": [
+    "stdio",
+    "streamable-http"
+  ],
   "tools": [
     {
       "name": "impact_of",
       "write": false,
-      "params": "tenant, change_id | version_id, max_hops=6",
-      "returns": "[{id, kind, label, hops, risk, tth_ms}]"
+      "description": "Everything that relies (up to max_hops) on the old version of a change, with time-to-harm risk.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "description": "Tenant id, e.g. handbook-demo"
+          },
+          "change_id": {
+            "type": "string"
+          },
+          "version_id": {
+            "type": "string"
+          },
+          "max_hops": {
+            "type": "integer",
+            "default": 6,
+            "minimum": 1,
+            "maximum": 8
+          }
+        },
+        "required": [
+          "tenant"
+        ],
+        "additionalProperties": false,
+        "oneOf": [
+          {
+            "required": [
+              "change_id"
+            ]
+          },
+          {
+            "required": [
+              "version_id"
+            ]
+          }
+        ]
+      },
+      "outputSchema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "hops": {
+              "type": "integer"
+            },
+            "risk": {
+              "type": "number"
+            },
+            "tth_ms": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          }
+        }
+      }
     },
     {
       "name": "who_holds",
       "write": false,
-      "params": "tenant, version_id",
-      "returns": "[{id, name, kind, how: WAS_TOLD|CACHED, at, channel}]"
+      "description": "People and agents still holding a superseded version (told or cached, not yet resolved).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "description": "Tenant id, e.g. handbook-demo"
+          },
+          "version_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "tenant",
+          "version_id"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "Person",
+                "Agent"
+              ]
+            },
+            "how": {
+              "enum": [
+                "WAS_TOLD",
+                "CACHED"
+              ]
+            },
+            "at": {
+              "type": "integer"
+            },
+            "channel": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "current_version": {
+              "type": "string"
+            }
+          }
+        }
+      }
     },
     {
       "name": "check_fresh",
       "write": false,
-      "params": "tenant, plan_id | action_id, now?",
-      "returns": "{fresh: bool, stale: [{via, stale_version, current_version, stale_value, current_value, source}]}"
+      "description": "Freshness guard. Call before every action. fresh=false lists each stale dependency with the current value and source.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "description": "Tenant id, e.g. handbook-demo"
+          },
+          "plan_id": {
+            "type": "string"
+          },
+          "action_id": {
+            "type": "string"
+          },
+          "now": {
+            "type": "integer",
+            "description": "epoch ms; defaults to server now (fixed in demo mode)"
+          }
+        },
+        "required": [
+          "tenant"
+        ],
+        "additionalProperties": false,
+        "oneOf": [
+          {
+            "required": [
+              "plan_id"
+            ]
+          },
+          {
+            "required": [
+              "action_id"
+            ]
+          }
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "fresh": {
+            "type": "boolean"
+          },
+          "stale": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "via": {
+                  "type": "string"
+                },
+                "stale_version": {
+                  "type": "string"
+                },
+                "current_version": {
+                  "type": "string"
+                },
+                "stale_value": {
+                  "type": "string"
+                },
+                "current_value": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
     },
     {
       "name": "explain_path",
       "write": false,
-      "params": "tenant, from_id, to_id",
-      "returns": "{hops: [..], via: [..], cypher}"
+      "description": "Shortest 'why' path between two entities, with the Cypher used.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "description": "Tenant id, e.g. handbook-demo"
+          },
+          "from_id": {
+            "type": "string"
+          },
+          "to_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "tenant",
+          "from_id",
+          "to_id"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "hops": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "via": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cypher": {
+            "type": "string"
+          }
+        }
+      }
     },
     {
       "name": "coverage",
       "write": false,
-      "params": "tenant, change_id",
-      "returns": "{impacted, resolved, pct, by_kind: {...}}"
+      "description": "Impacted vs resolved counts for a change.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "description": "Tenant id, e.g. handbook-demo"
+          },
+          "change_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "tenant",
+          "change_id"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "impacted": {
+            "type": "integer"
+          },
+          "resolved": {
+            "type": "integer"
+          },
+          "pct": {
+            "type": "number"
+          },
+          "by_kind": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "impacted": {
+                  "type": "integer"
+                },
+                "resolved": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
     },
     {
       "name": "rank_amplifiers",
       "write": false,
-      "params": "tenant, change_id, algo: pagerank|betweenness, k=10",
-      "returns": "[{id, score}]"
+      "description": "Rank entities that spread a stale fact furthest: PageRank over Doc LINKS_TO, or betweenness over FEEDS.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "description": "Tenant id, e.g. handbook-demo"
+          },
+          "change_id": {
+            "type": "string"
+          },
+          "algo": {
+            "enum": [
+              "pagerank",
+              "betweenness"
+            ],
+            "default": "betweenness"
+          },
+          "k": {
+            "type": "integer",
+            "default": 10,
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "required": [
+          "tenant",
+          "change_id"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "score": {
+              "type": "number"
+            }
+          }
+        }
+      }
     },
     {
       "name": "dark_pockets",
       "write": false,
-      "params": "tenant, change_id",
-      "returns": "[{component_id, members, hub_id}]"
+      "description": "TALKS_WITH components (WCC) where nobody has resolved the change, with the best hub to brief.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "description": "Tenant id, e.g. handbook-demo"
+          },
+          "change_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "tenant",
+          "change_id"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "component_id": {
+              "type": "integer"
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "hub_id": {
+              "type": "string"
+            }
+          }
+        }
+      }
     },
     {
       "name": "claim_task",
       "write": true,
-      "params": "tenant, agent_id, kinds[]",
-      "returns": "Task | null"
+      "description": "Atomically claim the highest-priority open task of the given kinds. null = nothing to claim.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "description": "Tenant id, e.g. handbook-demo"
+          },
+          "agent_id": {
+            "type": "string"
+          },
+          "kinds": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "trace",
+                "fix_doc",
+                "reanswer",
+                "replan",
+                "notify"
+              ]
+            }
+          }
+        },
+        "required": [
+          "tenant",
+          "agent_id",
+          "kinds"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "task_kind": {
+                "enum": [
+                  "trace",
+                  "fix_doc",
+                  "reanswer",
+                  "replan",
+                  "notify"
+                ]
+              },
+              "status": {
+                "type": "string"
+              },
+              "priority": {
+                "type": "integer"
+              },
+              "risk": {
+                "type": "number"
+              },
+              "target_id": {
+                "type": "string"
+              },
+              "change_id": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
     },
     {
       "name": "complete_task",
       "write": true,
-      "params": "tenant, task_id, outcome",
-      "returns": "{ok}"
+      "description": "Mark a claimed task done (or failed) and record the outcome.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "description": "Tenant id, e.g. handbook-demo"
+          },
+          "agent_id": {
+            "type": "string",
+            "description": "must be the agent that claimed the task"
+          },
+          "task_id": {
+            "type": "string"
+          },
+          "outcome": {
+            "type": "string"
+          },
+          "failed": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "tenant",
+          "agent_id",
+          "task_id",
+          "outcome"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          }
+        }
+      }
     },
     {
       "name": "record_answer",
       "write": true,
-      "params": "tenant, person_id, question, version_ids[]",
-      "returns": "{answer_id}"
+      "description": "Log a Concierge answer as an Answer node + WAS_TOLD edges (episodic memory).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "description": "Tenant id, e.g. handbook-demo"
+          },
+          "person_id": {
+            "type": "string"
+          },
+          "question": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "version_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "channel": {
+            "type": "string",
+            "default": "web"
+          }
+        },
+        "required": [
+          "tenant",
+          "person_id",
+          "question",
+          "version_ids"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "answer_id": {
+            "type": "string"
+          }
+        }
+      }
     }
   ]
 }
