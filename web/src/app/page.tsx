@@ -13,6 +13,7 @@ import {
   getGraph,
   getTenants,
 } from "@/lib/api";
+import { GraphCanvas } from "@/components/graph";
 import {
   AskResponse,
   ChangeDetail,
@@ -195,35 +196,19 @@ export default function Home() {
           </div>
 
           {/* Graph Visualization Container */}
-          <div className="relative flex flex-1 items-center justify-center p-4">
-            <div className="w-full h-full rounded-lg border border-slate-800/80 bg-slate-900/20 flex flex-col items-center justify-center text-center p-6">
-              <div className="max-w-md">
-                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-950/60 text-indigo-400 border border-indigo-800/50">
-                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <h3 className="text-sm font-semibold text-slate-200">Interactive Knowledge Graph</h3>
-                <p className="mt-1 text-xs text-slate-400 leading-relaxed">
-                  Nodes represent facts, people, docs, plans, and actions. Edges track dependencies and episodic citations.
-                </p>
-                <div className="mt-4 flex flex-wrap justify-center gap-1.5">
-                  {graphData?.nodes.slice(0, 8).map((node) => (
-                    <button
-                      key={node.id}
-                      onClick={() => setSelectedNodeId(node.id)}
-                      className={`rounded px-2 py-1 text-[11px] font-mono border transition ${
-                        selectedNodeId === node.id
-                          ? "border-indigo-500 bg-indigo-900/60 text-white"
-                          : "border-slate-800 bg-slate-800/60 text-slate-300 hover:border-slate-700"
-                      }`}
-                    >
-                      {node.kind}: {node.label.length > 20 ? node.label.slice(0, 18) + "..." : node.label}
-                    </button>
-                  ))}
-                </div>
+          <div className="relative flex-1 overflow-hidden">
+            {graphData ? (
+              <GraphCanvas
+                nodes={graphData.nodes}
+                links={graphData.links}
+                selectedNodeId={selectedNodeId}
+                onSelectNode={setSelectedNodeId}
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center text-xs text-slate-500 font-mono">
+                Loading graph data...
               </div>
-            </div>
+            )}
           </div>
 
           {/* Bottom Ask Panel (Concierge) */}
