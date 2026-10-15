@@ -31,26 +31,18 @@ const PEOPLE: Persona[] = [
   {
     id: "person:priya",
     name: "Priya Sharma",
-    role: "Engineering Lead",
+    role: "Backend Engineer",
     avatarBg: "from-amber-500 to-rose-500",
     staleFact: true,
     staleNote: "Holds v1 ($150/yr personal VPN)",
   },
   {
-    id: "person:alex",
-    name: "Alex Chen",
-    role: "Security Analyst",
+    id: "person:ravi",
+    name: "Ravi Iyer",
+    role: "AP Lead",
     avatarBg: "from-sky-500 to-indigo-500",
     staleFact: false,
-    staleNote: "No prior VPN answer",
-  },
-  {
-    id: "person:marcus",
-    name: "Marcus Vance",
-    role: "DevOps Engineer",
-    avatarBg: "from-emerald-500 to-teal-500",
-    staleFact: false,
-    staleNote: "No prior VPN answer",
+    staleNote: "Fresh inquiry (AP team)",
   },
 ];
 

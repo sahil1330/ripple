@@ -169,7 +169,7 @@ export async function explainPath(tenant: string, fromId: string, toId: string):
 
 export async function askConcierge(tenant: string, personId: string, question: string): Promise<AskResponse> {
   if (getApiMode() === "mock") {
-    if (personId === "person:alex" || personId === "person:marcus") {
+    if (personId === "person:ravi" || personId === "person:alex" || personId === "person:marcus") {
       return {
         answer:
           "Personal VPN subscriptions: not reimbursable; use NordLayer (company VPN). Policy text: “Starting July 15, 2026, GitLab no longer reimburses personal VPN subscriptions through expense claims. Team members who need VPN access should use NordLayer, GitLab's company-provisioned VPN solution.”",
@@ -177,7 +177,7 @@ export async function askConcierge(tenant: string, personId: string, question: s
         source_url:
           "https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/ddd395971ee181bee9e00d23d34e1001489d76ef/content/handbook/finance/expenses.md",
         earlier_told: null,
-        answer_id: "ans:c1alex001",
+        answer_id: "ans:c1ravi001",
       };
     }
     return MOCK_ASK;

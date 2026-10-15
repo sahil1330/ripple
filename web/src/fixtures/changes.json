@@ -1,0 +1,56 @@
+[
+  {
+    "id": "chg:c4b",
+    "title": "Co-working now needs pre-approval",
+    "fact_key": "expense.coworking.rules",
+    "commit_sha": "c72b6af5eff911b77604782b2d1f46e95ae9dba0",
+    "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20839",
+    "detected_at": 1788196251000,
+    "status": "detected"
+  },
+  {
+    "id": "chg:c5",
+    "title": "New-hire stipend: virtual card → own funds + claim",
+    "fact_key": "expense.new_hire.home_office_stipend",
+    "commit_sha": "c72b6af5eff911b77604782b2d1f46e95ae9dba0",
+    "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20839",
+    "detected_at": 1788196251000,
+    "status": "detected"
+  },
+  {
+    "id": "chg:c1",
+    "title": "Personal VPN subscriptions no longer reimbursable",
+    "fact_key": "expense.vpn.personal_subscription",
+    "commit_sha": "ddd395971ee181bee9e00d23d34e1001489d76ef",
+    "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20421",
+    "detected_at": 1784046483000,
+    "status": "resolved"
+  },
+  {
+    "id": "chg:c2",
+    "title": "Travel meals limit $100 → $120 per day",
+    "fact_key": "expense.travel.meals_daily_limit",
+    "commit_sha": "6eb1a977ed006bf256e5fdeb7422d06ff14d1cf3",
+    "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20015",
+    "detected_at": 1781880145000,
+    "status": "detected"
+  },
+  {
+    "id": "chg:c3",
+    "title": "Internet/phone $80 with exceptions → $100 hard cap",
+    "fact_key": "expense.home_internet_phone.monthly_limit",
+    "commit_sha": "6eb1a977ed006bf256e5fdeb7422d06ff14d1cf3",
+    "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20015",
+    "detected_at": 1781880145000,
+    "status": "detected"
+  },
+  {
+    "id": "chg:c4a",
+    "title": "Co-working split: Daily Office Pass $100/day",
+    "fact_key": "expense.coworking.rules",
+    "commit_sha": "6eb1a977ed006bf256e5fdeb7422d06ff14d1cf3",
+    "mr_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20015",
+    "detected_at": 1781880145000,
+    "status": "detected"
+  }
+]

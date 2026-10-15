@@ -20,27 +20,27 @@ interface DemoStepperProps {
 }
 
 const SCRIPT_PROMPTS: Record<number, string> = {
-  1: "Baseline: Ripple remembers what it told you, and which version.",
-  2: "Sentinel: Real policy change from GitLab public handbook (MR !20421).",
-  3: "Tracer: Multi-hop impact in one FalkorDB traversal across FEEDS edges.",
-  4: "HERO MOMENT: AP Approver tries to act on stale fact → Freshness Guard BLOCKS it via MCP.",
-  5: "Concierge: Re-answers Priya with 'Earlier I told you $150/year; that changed on Jul 15'.",
-  6: "Fixer: Refreshes agent memory cache to v2. Coordination via Task nodes in FalkorDB.",
-  7: "Fixer: Drafts handbook markdown patches citing new FactVersion v2.",
-  8: "Replan: Approval action safely replanned with NordLayer company VPN.",
-  9: "100% Coverage Reached: Explainable graph trail preserved from root change to holders.",
+  1: "Title card: When a policy changes, the page gets updated; the people and agents who learned the old version don't.",
+  2: "Priya asks about ExpressVPN: Concierge answers from current version (v1: $150/year) and logs WAS_TOLD in FalkorDB.",
+  3: "Sentinel replays commit ddd39597: Ingests real GitLab handbook change C1 (MR !20421), writes v2, closes v1, opens trace task.",
+  4: "Tracer computes the impact: One FalkorDB traversal finds everyone and everything relying on v1; time-to-harm ranks 24 holders.",
+  5: "HERO MOMENT: Worker agent is BLOCKED: ap-approver calls check_fresh over MCP before approving Priya's claim (act:approve-vpn-priya).",
+  6: "Fixer works the queue: Agents hand off through Task nodes: re-answer people, refresh agent memory, draft doc patches, replan.",
+  7: "Priya asks again: Correct answer from v2 with self-correcting memory: 'Earlier I told you $150/year; that changed on Jul 14, 2026.'",
+  8: "Why? & Tenant Isolation: Every decision is explainable. A second company (acme-synthetic) runs concurrently without cross-talk.",
+  9: "Built on FalkorDB: Tracks 01, 02, 03 completed. Zero secondary datastores used.",
 };
 
 const STEP_TITLES: Record<number, string> = {
-  1: "Baseline Graph",
-  2: "Sentinel Detection",
-  3: "Tracer Impact Walk",
-  4: "Freshness Guard Block",
-  5: "Concierge Re-Answer",
-  6: "Agent Cache Refresh",
-  7: "Handbook Doc Patch",
-  8: "Action Replan",
-  9: "100% Coverage",
+  1: "Title Card",
+  2: "Priya Asks v1",
+  3: "Sentinel Detects",
+  4: "Tracer Impact",
+  5: "Action Blocked",
+  6: "Fixer Resolves",
+  7: "Priya Re-Answer",
+  8: "Tenant Isolation",
+  9: "FalkorDB Brain",
 };
 
 export default function DemoStepper({
@@ -93,7 +93,7 @@ export default function DemoStepper({
 
   const progressPct = Math.round((currentStep / totalSteps) * 100);
   const scriptPrompt = SCRIPT_PROMPTS[currentStep] || "";
-  const isHeroStep = currentStep === 4;
+  const isHeroStep = currentStep === 5;
 
   return (
     <div

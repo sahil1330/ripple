@@ -86,7 +86,8 @@ export default function Home() {
       (ev) => {
         setLiveEvents((prev) => [...prev, ev]);
         if (ev.type === "coverage.updated") {
-          const p = ev.payload as { pct?: number; impacted?: number; resolved?: number };
+          const p = ev.payload as { change_id?: string; pct?: number; impacted?: number; resolved?: number };
+          if (p.change_id && p.change_id !== activeChange) return;
           if (p.pct !== undefined) {
             setCoverageData((prev) =>
               prev
@@ -104,7 +105,7 @@ export default function Home() {
       { replayMock: false }
     );
     return () => unsubscribe();
-  }, [activeTenant]);
+  }, [activeTenant, activeChange]);
 
   useEffect(() => {
     if (!activeTenant) return;
@@ -134,69 +135,46 @@ export default function Home() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const applyStepVisuals = (stepNum: number, events?: SseEnvelope[]) => {
-    setGraphData((prev) => {
-      if (!prev) return prev;
-      const updatedNodes = prev.nodes.map((node) => {
-        if (stepNum <= 2) {
-          return { ...node, status: undefined };
-        }
-        if (stepNum === 3) {
-          if (["Action", "Person", "Agent", "Plan", "Doc"].includes(node.kind)) {
-            return { ...node, status: "impacted" };
-          }
-        }
-        if (stepNum === 4) {
-          if (node.id === "agent:ap-approver") return { ...node, status: "blocked" };
-          if (["Action", "Person", "Plan", "Doc"].includes(node.kind)) return { ...node, status: "impacted" };
-        }
-        if (stepNum === 5) {
-          if (node.id === "person:priya") return { ...node, status: "resolved" };
-          if (node.id === "agent:ap-approver") return { ...node, status: "blocked" };
-          if (["Action", "Plan", "Doc"].includes(node.kind)) return { ...node, status: "impacted" };
-        }
-        if (stepNum === 6) {
-          if (node.id === "person:priya" || node.id === "agent:ap-approver") {
-            return { ...node, status: "resolved" };
-          }
-          if (["Action", "Plan", "Doc"].includes(node.kind)) return { ...node, status: "impacted" };
-        }
-        if (stepNum === 7) {
-          if (node.kind === "Doc" || node.id === "person:priya" || node.id === "agent:ap-approver") {
-            return { ...node, status: "resolved" };
-          }
-          if (["Action", "Plan"].includes(node.kind)) return { ...node, status: "impacted" };
-        }
-        if (stepNum >= 8) {
-          if (["Action", "Person", "Agent", "Plan", "Doc"].includes(node.kind)) {
-            return { ...node, status: "resolved" };
-          }
-        }
-        return node;
-      });
-      return { ...prev, nodes: updatedNodes };
-    });
-
-    if (events && events.length > 0) {
-      setLiveEvents((prev) => [...prev, ...events]);
-    }
-  };
-
   const handleDemoStep = async () => {
     try {
       const step = await demoStep(activeTenant, "c1");
       setDemoStepInfo(step);
-      applyStepVisuals(step.step, step.events);
-      const stepCoveragePct = [0, 0, 0, 0, 25, 50, 87.5, 100, 100][step.step - 1] ?? 0;
-      setCoverageData((prev) =>
-        prev
-          ? {
-              ...prev,
-              pct: stepCoveragePct,
-              resolved: Math.round((stepCoveragePct / 100) * prev.impacted),
+
+      // Reload live graph, impact queue, and coverage from API
+      const [g, imp, cov] = await Promise.all([
+        getGraph(activeTenant, activeChange),
+        getChangeImpact(activeTenant, activeChange),
+        getChangeCoverage(activeTenant, activeChange),
+      ]);
+      setGraphData(g);
+      setImpactData(imp);
+      setCoverageData(cov);
+
+      if (step.events && step.events.length > 0) {
+        setLiveEvents((prev) => [...prev, ...step.events]);
+        // Update node statuses dynamically based on real events
+        setGraphData((prev) => {
+          if (!prev) return prev;
+          let updatedNodes = [...prev.nodes];
+          for (const ev of step.events) {
+            const p = ev.payload as Record<string, unknown>;
+            if (ev.type === "action.blocked" && p?.action_id) {
+              updatedNodes = updatedNodes.map((n) =>
+                n.id === p.action_id ? { ...n, status: "blocked" } : n
+              );
+            } else if (ev.type === "task.done" && p?.target_id) {
+              updatedNodes = updatedNodes.map((n) =>
+                n.id === p.target_id ? { ...n, status: "resolved" } : n
+              );
+            } else if (ev.type === "answer.sent" && p?.person_id) {
+              updatedNodes = updatedNodes.map((n) =>
+                n.id === p.person_id ? { ...n, status: "resolved" } : n
+              );
             }
-          : prev
-      );
+          }
+          return { ...prev, nodes: updatedNodes };
+        });
+      }
     } catch (err) {
       console.error("Demo step failed", err);
     }
@@ -206,11 +184,13 @@ export default function Home() {
     try {
       await demoReset(activeTenant);
       setDemoStepInfo(null);
-      const [g, cov] = await Promise.all([
+      const [g, imp, cov] = await Promise.all([
         getGraph(activeTenant, activeChange),
+        getChangeImpact(activeTenant, activeChange),
         getChangeCoverage(activeTenant, activeChange),
       ]);
       setGraphData(g);
+      setImpactData(imp);
       setCoverageData(cov);
       setLiveEvents([]);
     } catch (err) {
