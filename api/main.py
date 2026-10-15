@@ -24,6 +24,7 @@ from graph.client import tenant_graph
 from graph.cypher import cypher
 from graph.impact import impact_of
 from graph.tools import coverage, explain_path, now_ms
+from ingest import handbook_changes
 
 app = FastAPI(title="Ripple API", version="1.0.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
@@ -75,10 +76,10 @@ def graph(tenant: str, change_id: str | None = None) -> dict:
     g = _graph(tenant)
     ids = None
     if change_id:
+        # A change the Sentinel hasn't replayed yet (C1 right after a demo reset) has no subgraph:
+        # show the whole tenant instead of failing, since change_id only filters/highlights.
         scope = g.query(cypher("api_change_scope"), {"change_id": change_id}).result_set
-        if not scope:
-            raise HTTPException(404, f"unknown change {change_id!r}")
-        ids = scope[0][0]
+        ids = scope[0][0] if scope else None
     nodes = [
         {"id": n["id"], "kind": n["kind"], "label": n["label"], "synthetic": bool(n["synthetic"]),
          "risk": n["risk"], "status": _node_status(n)}
@@ -108,11 +109,26 @@ def change_detail(change_id: str, tenant: str) -> dict:
     return rows[0]
 
 
+def _pending(change_id: str) -> bool:
+    """True for a real handbook change that the Sentinel hasn't replayed into this tenant yet."""
+    return any(c["id"] == change_id for c in handbook_changes.load_data()["changes"])
+
+
+def _known(change_id: str, tenant: str) -> bool:
+    """True if the change is in the graph; False if it's still pending; 404 if it doesn't exist at all."""
+    if _changes(tenant, change_id):
+        return True
+    if _pending(change_id):
+        return False
+    raise HTTPException(404, f"unknown change {change_id!r}")
+
+
 @app.get("/api/changes/{change_id}/impact")
 def change_impact(change_id: str, tenant: str) -> dict:
     """TTH queue. After the Tracer ran it reads the IMPACTS edges; before that it ranks live
-    (same impact + ranking code, nothing written), so the queue is never empty for a known change."""
-    change_detail(change_id, tenant)  # 404 for unknown changes
+    (same impact + ranking code, nothing written). A change not detected yet has an empty queue."""
+    if not _known(change_id, tenant):
+        return {"change_id": change_id, "total_impacted": 0, "items": []}
     items = _rows(_graph(tenant).query(cypher("api_impact_queue"), {"change_id": change_id}))
     if not items:
         ranked = rank(tenant, impact_of(tenant, change_id=change_id), now=now_ms())
@@ -129,7 +145,8 @@ def change_impact(change_id: str, tenant: str) -> dict:
 
 @app.get("/api/changes/{change_id}/coverage")
 def change_coverage(change_id: str, tenant: str) -> dict:
-    change_detail(change_id, tenant)
+    if not _known(change_id, tenant):  # not detected yet: nothing impacted, nothing resolved
+        return {"change_id": change_id, "impacted": 0, "resolved": 0, "pct": 0.0, "by_kind": {}}
     return {"change_id": change_id, **coverage(tenant, change_id)}
 
 
