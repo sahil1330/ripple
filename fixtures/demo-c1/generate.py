@@ -2,7 +2,8 @@
 
     python fixtures/demo-c1/generate.py   # uses FALKORDB_HOST/PORT; fixed clock RIPPLE_NOW_MS
 
-Runs reset + the 9 demo steps on a scratch tenant and snapshots every endpoint at the moment
+Runs reset + the 9 demo steps on ``handbook-demo`` (this resets both demo graphs, so use a local
+FalkorDB) and snapshots every endpoint at the moment
 the UI shows it (graph + TTH queue right after the hero block, coverage after the Fixer).
 Answer ids are random per run; everything else is deterministic (fixed clock, seeded data).
 """
@@ -23,14 +24,14 @@ from fastapi.testclient import TestClient  # noqa: E402
 from api import main as api_main  # noqa: E402
 
 OUT = Path(__file__).parent
-SCRATCH = "fixtures-gen"
-TENANT = "handbook-demo"  # the tenant id written into the fixtures
+# Runs on the real demo tenant ids (a local FalkorDB: both graphs are reset). Beat 8 runs the
+# second tenant, so its events carry tenant "acme-synthetic".
+TENANT = "handbook-demo"
 
 
 def main() -> None:
-    api_main.TENANTS.append({"id": SCRATCH, "name": "scratch"})
     c = TestClient(api_main.app)
-    q = {"tenant": SCRATCH}
+    q = {"tenant": TENANT}
     files: dict[str, object] = {}
 
     def get(path, **params):
@@ -43,7 +44,7 @@ def main() -> None:
 
     files["demo-reset.json"] = c.post("/api/demo/reset", json=q).json()
     files["health.json"] = get("/api/health")
-    files["tenants.json"] = [t for t in get("/api/tenants") if t["id"] != SCRATCH]
+    files["tenants.json"] = get("/api/tenants")
     steps = [step(), step()]
     steps += [step(), step(), step()]  # Sentinel, Tracer, hero block
     files["graph.json"] = get("/api/graph", change_id="chg:c1")
@@ -61,24 +62,22 @@ def main() -> None:
     for name, s in (("ask-before.json", steps[1]), ("ask-after.json", steps[6])):
         p = s["events"][0]["payload"]
         ans = (
-            api_main.tenant_graph(SCRATCH)
+            api_main.tenant_graph(TENANT)
             .query("MATCH (a:Answer {id: $id}) RETURN a.text", {"id": p["answer_id"]})
             .result_set[0][0]
         )
         src = (
-            api_main.tenant_graph(SCRATCH)
+            api_main.tenant_graph(TENANT)
             .query("MATCH (v:FactVersion {id: $id}) RETURN v.source_url", {"id": p["version_ids"][0]})
             .result_set[0][0]
         )
         files[name] = {"answer": ans, "versions": p["version_ids"], "source_url": src,
                        "earlier_told": p["earlier_told"], "answer_id": p["answer_id"]}  # fmt: skip
 
-    text = json.dumps(files).replace(SCRATCH, TENANT)
-    for name, body in json.loads(text).items():
+    for name, body in files.items():
         (OUT / name).write_text(json.dumps(body, indent=2, ensure_ascii=False) + "\n")
-    events = [e for s in json.loads(text)["demo-steps.json"] for e in s["events"]]
+    events = [e for s in steps for e in s["events"]]
     (OUT / "events.jsonl").write_text("".join(json.dumps(e, ensure_ascii=False) + "\n" for e in events))
-    api_main.tenant_graph(SCRATCH).delete()
     print(f"wrote {len(files) + 1} files to {OUT.relative_to(ROOT)}")
 
 

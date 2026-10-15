@@ -17,7 +17,7 @@
         "at": 1784048402000,
         "tenant": "handbook-demo",
         "payload": {
-          "answer_id": "ans:00c9d754cbf8",
+          "answer_id": "ans:92371e9ac471",
           "person_id": "person:priya",
           "version_ids": [
             "fv:vpn:v1"
@@ -779,7 +779,7 @@
         "at": 1784048406000,
         "tenant": "handbook-demo",
         "payload": {
-          "answer_id": "ans:64216e18b04c",
+          "answer_id": "ans:eca00f6a9e48",
           "person_id": "person:14",
           "version_ids": [
             "fv:vpn:v2"
@@ -827,7 +827,7 @@
         "at": 1784048406000,
         "tenant": "handbook-demo",
         "payload": {
-          "answer_id": "ans:83d232b80cac",
+          "answer_id": "ans:724ad20555e0",
           "person_id": "person:16",
           "version_ids": [
             "fv:vpn:v2"
@@ -875,7 +875,7 @@
         "at": 1784048406000,
         "tenant": "handbook-demo",
         "payload": {
-          "answer_id": "ans:5c76ad734677",
+          "answer_id": "ans:89e6e846c106",
           "person_id": "person:19",
           "version_ids": [
             "fv:vpn:v2"
@@ -923,7 +923,7 @@
         "at": 1784048406000,
         "tenant": "handbook-demo",
         "payload": {
-          "answer_id": "ans:c7fa9980d554",
+          "answer_id": "ans:f618a1fde008",
           "person_id": "person:20",
           "version_ids": [
             "fv:vpn:v2"
@@ -971,7 +971,7 @@
         "at": 1784048406000,
         "tenant": "handbook-demo",
         "payload": {
-          "answer_id": "ans:c62fb2077b71",
+          "answer_id": "ans:4d186fc620f4",
           "person_id": "person:23",
           "version_ids": [
             "fv:vpn:v2"
@@ -1019,7 +1019,7 @@
         "at": 1784048406000,
         "tenant": "handbook-demo",
         "payload": {
-          "answer_id": "ans:e6f21444df15",
+          "answer_id": "ans:c45c1713fd69",
           "person_id": "person:25",
           "version_ids": [
             "fv:vpn:v2"
@@ -1067,7 +1067,7 @@
         "at": 1784048406000,
         "tenant": "handbook-demo",
         "payload": {
-          "answer_id": "ans:9402eece718d",
+          "answer_id": "ans:6d1339130a58",
           "person_id": "person:26",
           "version_ids": [
             "fv:vpn:v2"
@@ -1115,7 +1115,7 @@
         "at": 1784048406000,
         "tenant": "handbook-demo",
         "payload": {
-          "answer_id": "ans:33e11555aec7",
+          "answer_id": "ans:4ebf505d5270",
           "person_id": "person:28",
           "version_ids": [
             "fv:vpn:v2"
@@ -1163,7 +1163,7 @@
         "at": 1784048406000,
         "tenant": "handbook-demo",
         "payload": {
-          "answer_id": "ans:f795363d6290",
+          "answer_id": "ans:72aeb3e1775c",
           "person_id": "person:priya",
           "version_ids": [
             "fv:vpn:v2"
@@ -1331,7 +1331,7 @@
         "at": 1784048406000,
         "tenant": "handbook-demo",
         "payload": {
-          "answer_id": "ans:2385147cc1a3",
+          "answer_id": "ans:c6cc637c8e97",
           "person_id": "person:11",
           "version_ids": [
             "fv:vpn:v2"
@@ -1379,7 +1379,7 @@
         "at": 1784048406000,
         "tenant": "handbook-demo",
         "payload": {
-          "answer_id": "ans:2b3f89f525b9",
+          "answer_id": "ans:dda2a440400e",
           "person_id": "person:18",
           "version_ids": [
             "fv:vpn:v2"
@@ -1426,7 +1426,7 @@
         "at": 1784048407000,
         "tenant": "handbook-demo",
         "payload": {
-          "answer_id": "ans:55c4593206ff",
+          "answer_id": "ans:7dd95347edef",
           "person_id": "person:priya",
           "version_ids": [
             "fv:vpn:v2"
@@ -1445,8 +1445,1375 @@
     "step": 8,
     "total_steps": 9,
     "name": "Why? and tenant isolation",
-    "description": "Every decision is traceable: open Why? on any node (explain path + Cypher). Each company is its own graph.",
+    "description": "Every decision is traceable: open Why? on any node (explain path + Cypher). A second company runs the same agents in its own graph; this one is untouched.",
     "events": [
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "handbook-demo",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 24,
+          "pct": 100.0
+        }
+      },
+      {
+        "type": "change.detected",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "fact_key": "expense.vpn.personal_subscription",
+          "old_version": "fv:vpn:v1",
+          "new_version": "fv:vpn:v2",
+          "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20421"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:trace:c1:chg:c1",
+          "kind": "trace",
+          "priority": 0,
+          "risk": null,
+          "target_id": "chg:c1"
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:trace:c1:chg:c1",
+          "agent_id": "agent:tracer"
+        }
+      },
+      {
+        "type": "impact.computed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "by_kind": {
+            "Action": 2,
+            "Agent": 2,
+            "Plan": 1,
+            "Person": 13,
+            "DerivedFact": 1,
+            "Doc": 5
+          }
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:agent:ap-approver",
+          "kind": "reanswer",
+          "priority": 1,
+          "risk": 0.6,
+          "target_id": "agent:ap-approver"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:replan:c1:plan:ap-queue",
+          "kind": "replan",
+          "priority": 2,
+          "risk": 0.5548,
+          "target_id": "plan:ap-queue"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:notify:c1:person:ravi",
+          "kind": "notify",
+          "priority": 3,
+          "risk": 0.5,
+          "target_id": "person:ravi"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:fix_doc:c1:doc:hb:finance:expenses",
+          "kind": "fix_doc",
+          "priority": 4,
+          "risk": 0.0318,
+          "target_id": "doc:hb:finance:expenses"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:agent:it-helpdesk-bot",
+          "kind": "reanswer",
+          "priority": 5,
+          "risk": 0.025,
+          "target_id": "agent:it-helpdesk-bot"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:fix_doc:c1:doc:wiki-it-onboarding",
+          "kind": "fix_doc",
+          "priority": 6,
+          "risk": 0.0238,
+          "target_id": "doc:wiki-it-onboarding"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:07",
+          "kind": "reanswer",
+          "priority": 7,
+          "risk": 0.0208,
+          "target_id": "person:07"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:08",
+          "kind": "reanswer",
+          "priority": 8,
+          "risk": 0.0208,
+          "target_id": "person:08"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:10",
+          "kind": "reanswer",
+          "priority": 9,
+          "risk": 0.0208,
+          "target_id": "person:10"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:15",
+          "kind": "reanswer",
+          "priority": 10,
+          "risk": 0.0208,
+          "target_id": "person:15"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:17",
+          "kind": "reanswer",
+          "priority": 11,
+          "risk": 0.0208,
+          "target_id": "person:17"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:19",
+          "kind": "reanswer",
+          "priority": 12,
+          "risk": 0.0208,
+          "target_id": "person:19"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:21",
+          "kind": "reanswer",
+          "priority": 13,
+          "risk": 0.0208,
+          "target_id": "person:21"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:22",
+          "kind": "reanswer",
+          "priority": 14,
+          "risk": 0.0208,
+          "target_id": "person:22"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:28",
+          "kind": "reanswer",
+          "priority": 15,
+          "risk": 0.0208,
+          "target_id": "person:28"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:priya",
+          "kind": "reanswer",
+          "priority": 16,
+          "risk": 0.0208,
+          "target_id": "person:priya"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:notify:c1:person:14",
+          "kind": "notify",
+          "priority": 17,
+          "risk": 0.0208,
+          "target_id": "person:14"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:fix_doc:c1:doc:faq-remote",
+          "kind": "fix_doc",
+          "priority": 18,
+          "risk": 0.0205,
+          "target_id": "doc:faq-remote"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:fix_doc:c1:doc:hb:finance:travel",
+          "kind": "fix_doc",
+          "priority": 19,
+          "risk": 0.0197,
+          "target_id": "doc:hb:finance:travel"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:fix_doc:c1:doc:wiki-travel-security",
+          "kind": "fix_doc",
+          "priority": 20,
+          "risk": 0.0188,
+          "target_id": "doc:wiki-travel-security"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:11",
+          "kind": "reanswer",
+          "priority": 21,
+          "risk": 0.0052,
+          "target_id": "person:11"
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:trace:c1:chg:c1",
+          "agent_id": "agent:tracer",
+          "outcome": "traced"
+        }
+      },
+      {
+        "type": "action.blocked",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "action_id": "act:approve-vpn-priya",
+          "stale_version": "fv:vpn:v1",
+          "current_version": "fv:vpn:v2",
+          "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20421",
+          "via": "df:ap-vpn-rule"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:replan:c1:act:approve-vpn-priya",
+          "kind": "replan",
+          "priority": 0,
+          "risk": 1.0,
+          "target_id": "act:approve-vpn-priya"
+        }
+      },
+      {
+        "type": "action.blocked",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "action_id": "act:approve-phone-ap",
+          "stale_version": "fv:vpn:v1",
+          "current_version": "fv:vpn:v2",
+          "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20421",
+          "via": "df:ap-vpn-rule"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:replan:c1:act:approve-phone-ap",
+          "kind": "replan",
+          "priority": 0,
+          "risk": 1.0,
+          "target_id": "act:approve-phone-ap"
+        }
+      },
+      {
+        "type": "action.blocked",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "action_id": "act:book-emea-cowork",
+          "stale_version": "fv:cowork:v1",
+          "current_version": "fv:cowork:v3",
+          "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20839",
+          "via": "fv:cowork:v1"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:replan:c4a:act:book-emea-cowork",
+          "kind": "replan",
+          "priority": 0,
+          "risk": 1.0,
+          "target_id": "act:book-emea-cowork"
+        }
+      },
+      {
+        "type": "action.blocked",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "action_id": "act:book-offsite-dinners",
+          "stale_version": "fv:meals:v1",
+          "current_version": "fv:meals:v2",
+          "source_url": "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20015",
+          "via": "df:offsite-meals"
+        }
+      },
+      {
+        "type": "task.created",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:replan:c2:act:book-offsite-dinners",
+          "kind": "replan",
+          "priority": 0,
+          "risk": 1.0,
+          "target_id": "act:book-offsite-dinners"
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:replan:c1:act:approve-phone-ap",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:replan:c1:act:approve-phone-ap",
+          "agent_id": "agent:fixer",
+          "outcome": "replanned 4"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 4,
+          "pct": 16.7
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:replan:c1:act:approve-vpn-priya",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:replan:c1:act:approve-vpn-priya",
+          "agent_id": "agent:fixer",
+          "outcome": "replanned 3"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 4,
+          "pct": 16.7
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:replan:c2:act:book-offsite-dinners",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:replan:c2:act:book-offsite-dinners",
+          "agent_id": "agent:fixer",
+          "outcome": "replanned 3"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c2",
+          "impacted": 0,
+          "resolved": 0,
+          "pct": 100.0
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:replan:c4a:act:book-emea-cowork",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:replan:c4a:act:book-emea-cowork",
+          "agent_id": "agent:fixer",
+          "outcome": "replanned 2"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c4a",
+          "impacted": 0,
+          "resolved": 0,
+          "pct": 100.0
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:agent:ap-approver",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:agent:ap-approver",
+          "agent_id": "agent:fixer",
+          "outcome": "memory refreshed"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 5,
+          "pct": 20.8
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:replan:c1:plan:ap-queue",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:replan:c1:plan:ap-queue",
+          "agent_id": "agent:fixer",
+          "outcome": "replanned 3"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 5,
+          "pct": 20.8
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:notify:c1:person:ravi",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:notify:c1:person:ravi",
+          "agent_id": "agent:fixer",
+          "outcome": "briefed"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 6,
+          "pct": 25.0
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:fix_doc:c1:doc:hb:finance:expenses",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:fix_doc:c1:doc:hb:finance:expenses",
+          "agent_id": "agent:fixer",
+          "outcome": "patch drafted"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 7,
+          "pct": 29.2
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:agent:it-helpdesk-bot",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:agent:it-helpdesk-bot",
+          "agent_id": "agent:fixer",
+          "outcome": "memory refreshed"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 8,
+          "pct": 33.3
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:fix_doc:c1:doc:wiki-it-onboarding",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:fix_doc:c1:doc:wiki-it-onboarding",
+          "agent_id": "agent:fixer",
+          "outcome": "patch drafted"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 9,
+          "pct": 37.5
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:07",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "answer.sent",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "answer_id": "ans:d79c605de079",
+          "person_id": "person:07",
+          "version_ids": [
+            "fv:vpn:v2"
+          ],
+          "earlier_told": {
+            "version_id": "fv:vpn:v1",
+            "value": "reimbursable up to $150 per year",
+            "at": 1783762027214,
+            "text": "Earlier I told you: reimbursable up to $150 per year. That changed on Jul 14, 2026 (MR !20421)."
+          }
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:07",
+          "agent_id": "agent:fixer",
+          "outcome": "reanswered"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 10,
+          "pct": 41.7
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:08",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "answer.sent",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "answer_id": "ans:0929cd62e319",
+          "person_id": "person:08",
+          "version_ids": [
+            "fv:vpn:v2"
+          ],
+          "earlier_told": {
+            "version_id": "fv:vpn:v1",
+            "value": "reimbursable up to $150 per year",
+            "at": 1782711446453,
+            "text": "Earlier I told you: reimbursable up to $150 per year. That changed on Jul 14, 2026 (MR !20421)."
+          }
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:08",
+          "agent_id": "agent:fixer",
+          "outcome": "reanswered"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 11,
+          "pct": 45.8
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:10",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "answer.sent",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "answer_id": "ans:4257df48eb9d",
+          "person_id": "person:10",
+          "version_ids": [
+            "fv:vpn:v2"
+          ],
+          "earlier_told": {
+            "version_id": "fv:vpn:v1",
+            "value": "reimbursable up to $150 per year",
+            "at": 1782081813014,
+            "text": "Earlier I told you: reimbursable up to $150 per year. That changed on Jul 14, 2026 (MR !20421)."
+          }
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:10",
+          "agent_id": "agent:fixer",
+          "outcome": "reanswered"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 12,
+          "pct": 50.0
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:15",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "answer.sent",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "answer_id": "ans:f83bbce0b9cb",
+          "person_id": "person:15",
+          "version_ids": [
+            "fv:vpn:v2"
+          ],
+          "earlier_told": {
+            "version_id": "fv:vpn:v1",
+            "value": "reimbursable up to $150 per year",
+            "at": 1782058233838,
+            "text": "Earlier I told you: reimbursable up to $150 per year. That changed on Jul 14, 2026 (MR !20421)."
+          }
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:15",
+          "agent_id": "agent:fixer",
+          "outcome": "reanswered"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 13,
+          "pct": 54.2
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:17",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "answer.sent",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "answer_id": "ans:8977754d13f1",
+          "person_id": "person:17",
+          "version_ids": [
+            "fv:vpn:v2"
+          ],
+          "earlier_told": {
+            "version_id": "fv:vpn:v1",
+            "value": "reimbursable up to $150 per year",
+            "at": 1782384238385,
+            "text": "Earlier I told you: reimbursable up to $150 per year. That changed on Jul 14, 2026 (MR !20421)."
+          }
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:17",
+          "agent_id": "agent:fixer",
+          "outcome": "reanswered"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 14,
+          "pct": 58.3
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:19",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "answer.sent",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "answer_id": "ans:124b2dff22e6",
+          "person_id": "person:19",
+          "version_ids": [
+            "fv:vpn:v2"
+          ],
+          "earlier_told": {
+            "version_id": "fv:vpn:v1",
+            "value": "reimbursable up to $150 per year",
+            "at": 1782004963159,
+            "text": "Earlier I told you: reimbursable up to $150 per year. That changed on Jul 14, 2026 (MR !20421)."
+          }
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:19",
+          "agent_id": "agent:fixer",
+          "outcome": "reanswered"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 15,
+          "pct": 62.5
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:21",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "answer.sent",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "answer_id": "ans:b39979a26167",
+          "person_id": "person:21",
+          "version_ids": [
+            "fv:vpn:v2"
+          ],
+          "earlier_told": {
+            "version_id": "fv:vpn:v1",
+            "value": "reimbursable up to $150 per year",
+            "at": 1783639208265,
+            "text": "Earlier I told you: reimbursable up to $150 per year. That changed on Jul 14, 2026 (MR !20421)."
+          }
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:21",
+          "agent_id": "agent:fixer",
+          "outcome": "reanswered"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 16,
+          "pct": 66.7
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:22",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "answer.sent",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "answer_id": "ans:cc4d3e16460e",
+          "person_id": "person:22",
+          "version_ids": [
+            "fv:vpn:v2"
+          ],
+          "earlier_told": {
+            "version_id": "fv:vpn:v1",
+            "value": "reimbursable up to $150 per year",
+            "at": 1782127187472,
+            "text": "Earlier I told you: reimbursable up to $150 per year. That changed on Jul 14, 2026 (MR !20421)."
+          }
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:22",
+          "agent_id": "agent:fixer",
+          "outcome": "reanswered"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 17,
+          "pct": 70.8
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:28",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "answer.sent",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "answer_id": "ans:3627afc07009",
+          "person_id": "person:28",
+          "version_ids": [
+            "fv:vpn:v2"
+          ],
+          "earlier_told": {
+            "version_id": "fv:vpn:v1",
+            "value": "reimbursable up to $150 per year",
+            "at": 1781558939853,
+            "text": "Earlier I told you: reimbursable up to $150 per year. That changed on Jul 14, 2026 (MR !20421)."
+          }
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:28",
+          "agent_id": "agent:fixer",
+          "outcome": "reanswered"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 18,
+          "pct": 75.0
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:priya",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "answer.sent",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "answer_id": "ans:25938aaa3303",
+          "person_id": "person:priya",
+          "version_ids": [
+            "fv:vpn:v2"
+          ],
+          "earlier_told": {
+            "version_id": "fv:vpn:v1",
+            "value": "reimbursable up to $150 per year",
+            "at": 1781907998005,
+            "text": "Earlier I told you: reimbursable up to $150 per year. That changed on Jul 14, 2026 (MR !20421)."
+          }
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:priya",
+          "agent_id": "agent:fixer",
+          "outcome": "reanswered"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 19,
+          "pct": 79.2
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:notify:c1:person:14",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:notify:c1:person:14",
+          "agent_id": "agent:fixer",
+          "outcome": "briefed"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 20,
+          "pct": 83.3
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:fix_doc:c1:doc:faq-remote",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:fix_doc:c1:doc:faq-remote",
+          "agent_id": "agent:fixer",
+          "outcome": "patch drafted"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 21,
+          "pct": 87.5
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:fix_doc:c1:doc:hb:finance:travel",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:fix_doc:c1:doc:hb:finance:travel",
+          "agent_id": "agent:fixer",
+          "outcome": "patch drafted"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 22,
+          "pct": 91.7
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:fix_doc:c1:doc:wiki-travel-security",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:fix_doc:c1:doc:wiki-travel-security",
+          "agent_id": "agent:fixer",
+          "outcome": "patch drafted"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 23,
+          "pct": 95.8
+        }
+      },
+      {
+        "type": "task.claimed",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:11",
+          "agent_id": "agent:fixer"
+        }
+      },
+      {
+        "type": "answer.sent",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "answer_id": "ans:5a5974ed8273",
+          "person_id": "person:11",
+          "version_ids": [
+            "fv:vpn:v2"
+          ],
+          "earlier_told": {
+            "version_id": "fv:vpn:v1",
+            "value": "reimbursable up to $150 per year",
+            "at": 1782550823747,
+            "text": "Earlier I told you: reimbursable up to $150 per year. That changed on Jul 14, 2026 (MR !20421)."
+          }
+        }
+      },
+      {
+        "type": "task.done",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "task_id": "task:reanswer:c1:person:11",
+          "agent_id": "agent:fixer",
+          "outcome": "reanswered"
+        }
+      },
+      {
+        "type": "coverage.updated",
+        "at": 1784048408000,
+        "tenant": "acme-synthetic",
+        "payload": {
+          "change_id": "chg:c1",
+          "impacted": 24,
+          "resolved": 24,
+          "pct": 100.0
+        }
+      },
       {
         "type": "coverage.updated",
         "at": 1784048408000,
