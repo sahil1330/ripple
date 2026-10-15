@@ -28,6 +28,7 @@ from graph.tools import coverage, explain_path, now_ms
 app = FastAPI(title="Ripple API", version="1.0.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
+
 TENANTS = [
     {"id": "handbook-demo", "name": "GitLab handbook (real changes + synthetic people)"},
     {"id": "acme-synthetic", "name": "Acme (fully synthetic)"},
@@ -198,3 +199,9 @@ async def stream(tenant: str):
             bus.unsubscribe(tenant, queue)
 
     return EventSourceResponse(gen(), ping=15)
+
+
+# Demo stepper (plan §9): POST /api/demo/step and /api/demo/reset, see api/demo.py.
+from api.demo import router as demo_router  # noqa: E402  (demo imports TENANTS from this module)
+
+app.include_router(demo_router)

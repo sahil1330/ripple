@@ -20,3 +20,9 @@ against FalkorDB module v4.18.3 and v6.0.2 locally and `falkordb/falkordb:latest
 | ⚠️ v6.0 planner bug | On `falkordb:latest` (v6.0.2) a `WHERE 'X' IN labels(s)` right after `MATCH (s {id:$id})` gets applied to a later scan, silently returning no rows | Put `WITH s` right after that WHERE (done in `check_fresh.cypher`). Local tests now run on both 4.18.3 and 6.0.2 |
 | ⚠️ `algo.betweenness` across versions | Raw scores differ between v4.18 and v6 (e.g. 24 vs 4 for the top node), and on v6 `samplingSize: 64` gives a different ranking | Run it exact (no sampling, the graph is small), normalise scores, and only rely on the ranking order |
 | Params in `LIMIT` | works on 4.18, but docs say unsupported | Still don't use them; inline constant limits |
+
+### Betweenness sampling (found while building the demo stepper, #31)
+`algo.betweenness` without `samplingSize` samples a small set of source nodes. On the same 188-node
+graph, scores differed after every drop-and-reload, which changed TTH risk values between demo runs.
+Both betweenness queries now pass `samplingSize: 100000` (above any tenant's node count) and
+`samplingSeed: 42`. Verified identical across 3 reload cycles on v4.18.3 and v6.0.2.
