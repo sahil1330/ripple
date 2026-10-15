@@ -1,0 +1,10 @@
+[
+  {
+    "id": "handbook-demo",
+    "name": "GitLab handbook (real changes + synthetic people)"
+  },
+  {
+    "id": "acme-synthetic",
+    "name": "Acme (fully synthetic)"
+  }
+]
