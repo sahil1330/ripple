@@ -14,6 +14,7 @@ import {
   getTenants,
 } from "@/lib/api";
 import { GraphCanvas } from "@/components/graph";
+import { BeforeAfterPanel } from "@/components/before-after";
 import {
   AskResponse,
   ChangeDetail,
@@ -295,39 +296,7 @@ export default function Home() {
 
           {/* Before / After Panel */}
           <div className="border-b border-slate-800 p-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs font-semibold text-slate-300">Policy Change: C1</h3>
-              <span className="rounded bg-indigo-500/10 px-1.5 py-0.5 font-mono text-[10px] text-indigo-400 border border-indigo-500/20">
-                {changeDetail?.status ?? "resolving"}
-              </span>
-            </div>
-            <p className="mt-1 text-xs text-slate-400">{changeDetail?.title}</p>
-
-            <div className="mt-3 space-y-2">
-              <div className="rounded border border-rose-900/40 bg-rose-950/20 p-2.5 text-xs">
-                <span className="font-semibold text-rose-400">Before (Stale): </span>
-                <span className="text-slate-300">{changeDetail?.before.value}</span>
-                <p className="mt-1 text-[11px] text-slate-400 italic">“{changeDetail?.before.excerpt}”</p>
-              </div>
-              <div className="rounded border border-emerald-900/40 bg-emerald-950/20 p-2.5 text-xs">
-                <span className="font-semibold text-emerald-400">After (Current): </span>
-                <span className="text-slate-300">{changeDetail?.after.value}</span>
-                <p className="mt-1 text-[11px] text-slate-400 italic">“{changeDetail?.after.excerpt}”</p>
-              </div>
-            </div>
-
-            {changeDetail?.mr_url && (
-              <div className="mt-3">
-                <a
-                  href={changeDetail.mr_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-[11px] text-indigo-400 underline hover:text-indigo-300"
-                >
-                  GitLab MR !20421 (ddd39597) ↗
-                </a>
-              </div>
-            )}
+            <BeforeAfterPanel detail={changeDetail} />
           </div>
 
           {/* Time-To-Harm Prioritized Queue */}
