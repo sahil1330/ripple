@@ -1,0 +1,480 @@
+{
+  "nodes": [
+    {
+      "id": "act:approve-phone-ap",
+      "kind": "Action",
+      "label": "Approve $95 phone bill (over $80, exception)",
+      "synthetic": true,
+      "risk": 0.6731,
+      "status": "blocked"
+    },
+    {
+      "id": "act:approve-vpn-priya",
+      "kind": "Action",
+      "label": "Approve Priya's ExpressVPN claim ($150)",
+      "synthetic": true,
+      "risk": 1.0357,
+      "status": "blocked"
+    },
+    {
+      "id": "agent:ap-approver",
+      "kind": "Agent",
+      "label": "ap-approver",
+      "synthetic": true,
+      "risk": 0.6,
+      "status": "impacted"
+    },
+    {
+      "id": "agent:it-helpdesk-bot",
+      "kind": "Agent",
+      "label": "it-helpdesk-bot",
+      "synthetic": true,
+      "risk": 0.025,
+      "status": "impacted"
+    },
+    {
+      "id": "chg:c1",
+      "kind": "Change",
+      "label": "Personal VPN subscriptions no longer reimbursable",
+      "synthetic": false,
+      "risk": null,
+      "status": "resolving"
+    },
+    {
+      "id": "df:ap-vpn-rule",
+      "kind": "DerivedFact",
+      "label": "Auto-approve personal VPN claims up to $150/year",
+      "synthetic": true,
+      "risk": 0.05,
+      "status": "impacted"
+    },
+    {
+      "id": "doc:faq-remote",
+      "kind": "Doc",
+      "label": "Remote work FAQ",
+      "synthetic": true,
+      "risk": 0.0205,
+      "status": "impacted"
+    },
+    {
+      "id": "doc:hb:finance:expenses",
+      "kind": "Doc",
+      "label": "Global Travel and Expense Policy",
+      "synthetic": false,
+      "risk": 0.0318,
+      "status": "impacted"
+    },
+    {
+      "id": "doc:hb:finance:travel",
+      "kind": "Doc",
+      "label": "Travel Safety and Security",
+      "synthetic": false,
+      "risk": 0.0197,
+      "status": "impacted"
+    },
+    {
+      "id": "doc:wiki-it-onboarding",
+      "kind": "Doc",
+      "label": "IT onboarding checklist",
+      "synthetic": true,
+      "risk": 0.0238,
+      "status": "impacted"
+    },
+    {
+      "id": "doc:wiki-travel-security",
+      "kind": "Doc",
+      "label": "Security tips for travel",
+      "synthetic": true,
+      "risk": 0.0188,
+      "status": "impacted"
+    },
+    {
+      "id": "fact:expense.vpn.personal_subscription",
+      "kind": "Fact",
+      "label": "Personal VPN subscriptions",
+      "synthetic": false,
+      "risk": null,
+      "status": null
+    },
+    {
+      "id": "fv:vpn:v1",
+      "kind": "FactVersion",
+      "label": "reimbursable up to $150 per year",
+      "synthetic": false,
+      "risk": null,
+      "status": "stale"
+    },
+    {
+      "id": "fv:vpn:v2",
+      "kind": "FactVersion",
+      "label": "not reimbursable; use NordLayer (company VPN)",
+      "synthetic": false,
+      "risk": null,
+      "status": "current"
+    },
+    {
+      "id": "person:10",
+      "kind": "Person",
+      "label": "Hana Larsen",
+      "synthetic": true,
+      "risk": 0.0208,
+      "status": "impacted"
+    },
+    {
+      "id": "person:11",
+      "kind": "Person",
+      "label": "Gita Cruz",
+      "synthetic": true,
+      "risk": 0.0052,
+      "status": "impacted"
+    },
+    {
+      "id": "person:14",
+      "kind": "Person",
+      "label": "Chen Kim",
+      "synthetic": true,
+      "risk": 0.0208,
+      "status": "impacted"
+    },
+    {
+      "id": "person:16",
+      "kind": "Person",
+      "label": "Sven Becker",
+      "synthetic": true,
+      "risk": 0.0208,
+      "status": "impacted"
+    },
+    {
+      "id": "person:18",
+      "kind": "Person",
+      "label": "Tara Nagy",
+      "synthetic": true,
+      "risk": 0.0026,
+      "status": "impacted"
+    },
+    {
+      "id": "person:19",
+      "kind": "Person",
+      "label": "Mateo Mensah",
+      "synthetic": true,
+      "risk": 0.0208,
+      "status": "impacted"
+    },
+    {
+      "id": "person:20",
+      "kind": "Person",
+      "label": "Ana Okafor",
+      "synthetic": true,
+      "risk": 0.0208,
+      "status": "impacted"
+    },
+    {
+      "id": "person:23",
+      "kind": "Person",
+      "label": "Femi Moreau",
+      "synthetic": true,
+      "risk": 0.0208,
+      "status": "impacted"
+    },
+    {
+      "id": "person:25",
+      "kind": "Person",
+      "label": "Rosa Silva",
+      "synthetic": true,
+      "risk": 0.0208,
+      "status": "impacted"
+    },
+    {
+      "id": "person:26",
+      "kind": "Person",
+      "label": "Yuki Kim",
+      "synthetic": true,
+      "risk": 0.0208,
+      "status": "impacted"
+    },
+    {
+      "id": "person:28",
+      "kind": "Person",
+      "label": "Sven Moreau",
+      "synthetic": true,
+      "risk": 0.0208,
+      "status": "impacted"
+    },
+    {
+      "id": "person:priya",
+      "kind": "Person",
+      "label": "Priya Sharma",
+      "synthetic": true,
+      "risk": 0.0208,
+      "status": "impacted"
+    },
+    {
+      "id": "person:ravi",
+      "kind": "Person",
+      "label": "Ravi Iyer",
+      "synthetic": true,
+      "risk": 0.5,
+      "status": "impacted"
+    },
+    {
+      "id": "plan:ap-queue",
+      "kind": "Plan",
+      "label": "Expense approvals queue (AP worker agent)",
+      "synthetic": true,
+      "risk": 0.5441,
+      "status": "active"
+    }
+  ],
+  "links": [
+    {
+      "source": "act:approve-phone-ap",
+      "target": "plan:ap-queue",
+      "type": "PART_OF"
+    },
+    {
+      "source": "act:approve-vpn-priya",
+      "target": "df:ap-vpn-rule",
+      "type": "DEPENDS_ON"
+    },
+    {
+      "source": "act:approve-vpn-priya",
+      "target": "plan:ap-queue",
+      "type": "PART_OF"
+    },
+    {
+      "source": "agent:ap-approver",
+      "target": "act:approve-phone-ap",
+      "type": "OWNS"
+    },
+    {
+      "source": "agent:ap-approver",
+      "target": "act:approve-vpn-priya",
+      "type": "OWNS"
+    },
+    {
+      "source": "agent:ap-approver",
+      "target": "fv:vpn:v1",
+      "type": "CACHED"
+    },
+    {
+      "source": "agent:it-helpdesk-bot",
+      "target": "fv:vpn:v1",
+      "type": "CACHED"
+    },
+    {
+      "source": "chg:c1",
+      "target": "fv:vpn:v1",
+      "type": "FROM"
+    },
+    {
+      "source": "chg:c1",
+      "target": "fv:vpn:v2",
+      "type": "TO"
+    },
+    {
+      "source": "df:ap-vpn-rule",
+      "target": "fv:vpn:v1",
+      "type": "DERIVED_FROM"
+    },
+    {
+      "source": "doc:faq-remote",
+      "target": "doc:wiki-it-onboarding",
+      "type": "LINKS_TO"
+    },
+    {
+      "source": "doc:faq-remote",
+      "target": "fv:vpn:v1",
+      "type": "CITES"
+    },
+    {
+      "source": "doc:hb:finance:expenses",
+      "target": "fv:vpn:v1",
+      "type": "STATES"
+    },
+    {
+      "source": "doc:hb:finance:travel",
+      "target": "doc:hb:finance:expenses",
+      "type": "LINKS_TO"
+    },
+    {
+      "source": "doc:hb:finance:travel",
+      "target": "fv:vpn:v1",
+      "type": "CITES"
+    },
+    {
+      "source": "doc:wiki-it-onboarding",
+      "target": "fv:vpn:v1",
+      "type": "STATES"
+    },
+    {
+      "source": "doc:wiki-travel-security",
+      "target": "doc:faq-remote",
+      "type": "LINKS_TO"
+    },
+    {
+      "source": "doc:wiki-travel-security",
+      "target": "fv:vpn:v1",
+      "type": "CITES"
+    },
+    {
+      "source": "fact:expense.vpn.personal_subscription",
+      "target": "fv:vpn:v1",
+      "type": "HAS_VERSION"
+    },
+    {
+      "source": "fact:expense.vpn.personal_subscription",
+      "target": "fv:vpn:v2",
+      "type": "HAS_VERSION"
+    },
+    {
+      "source": "fv:vpn:v2",
+      "target": "fv:vpn:v1",
+      "type": "SUPERSEDES"
+    },
+    {
+      "source": "person:10",
+      "target": "doc:faq-remote",
+      "type": "OWNS"
+    },
+    {
+      "source": "person:10",
+      "target": "person:11",
+      "type": "TALKS_WITH"
+    },
+    {
+      "source": "person:11",
+      "target": "fv:vpn:v1",
+      "type": "WAS_TOLD"
+    },
+    {
+      "source": "person:14",
+      "target": "doc:wiki-it-onboarding",
+      "type": "OWNS"
+    },
+    {
+      "source": "person:14",
+      "target": "doc:wiki-travel-security",
+      "type": "OWNS"
+    },
+    {
+      "source": "person:14",
+      "target": "fv:vpn:v1",
+      "type": "WAS_TOLD"
+    },
+    {
+      "source": "person:14",
+      "target": "person:16",
+      "type": "TALKS_WITH"
+    },
+    {
+      "source": "person:14",
+      "target": "person:ravi",
+      "type": "TALKS_WITH"
+    },
+    {
+      "source": "person:16",
+      "target": "fv:vpn:v1",
+      "type": "WAS_TOLD"
+    },
+    {
+      "source": "person:18",
+      "target": "fv:vpn:v1",
+      "type": "WAS_TOLD"
+    },
+    {
+      "source": "person:18",
+      "target": "person:19",
+      "type": "TALKS_WITH"
+    },
+    {
+      "source": "person:19",
+      "target": "fv:vpn:v1",
+      "type": "WAS_TOLD"
+    },
+    {
+      "source": "person:19",
+      "target": "person:20",
+      "type": "TALKS_WITH"
+    },
+    {
+      "source": "person:20",
+      "target": "fv:vpn:v1",
+      "type": "WAS_TOLD"
+    },
+    {
+      "source": "person:20",
+      "target": "person:19",
+      "type": "TALKS_WITH"
+    },
+    {
+      "source": "person:23",
+      "target": "fv:vpn:v1",
+      "type": "WAS_TOLD"
+    },
+    {
+      "source": "person:23",
+      "target": "person:18",
+      "type": "TALKS_WITH"
+    },
+    {
+      "source": "person:23",
+      "target": "person:19",
+      "type": "TALKS_WITH"
+    },
+    {
+      "source": "person:25",
+      "target": "fv:vpn:v1",
+      "type": "WAS_TOLD"
+    },
+    {
+      "source": "person:25",
+      "target": "person:26",
+      "type": "TALKS_WITH"
+    },
+    {
+      "source": "person:26",
+      "target": "fv:vpn:v1",
+      "type": "WAS_TOLD"
+    },
+    {
+      "source": "person:28",
+      "target": "fv:vpn:v1",
+      "type": "WAS_TOLD"
+    },
+    {
+      "source": "person:28",
+      "target": "person:25",
+      "type": "TALKS_WITH"
+    },
+    {
+      "source": "person:priya",
+      "target": "fv:vpn:v1",
+      "type": "WAS_TOLD"
+    },
+    {
+      "source": "person:priya",
+      "target": "person:14",
+      "type": "TALKS_WITH"
+    },
+    {
+      "source": "person:priya",
+      "target": "person:18",
+      "type": "TALKS_WITH"
+    },
+    {
+      "source": "person:ravi",
+      "target": "person:10",
+      "type": "TALKS_WITH"
+    },
+    {
+      "source": "person:ravi",
+      "target": "plan:ap-queue",
+      "type": "OWNS"
+    },
+    {
+      "source": "plan:ap-queue",
+      "target": "df:ap-vpn-rule",
+      "type": "DEPENDS_ON"
+    }
+  ]
+}
