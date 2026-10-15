@@ -4,17 +4,10 @@
 set -euo pipefail
 
 TENANT="${1:-${RIPPLE_DEFAULT_TENANT:-handbook-demo}}"
-DEFAULT_SEED="42"
-if [ "${TENANT}" = "acme-synthetic" ]; then
-  DEFAULT_SEED="1337"
-fi
-SEED="${2:-${DEFAULT_SEED}}"
+SEED="${2:-42}"
 
 echo "==> Seeding Ripple tenant: ${TENANT} (seed=${SEED})"
 echo "==> Target FalkorDB: ${FALKORDB_HOST:-localhost}:${FALKORDB_PORT:-6379}"
-
-echo "0/3: Creating idempotent schema and indexes..."
-python -m graph.schema --tenant "${TENANT}"
 
 echo "1/3: Ingesting verified handbook changes (pending chg:c1)..."
 python -m ingest.handbook_changes --tenant "${TENANT}" --pending chg:c1
