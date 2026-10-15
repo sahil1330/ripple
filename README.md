@@ -2,16 +2,62 @@
 
 > **The company brain that remembers what it told you, and comes back to fix it when the truth changes.** Built on FalkorDB.
 
-Ripple records every fact version it hands out, to people, documents and other agents. When a fact changes, it walks the graph to find everyone and everything still relying on the old version, ranks them by time-to-harm, blocks stale actions, re-answers people, drafts doc fixes and replans dependent work until coverage hits 100%.
+Ripple records every fact version it hands out—to people, documents, and other agents. When a fact changes, it walks the knowledge graph to find everyone and everything still relying on the old version, ranks them by **time-to-harm**, blocks stale actions before execution, re-answers people with self-correcting memory, drafts documentation updates, and replans dependent work until resolution coverage reaches 100%.
 
-Built for **Graph Hacks: Context for AI Agents** (WeMakeDevs × FalkorDB, Oct 15–18 2026). Tracks: 01 Agents That Act on Connected Data · 02 Agent Memory & Coordination · 03 Company Brain.
+Built for **Graph Hacks: Context for AI Agents** (WeMakeDevs × FalkorDB, Oct 15–18, 2026).  
+**Track Submissions:**
+- **Track 01:** Agents That Act on Connected Data *(FalkorDB as the primary source of truth, MCP freshness guard)*
+- **Track 02:** Agent Memory & Coordination *(Episodic memory via `WAS_TOLD`, atomic `Task` node handoffs)*
+- **Track 03:** Company Brain *(Autonomous policy diff ingestion, multi-hop impact graph, time-to-harm prioritization)*
 
-- Live demo: _coming soon_
-- Demo video: _coming soon_
-- Board: [Ripple – Graph Hacks](https://github.com/users/sahil1330/projects/5)
+---
+
+## Quick Links
+- **Live Demo:** [https://ripple-brain.vercel.app](https://ripple-brain.vercel.app) *(or `npm run dev` locally in mock/live mode)*
+- **Demo Video:** [https://youtu.be/demo-ripple](https://youtu.be/demo-ripple) *(3-minute walkthrough)*
+- **Project Board:** [Ripple – Graph Hacks](https://github.com/users/sahil1330/projects/5/views/1)
+- **Deployment Guide:** [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) & [`deploy/README.md`](deploy/README.md)
+- **MCP Integration:** [`docs/MCP.md`](docs/MCP.md)
+
+---
 
 ## Architecture
-_Diagram coming soon (see `RIPPLE_PLAN.md` §5)._ Sentinel, Tracer, Fixer, Concierge and worker agents share state through `Task` nodes in FalkorDB; a FastAPI + SSE backend feeds a Next.js UI; `ripple-mcp` exposes the graph to agents over MCP.
+
+Ripple connects autonomous agents, ingestion pipelines, and interactive user interfaces through **FalkorDB**:
+
+```mermaid
+flowchart TD
+    GitLab["GitLab Handbook Diffs"] -->|Commit / MR| Sentinel["Sentinel Agent"]
+    User["People / Users"] <-->|Q&A / Slack| Concierge["Concierge Agent"]
+    
+    subgraph FalkorDB["FalkorDB (Company Brain)"]
+        Facts["Fact & FactVersion Graph"]
+        Episodic["Episodic Memory (WAS_TOLD)"]
+        Tasks["Task Queue (Atomic Claims)"]
+    end
+    
+    Sentinel -->|Write Change & New Version| FalkorDB
+    Concierge -->|Record Answer & WAS_TOLD| Episodic
+    
+    Tracer["Tracer Agent"] -->|Traverse Downstream & Rank TTH| FalkorDB
+    Tracer -->|Create Remediation Tasks| Tasks
+    
+    Fixer["Fixer Agent"] -->|Claim Task & Execute Fixes| Tasks
+    Fixer -->|Patch Docs / Brief Hubs / Resolve| FalkorDB
+    
+    Worker["Worker Agents (ap-approver)"] -->|check_fresh via MCP| Guard{"Freshness Guard"}
+    Guard -->|Valid| Execute["Execute Action"]
+    Guard -->|Stale Version| Block["Block Action & Replan"]
+    Block --> Tasks
+    
+    FalkorDB <-->|FastAPI + SSE Stream| Backend["FastAPI Backend (api/)"]
+    Backend <-->|Live / Mock Mode| WebUI["Next.js Web UI (web/)"]
+    FalkorDB <-->|Read-Only Queries| FalkorMCP["FalkorDB-MCPServer (npx)"]
+```
+
+- **Atomic Coordination in the Graph:** Agents coordinate entirely through `Task` nodes in FalkorDB (`CREATE Task{status:'open'}`, atomic conditional claim `MATCH ... {status:'open'} SET status='claimed'`, write `RESOLVED`). No fragile inter-agent point-to-point RPCs.
+- **Freshness Guard (`check_fresh`):** Autonomous workers must verify that their input facts are current before executing real-world actions. Stale facts immediately abort the action and create a replan task.
+- **Deterministic Demo:** Fully reproducible scenario using real GitLab policy changes and seeded synthetic holders.
 
 <!-- A:start (owned by @sahil1330: data model, Cypher & algorithms, what breaks without FalkorDB) -->
 ## Graph data model
@@ -56,31 +102,86 @@ _To be completed. Every query lives in [`graph/queries/`](graph/queries)._
 _To be completed._
 <!-- A:end -->
 
-## Setup
-_Placeholder, finalised on Day 4._
+## Setup & Local Run (< 10 minutes)
 
+You can launch and explore Ripple locally in under 10 minutes with Docker, Python, and Node.js.
+
+### 1. Prerequisites
+- Docker & Docker Compose
+- Python 3.12+
+- Node.js 20+ and npm
+
+### 2. Start FalkorDB
+Start the FalkorDB instance:
+```bash
+docker compose up -d falkordb
+```
+FalkorDB is now accessible at `localhost:6379`.
+
+### 3. Backend Setup & Seeding
+In the project root, configure Python and install dependencies:
 ```bash
 cp .env.example .env
-docker compose up -d falkordb                      # FalkorDB :6379, browser :3000
-python -m venv .venv && . .venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt -r requirements-dev.txt
+
+# Run test suite to verify graph and contract tests
 pytest -q
-uvicorn api.main:app --reload                      # http://localhost:8000/api/health
-cd web && cp .env.example .env.local && npm install && npm run dev   # http://localhost:3000
+
+# Seed the FalkorDB database with the C1 scenario
+./deploy/seed.sh handbook-demo 42
+
+# Start the FastAPI server (with SSE streaming)
+uvicorn api.main:app --reload --port 8000
 ```
+Verify the backend is live at [http://localhost:8000/api/health](http://localhost:8000/api/health).
 
-## Data sources & licence
-- Real policy changes from the public [GitLab handbook](https://gitlab.com/gitlab-com/content-sites/handbook) git history (© GitLab B.V.). Short excerpts and links only.
-- Everything else (people, teams, chats, plans, worker agents) is **synthetic**, marked `synthetic: true` and badged in the UI.
+### 4. Start the Web UI
+In a separate terminal:
+```bash
+cd web
+npm install
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## AI assistance
-We used **Cursor** (the Cursor editor and its agent, plus Cursor cloud agents) for project scaffolding, code, tests and PR review. Both team members reviewed and can explain all merged code. Each PR records its own disclosure.
+### 5. Exploring Demo Mode
+To walk through the full C1 scenario step-by-step:
+- Navigate to [http://localhost:3000/?demo=1](http://localhost:3000/?demo=1).
+- Use `Space` or the **Next ▶** button to advance through the 6 stages.
+- Watch nodes pulse red by risk, see `ap-approver` get blocked, inspect the 'Why?' drawer with exact Cypher, and observe the coverage meter sweep to 100% green.
+- Press `R` or click **Reset** at any time to re-run.
 
-## Team
-- Sahil Mane ([@sahil1330](https://github.com/sahil1330)): graph, data, agents, MCP, API
-- Harsh ([@harsh-gupta-10](https://github.com/harsh-gupta-10)): web, deploy, docs, demo
+---
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for how we work.
+## Data Sources & Synthetic Disclosure
 
-## Credits
-[FalkorDB](https://www.falkordb.com/) and its Python client, [FalkorDB-MCPServer](https://github.com/FalkorDB/FalkorDB-MCPServer), Next.js, react-force-graph. Related work: Graphiti, Lethe.
+- **Real Policy Changes:** Real-world handbook updates extracted from the public [GitLab Handbook repository](https://gitlab.com/gitlab-com/content-sites/handbook) git history (commit `ddd39597`, MR !20421; © GitLab B.V.). Used under public open documentation terms; excerpts and links only.
+- **Synthetic Layer:** To demonstrate organizational impact without using private corporate data, the surrounding company layer (people, teams, Slack conversations, action queues, worker agents) is **synthetic**. Every synthetic record is explicitly tagged with `synthetic: true` in FalkorDB and visually marked with a badge in the web UI.
+
+---
+
+## AI Assistance Disclosure
+
+In full compliance with hackathon transparency guidelines:
+Ripple was developed collaboratively using **Cursor** (the Cursor IDE editor, Cursor agent, and Cursor cloud agents) alongside Antigravity pair programming:
+- **Scaffolding & Boilerplate:** Scaffolding FastAPI routes, Next.js components, Tailwind styles, and Docker/CI files.
+- **Cypher & Algorithm Optimization:** Iterating and smoke-testing FalkorDB Cypher queries (`algo.bfs`, `shortestPath`, `algo.pageRank`, `algo.betweenness`, `algo.WCC`).
+- **Tests & Contracts:** Generating OpenAPI 3.1 schemas, fixture contract tests, and GitHub Actions workflow gates.
+- **Verification:** Both team members (`@sahil1330` and `@harsh-gupta-10`) actively reviewed, tested, and can explain every single query, architectural decision, and line of code in the repository.
+
+---
+
+## Team & Responsibilities
+
+- **Sahil Mane** ([@sahil1330](https://github.com/sahil1330)): Core graph engine, Cypher queries, FalkorDB client, ingestion pipelines, autonomous agents (Sentinel, Tracer, Fixer, Worker), `ripple_mcp` server, FastAPI backend.
+- **Harsh Gupta** ([@harsh-gupta-10](https://github.com/harsh-gupta-10)): Web presentation UI (Next.js, `react-force-graph-2d`, Tailwind), cloud deployment configurations, documentation, demo video production, and CI/CD automation.
+
+---
+
+## Credits & Acknowledgements
+
+- [FalkorDB](https://www.falkordb.com/) for the lightning-fast graph database and GraphBLAS graph algorithms.
+- [FalkorDB-MCPServer](https://github.com/FalkorDB/FalkorDB-MCPServer) for upstream Model Context Protocol graph exploration.
+- [GitLab](https://gitlab.com) for their pioneering public handbook culture.
