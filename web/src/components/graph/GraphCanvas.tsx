@@ -112,12 +112,40 @@ export default function GraphCanvas({
           const label = item.label || item.id;
           const fontSize = Math.max(10 / globalScale, 3);
           const radius = isSelected ? 8 : 6;
+          const isImpacted = item.status === "impacted" || item.status === "blocked";
+          const isResolved = item.status === "resolved";
           const color = KIND_COLORS[item.kind] || "#94a3b8";
+
+          // Pulsing Red Halo for Impacted / Blocked Nodes (sized by risk)
+          if (isImpacted) {
+            const riskScale = item.risk ? Math.min(item.risk / 5, 4) : 1.5;
+            const pulse = (Math.sin(Date.now() / 250) + 1) / 2; // 0..1 smooth wave
+            const pulseRadius = radius + 3 + riskScale * 2 + pulse * 4;
+
+            ctx.beginPath();
+            ctx.arc(x, y, pulseRadius, 0, 2 * Math.PI, false);
+            ctx.fillStyle = `rgba(239, 68, 68, ${0.15 + pulse * 0.15})`;
+            ctx.fill();
+            ctx.lineWidth = 1.2 / globalScale;
+            ctx.strokeStyle = `rgba(239, 68, 68, ${0.5 + pulse * 0.4})`;
+            ctx.stroke();
+          }
+
+          // Glowing Green Aura for Resolved Nodes
+          if (isResolved) {
+            ctx.beginPath();
+            ctx.arc(x, y, radius + 4, 0, 2 * Math.PI, false);
+            ctx.fillStyle = "rgba(16, 185, 129, 0.25)";
+            ctx.fill();
+            ctx.lineWidth = 1.5 / globalScale;
+            ctx.strokeStyle = "#10b981";
+            ctx.stroke();
+          }
 
           // Selection highlight ring
           if (isSelected) {
             ctx.beginPath();
-            ctx.arc(x, y, radius + 4, 0, 2 * Math.PI, false);
+            ctx.arc(x, y, radius + 5, 0, 2 * Math.PI, false);
             ctx.fillStyle = "rgba(99, 102, 241, 0.3)";
             ctx.fill();
             ctx.lineWidth = 1.5 / globalScale;
@@ -128,10 +156,10 @@ export default function GraphCanvas({
           // Main Node Circle
           ctx.beginPath();
           ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
-          ctx.fillStyle = color;
+          ctx.fillStyle = isResolved ? "#10b981" : isImpacted ? "#ef4444" : color;
           ctx.fill();
           ctx.lineWidth = 1 / globalScale;
-          ctx.strokeStyle = "#ffffff";
+          ctx.strokeStyle = isResolved ? "#a7f3d0" : isImpacted ? "#fecaca" : "#ffffff";
           ctx.stroke();
 
           // Synthetic Badge indicator [S]
