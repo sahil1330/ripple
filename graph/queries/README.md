@@ -47,5 +47,10 @@ Draft queries from `RIPPLE_PLAN.md` §4.4 (untested until the smoke-test issue c
 | `fix_resolve.cypher` | write RESOLVED {at, by, how} → Change |
 | `version_text.cypher` | value + excerpt of a FactVersion |
 | `doc_title.cypher` | title of a Doc |
+| `api_nodes.cypher` | API `/api/graph`: canvas nodes with risk + resolved flags |
+| `api_links.cypher` | API `/api/graph`: canvas links (hides FEEDS/IMPACTS/RESOLVED) |
+| `api_change_scope.cypher` | API `/api/graph?change_id`: ids in a change's impact subgraph |
+| `api_changes.cypher` | API `/api/changes[/{id}]`: summary + before/after snapshots |
+| `api_impact_queue.cypher` | API `/api/changes/{id}/impact`: TTH queue from IMPACTS + task ids |
 
 Load a query from Python with `graph.cypher.cypher("<name>")`.
