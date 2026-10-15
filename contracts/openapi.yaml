@@ -1,65 +1,644 @@
-# Draft v0 from RIPPLE_PLAN.md §10.2. Finalise schemas in #4 (both approve, label `contract`).
 openapi: 3.1.0
 info:
   title: Ripple API
-  version: 0.0.1-draft
+  description: Company brain on FalkorDB that records fact versions and coordinates updates when policies change.
+  version: 1.0.0
 paths:
   /api/health:
-    get: { summary: Liveness, responses: { "200": { description: ok } } }
+    get:
+      summary: Liveness and health check
+      operationId: getHealth
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+
   /api/tenants:
-    get: { summary: List tenants, responses: { "200": { description: "[{id, name}]" } } }
+    get:
+      summary: List available tenants
+      operationId: getTenants
+      responses:
+        "200":
+          description: List of tenants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Tenant"
+
   /api/graph:
     get:
       summary: Graph for the canvas
+      operationId: getGraph
       parameters:
-        - { name: tenant, in: query, required: true, schema: { type: string } }
-        - { name: change_id, in: query, required: false, schema: { type: string } }
+        - name: tenant
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Tenant ID (e.g. handbook-demo, acme-synthetic)
+        - name: change_id
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Optional change ID to filter or highlight impact subgraph
       responses:
         "200":
-          description: Nodes and links
+          description: Nodes and links for the graph canvas
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/GraphResponse" }
+              schema:
+                $ref: "#/components/schemas/GraphResponse"
+
   /api/changes:
-    get: { summary: List changes for a tenant, responses: { "200": { description: todo } } }
+    get:
+      summary: List policy changes for a tenant
+      operationId: getChanges
+      parameters:
+        - name: tenant
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of detected policy changes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ChangeSummary"
+
   /api/changes/{id}:
-    get: { summary: Before/after + source for one change, responses: { "200": { description: todo } } }
+    get:
+      summary: Before and after version comparison and source metadata for one change
+      operationId: getChangeDetail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Change identifier (e.g. chg:c1)
+        - name: tenant
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Detailed change record with before and after states
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChangeDetail"
+        "404":
+          description: Change not found
+
   /api/changes/{id}/impact:
-    get: { summary: Time-to-harm queue, responses: { "200": { description: todo } } }
+    get:
+      summary: Time-to-harm (TTH) prioritized queue of impacted entities
+      operationId: getChangeImpact
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: tenant
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Prioritized impact queue with factor breakdowns
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImpactResponse"
+
   /api/changes/{id}/coverage:
-    get: { summary: Coverage meter, responses: { "200": { description: todo } } }
+    get:
+      summary: Coverage meter and resolution breakdown for a change
+      operationId: getChangeCoverage
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: tenant
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Coverage percentage and resolution counts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CoverageResponse"
+
   /api/explain:
-    get: { summary: explain_path between two entities, responses: { "200": { description: todo } } }
+    get:
+      summary: Shortest dependency path and Cypher query between two entities
+      operationId: explainPath
+      parameters:
+        - name: tenant
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Starting node ID
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Target node ID
+      responses:
+        "200":
+          description: Path hops, relationship types, and executed Cypher query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExplainResponse"
+
   /api/ask:
-    post: { summary: Ask the Concierge, responses: { "200": { description: "{answer, versions[], source_url, earlier_told?}" } } }
+    post:
+      summary: Ask the Concierge a question with episodic memory citation
+      operationId: askConcierge
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AskRequest"
+      responses:
+        "200":
+          description: Grounded answer citing current fact version and past memory
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AskResponse"
+
   /api/demo/step:
-    post: { summary: Advance the deterministic demo, responses: { "200": { description: todo } } }
+    post:
+      summary: Advance the deterministic demo scenario by one step
+      operationId: demoStep
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DemoStepRequest"
+      responses:
+        "200":
+          description: Step outcome and emitted SSE events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DemoStepResponse"
+
   /api/demo/reset:
-    post: { summary: Reset the demo, responses: { "200": { description: todo } } }
+    post:
+      summary: Reset the demo scenario to initial baseline state
+      operationId: demoReset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DemoResetRequest"
+      responses:
+        "200":
+          description: Reset confirmation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DemoResetResponse"
+
   /api/stream:
-    get: { summary: SSE stream (see events.md), responses: { "200": { description: text/event-stream } } }
+    get:
+      summary: Server-Sent Events stream for real-time graph updates
+      operationId: streamEvents
+      parameters:
+        - name: tenant
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Server-sent event stream
+          content:
+            text/event-stream:
+              schema:
+                type: string
+
 components:
   schemas:
+    HealthResponse:
+      type: object
+      required: [ok]
+      properties:
+        ok:
+          type: boolean
+          example: true
+
+    Tenant:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+          example: "handbook-demo"
+        name:
+          type: string
+          example: "GitLab handbook (real changes + synthetic people)"
+
     GraphNode:
       type: object
       required: [id, kind, label, synthetic]
       properties:
-        id: { type: string }
-        kind: { type: string }
-        label: { type: string }
-        synthetic: { type: boolean }
-        risk: { type: number }
-        status: { type: string }
+        id:
+          type: string
+          example: "person:priya"
+        kind:
+          type: string
+          enum:
+            - Fact
+            - FactVersion
+            - Change
+            - Doc
+            - DerivedFact
+            - Plan
+            - Action
+            - Person
+            - Team
+            - Agent
+            - Task
+            - Answer
+        label:
+          type: string
+          example: "Priya (Engineering Lead)"
+        synthetic:
+          type: boolean
+        risk:
+          type: number
+          nullable: true
+          example: 0.85
+        status:
+          type: string
+          nullable: true
+          example: "open"
+
     GraphLink:
       type: object
       required: [source, target, type]
       properties:
-        source: { type: string }
-        target: { type: string }
-        type: { type: string }
+        source:
+          type: string
+          example: "person:priya"
+        target:
+          type: string
+          example: "fv:vpn:v1"
+        type:
+          type: string
+          example: "WAS_TOLD"
+
     GraphResponse:
       type: object
       required: [nodes, links]
       properties:
-        nodes: { type: array, items: { $ref: "#/components/schemas/GraphNode" } }
-        links: { type: array, items: { $ref: "#/components/schemas/GraphLink" } }
+        nodes:
+          type: array
+          items:
+            $ref: "#/components/schemas/GraphNode"
+        links:
+          type: array
+          items:
+            $ref: "#/components/schemas/GraphLink"
+
+    ChangeSummary:
+      type: object
+      required: [id, title, commit_sha, detected_at, status]
+      properties:
+        id:
+          type: string
+          example: "chg:c1"
+        title:
+          type: string
+          example: "Personal VPN subscriptions no longer reimbursable"
+        fact_key:
+          type: string
+          example: "expense.vpn.personal_subscription"
+        commit_sha:
+          type: string
+          example: "ddd395971ee181bee9e00d23d34e1001489d76ef"
+        mr_url:
+          type: string
+          nullable: true
+          example: "https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20421"
+        detected_at:
+          type: integer
+          example: 1784046483000
+        status:
+          type: string
+          enum: [detected, resolving, resolved]
+          example: "resolving"
+
+    FactVersionSnapshot:
+      type: object
+      required: [version_id, value, excerpt, source_url]
+      properties:
+        version_id:
+          type: string
+          example: "fv:vpn:v1"
+        value:
+          type: string
+          example: "reimbursable up to $150 per year"
+        excerpt:
+          type: string
+          example: "Policy is set at $150 per year."
+        source_url:
+          type: string
+          example: "https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/513d7f53/content/handbook/finance/expenses.md"
+
+    ChangeDetail:
+      type: object
+      required: [id, title, commit_sha, detected_at, status, before, after]
+      properties:
+        id:
+          type: string
+          example: "chg:c1"
+        title:
+          type: string
+          example: "Personal VPN subscriptions no longer reimbursable"
+        fact_key:
+          type: string
+          example: "expense.vpn.personal_subscription"
+        commit_sha:
+          type: string
+          example: "ddd395971ee181bee9e00d23d34e1001489d76ef"
+        mr_url:
+          type: string
+          nullable: true
+        detected_at:
+          type: integer
+        status:
+          type: string
+        before:
+          $ref: "#/components/schemas/FactVersionSnapshot"
+        after:
+          $ref: "#/components/schemas/FactVersionSnapshot"
+
+    ImpactItem:
+      type: object
+      required: [id, kind, label, synthetic, hops, severity, urgency, reach, risk, tth_ms]
+      properties:
+        id:
+          type: string
+          example: "act:ap:vpn-approval"
+        kind:
+          type: string
+          example: "Action"
+        label:
+          type: string
+          example: "Approve $150 VPN expense (Priya)"
+        synthetic:
+          type: boolean
+        hops:
+          type: integer
+          example: 2
+        severity:
+          type: number
+          example: 1.0
+        urgency:
+          type: number
+          example: 1.5
+        reach:
+          type: number
+          example: 0.4
+        risk:
+          type: number
+          example: 2.1
+        tth_ms:
+          type: integer
+          example: 2400000
+        due_at:
+          type: integer
+          nullable: true
+        status:
+          type: string
+          example: "blocked"
+        task_id:
+          type: string
+          nullable: true
+
+    ImpactResponse:
+      type: object
+      required: [change_id, total_impacted, items]
+      properties:
+        change_id:
+          type: string
+          example: "chg:c1"
+        total_impacted:
+          type: integer
+          example: 8
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ImpactItem"
+
+    KindCount:
+      type: object
+      required: [impacted, resolved]
+      properties:
+        impacted:
+          type: integer
+        resolved:
+          type: integer
+
+    CoverageResponse:
+      type: object
+      required: [change_id, impacted, resolved, pct, by_kind]
+      properties:
+        change_id:
+          type: string
+          example: "chg:c1"
+        impacted:
+          type: integer
+          example: 8
+        resolved:
+          type: integer
+          example: 8
+        pct:
+          type: number
+          example: 100.0
+        by_kind:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/KindCount"
+
+    ExplainResponse:
+      type: object
+      required: [hops, via, cypher]
+      properties:
+        hops:
+          type: array
+          items:
+            type: string
+          example: ["chg:c1", "fv:vpn:v1", "person:priya"]
+        via:
+          type: array
+          items:
+            type: string
+          example: ["SUPERSEDES", "WAS_TOLD"]
+        cypher:
+          type: string
+          example: "MATCH (a:Entity {id: $from_id}), (b:Entity {id: $to_id}), p = shortestPath((a)-[:FEEDS*]-(b)) ..."
+
+    EarlierTold:
+      type: object
+      required: [version_id, value, at, text]
+      properties:
+        version_id:
+          type: string
+          example: "fv:vpn:v1"
+        value:
+          type: string
+          example: "reimbursable up to $150 per year"
+        at:
+          type: integer
+          example: 1784041513000
+        text:
+          type: string
+          example: "Earlier I told you: reimbursable up to $150 per year. That changed on Jul 15, 2026 (MR !20421)."
+
+    AskRequest:
+      type: object
+      required: [tenant, person_id, question]
+      properties:
+        tenant:
+          type: string
+          example: "handbook-demo"
+        person_id:
+          type: string
+          example: "person:priya"
+        question:
+          type: string
+          example: "Can I expense my ExpressVPN subscription?"
+
+    AskResponse:
+      type: object
+      required: [answer, versions, answer_id]
+      properties:
+        answer:
+          type: string
+          example: "Earlier I told you: reimbursable up to $150 per year. That changed on Jul 15, 2026 (MR !20421). Personal VPN subscriptions: not reimbursable; use NordLayer (company VPN)."
+        versions:
+          type: array
+          items:
+            type: string
+          example: ["fv:vpn:v2"]
+        source_url:
+          type: string
+          nullable: true
+          example: "https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/ddd39597/content/handbook/finance/expenses.md"
+        earlier_told:
+          $ref: "#/components/schemas/EarlierTold"
+          nullable: true
+        answer_id:
+          type: string
+          example: "ans:a1b2c3d4e5f6"
+
+    DemoStepRequest:
+      type: object
+      required: [tenant]
+      properties:
+        tenant:
+          type: string
+          example: "handbook-demo"
+        scenario:
+          type: string
+          example: "c1"
+
+    DemoStepResponse:
+      type: object
+      required: [step, total_steps, name, description, events]
+      properties:
+        step:
+          type: integer
+          example: 1
+        total_steps:
+          type: integer
+          example: 9
+        name:
+          type: string
+          example: "Sentinel replays commit ddd39597"
+        description:
+          type: string
+          example: "Sentinel ingests change C1, creating FactVersion v2 and opening trace task."
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/SseEnvelope"
+
+    DemoResetRequest:
+      type: object
+      required: [tenant]
+      properties:
+        tenant:
+          type: string
+          example: "handbook-demo"
+
+    DemoResetResponse:
+      type: object
+      required: [ok, tenant]
+      properties:
+        ok:
+          type: boolean
+          example: true
+        tenant:
+          type: string
+          example: "handbook-demo"
+
+    SseEnvelope:
+      type: object
+      required: [type, at, tenant, payload]
+      properties:
+        type:
+          type: string
+          enum:
+            - change.detected
+            - impact.computed
+            - task.created
+            - task.claimed
+            - task.done
+            - action.blocked
+            - answer.sent
+            - coverage.updated
+          example: "task.claimed"
+        at:
+          type: integer
+          example: 1784046483000
+        tenant:
+          type: string
+          example: "handbook-demo"
+        payload:
+          type: object
+          description: Event specific payload
