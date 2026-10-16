@@ -38,3 +38,34 @@ def test_answer_is_logged_as_episodic_memory(g, tenant):
     assert row == [["person:priya", DEMO_NOW_MS, "slack", res["answer_id"], 1]]
     # being told v2 does not by itself resolve the old exposure; Fixer writes RESOLVED (#29)
     assert "person:priya" in {h["id"] for h in who_holds(tenant, "fv:vpn:v1")}
+
+
+def test_general_question_about_a_team(g, tenant):
+    load_demo(tenant)
+    res = ask(tenant, "person:priya", "Who is in Accounts Payable?", now=DEMO_NOW_MS)
+    assert "team:ap" in res["answer"] and "Ravi Iyer" in res["answer"]
+    assert res["versions"] == [] and res["earlier_told"] is None
+    row = g.query("MATCH (a:Answer {id: $id})-[:ANSWERED]->(p:Person) RETURN p.id", {"id": res["answer_id"]})
+    assert row.result_set == [["person:priya"]]
+
+
+def test_general_question_about_a_person(g, tenant):
+    load_demo(tenant)
+    res = ask(tenant, "person:ravi", "What does Priya Sharma work on?", now=DEMO_NOW_MS)
+    assert "person:priya" in res["answer"] and "Engineering" in res["answer"]
+
+
+def test_unknown_general_question_still_raises(g, tenant):
+    load_demo(tenant)
+    import pytest
+
+    from agents.concierge import UnknownTopic
+
+    with pytest.raises(UnknownTopic):
+        ask(tenant, "person:priya", "zzqx flibbertigibbet?", now=DEMO_NOW_MS)
+
+
+def test_general_listing_question(g, tenant):
+    load_demo(tenant)
+    res = ask(tenant, "person:priya", "What agents do we have?", now=DEMO_NOW_MS)
+    assert "agent:ap-approver" in res["answer"] and res["versions"] == []

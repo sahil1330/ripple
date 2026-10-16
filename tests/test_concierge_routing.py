@@ -20,3 +20,9 @@ def test_route(q, key):
 def test_unknown_topic():
     with pytest.raises(UnknownTopic):
         route("What is the meaning of life?")
+
+
+def test_terms_drop_stopwords_and_plurals():
+    from agents.concierge import terms
+
+    assert terms("Who owns the onboarding docs?") == ["own", "onboarding", "doc"]

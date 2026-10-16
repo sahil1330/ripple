@@ -54,3 +54,7 @@ Draft queries from `RIPPLE_PLAN.md` §4.4 (untested until the smoke-test issue c
 | `api_impact_queue.cypher` | API `/api/changes/{id}/impact`: TTH queue from IMPACTS + task ids |
 
 Load a query from Python with `graph.cypher.cypher("<name>")`.
+| `ask_search.cypher` | general Concierge retrieval: entities matching question terms (current versions only) |
+| `ask_neighbours.cypher` | general Concierge context: MEMBER_OF/OWNS/PART_OF/DEPENDS_ON/... neighbours of a hit |
+| `record_answer_note.cypher` | log a general answer (Answer + ANSWERED, no WAS_TOLD) |
+| `ask_by_kind.cypher` | general Concierge: list teams / agents / docs / plans for "what X do we have?" |
