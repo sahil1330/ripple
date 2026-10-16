@@ -61,7 +61,10 @@ export default function GraphCanvas({
   const [dimensions, setDimensions] = useState({ width: 600, height: 400 });
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedKindFilter, setSelectedKindFilter] = useState<string | null>(null);
-  const [isLegendExpanded, setIsLegendExpanded] = useState<boolean>(true);
+  const [isLegendExpanded, setIsLegendExpanded] = useState<boolean>(
+    () => typeof window === "undefined" || window.innerWidth >= 768
+  );
+  const fitted = useRef(false);
 
   useEffect(() => {
     function updateDimensions() {
@@ -125,7 +128,7 @@ export default function GraphCanvas({
   };
 
   return (
-    <div ref={containerRef} className="relative h-full w-full overflow-hidden bg-slate-950">
+    <div ref={containerRef} className="relative h-full w-full touch-none overflow-hidden bg-slate-950">
       {/* Top Floating Toolbar (Search & Filters) */}
       <div className="absolute top-3 left-3 z-20 flex flex-wrap items-center gap-2">
         {/* Search Input */}
@@ -171,17 +174,17 @@ export default function GraphCanvas({
       </div>
 
       {/* Floating Canvas Zoom Controls */}
-      <div className="absolute bottom-4 right-4 z-20 flex flex-col gap-1.5 rounded-lg border border-slate-800 bg-slate-900/90 p-1 backdrop-blur shadow-xl">
+      <div className="absolute bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-20 flex flex-col gap-1.5 rounded-lg border border-slate-800 bg-slate-900/90 p-1 backdrop-blur shadow-xl">
         <button
           onClick={handleZoomIn}
-          className="flex h-8 w-8 items-center justify-center rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition font-bold"
+          className="flex h-11 w-11 md:h-8 md:w-8 items-center justify-center rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition font-bold"
           title="Zoom In"
         >
           +
         </button>
         <button
           onClick={handleZoomOut}
-          className="flex h-8 w-8 items-center justify-center rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition font-bold"
+          className="flex h-11 w-11 md:h-8 md:w-8 items-center justify-center rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition font-bold"
           title="Zoom Out"
         >
           −
@@ -189,7 +192,7 @@ export default function GraphCanvas({
         <div className="h-px w-full bg-slate-800" />
         <button
           onClick={handleZoomReset}
-          className="flex h-8 w-8 items-center justify-center rounded-md text-[11px] font-mono text-slate-300 hover:bg-slate-800 hover:text-white transition"
+          className="flex h-11 w-11 md:h-8 md:w-8 items-center justify-center rounded-md text-[11px] font-mono text-slate-300 hover:bg-slate-800 hover:text-white transition"
           title="Recenter / Fit All"
         >
           ⛶
@@ -231,6 +234,13 @@ export default function GraphCanvas({
         width={dimensions.width}
         height={dimensions.height}
         graphData={graphData}
+        cooldownTicks={150}
+        onEngineStop={() => {
+          if (!fitted.current && fgRef.current) {
+            fitted.current = true;
+            fgRef.current.zoomToFit(400, 24);
+          }
+        }}
         backgroundColor="#060911"
         nodeId="id"
         linkSource="source"

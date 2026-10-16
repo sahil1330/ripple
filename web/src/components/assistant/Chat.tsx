@@ -14,7 +14,7 @@ const KIND_TONE: Record<string, string> = {
 
 function Avatar({ name }: { name: string }) {
   return (
-    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ember text-[13px] font-semibold text-coral shadow-[var(--shadow-soft)]">
+    <div className="hidden h-8 w-8 shrink-0 items-center sm:flex justify-center rounded-full bg-ember text-[13px] font-semibold text-coral shadow-[var(--shadow-soft)]">
       {name.charAt(0)}
     </div>
   );
@@ -22,7 +22,7 @@ function Avatar({ name }: { name: string }) {
 
 function Badge({ children, tone = "" }: { children: React.ReactNode; tone?: string }) {
   return (
-    <span className={`inline-flex items-center rounded-[6px] bg-graphite px-1.5 py-0.5 font-mono text-[11px] ${tone || "text-ash"}`}>
+    <span className={`inline-flex max-w-full items-center break-all rounded-[6px] bg-graphite px-1.5 py-0.5 font-mono text-[11px] ${tone || "text-ash"}`}>
       {children}
     </span>
   );
@@ -112,7 +112,7 @@ function Explanation({ data }: { data: ExplanationPayload }) {
         <span className="text-ash"> affects {items.length} {items.length === 1 ? "thing" : "things"} in {data.department}.</span>
       </div>
       {change && (
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <div className="rounded-[12px] bg-obsidian p-3">
             <div className="eyebrow">Before · {change.before.version_id}</div>
             <div className="mt-1.5 text-[13px] text-ash line-through decoration-smoke">{change.before.value}</div>
@@ -129,7 +129,9 @@ function Explanation({ data }: { data: ExplanationPayload }) {
           <div className="flex flex-wrap items-center gap-1.5">
             {path.hops.map((h, i) => (
               <span key={`${h}-${i}`} className="flex items-center gap-1.5">
-                <Badge tone="text-white">{h}</Badge>
+                <Badge tone="text-white">
+                  <span className="break-all">{h}</span>
+                </Badge>
                 {i < path.via.length && <span className="font-mono text-[10px] text-smoke">─{path.via[i]}→</span>}
               </span>
             ))}
@@ -141,7 +143,7 @@ function Explanation({ data }: { data: ExplanationPayload }) {
         <ul className="divide-y divide-graphite overflow-hidden rounded-[12px] bg-obsidian">
           {items.slice(0, 6).map((it) => (
             <li key={it.id} className="flex items-center justify-between gap-3 px-3 py-2">
-              <span className="truncate text-[13px] text-white">{it.label}</span>
+              <span className="min-w-0 truncate text-[13px] text-white">{it.label}</span>
               <span className="flex shrink-0 items-center gap-1.5">
                 <Badge tone={KIND_TONE[it.kind]}>{it.kind}</Badge>
                 {it.status && it.status !== "open" && <Badge tone={it.status === "blocked" ? "text-coral" : it.status === "resolved" ? "text-mint" : ""}>{it.status}</Badge>}
@@ -191,20 +193,20 @@ export function Chat({
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="min-h-0 flex-1 overflow-y-auto px-8 py-8">
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 py-6 sm:px-8 sm:py-8">
         <div className="mx-auto max-w-[720px] space-y-6">
           {messages.length === 0 && (
-            <div className="rise pt-10 text-center">
+            <div className="rise pt-4 text-center sm:pt-10">
               <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-ember text-xl font-semibold text-coral shadow-[var(--shadow-key)]">
                 {company.charAt(0)}
               </div>
-              <h1 className="text-[32px] font-normal tracking-[0.004em] text-white">Ask {company} anything</h1>
+              <h1 className="text-[26px] font-normal sm:text-[32px] tracking-[0.004em] text-white">Ask {company} anything</h1>
               <p className="mx-auto mt-3 max-w-[460px] text-[15px] leading-relaxed text-ash">
                 Policies, teams, people, docs and agents, answered from {company}&apos;s own company graph. When a fact changes, I tell you what changed and why it matters to you.
               </p>
-              <div className="mx-auto mt-8 grid max-w-[560px] grid-cols-2 gap-2 text-left">
+              <div className="mx-auto mt-8 grid max-w-[560px] grid-cols-1 gap-2 sm:grid-cols-2 text-left">
                 {starters.map((s) => (
-                  <button key={s} onClick={() => onSend(s)} className="card-key group px-4 py-3 text-[13px] text-ash transition hover:text-white">
+                  <button key={s} onClick={() => onSend(s)} className="card-key group min-h-11 px-4 py-3 text-[13px] text-ash transition hover:text-white">
                     {s}
                     <span className="float-right text-smoke opacity-0 transition group-hover:opacity-100">↵</span>
                   </button>
@@ -221,9 +223,9 @@ export function Chat({
                 </div>
               </div>
             ) : (
-              <div key={m.id} className="rise flex gap-3">
+              <div key={m.id} className="rise flex gap-2 sm:gap-3">
                 <Avatar name={company} />
-                <div className="card-key min-w-0 flex-1 px-5 py-4">
+                <div className="card-key min-w-0 flex-1 px-4 py-4 sm:px-5">
                   <div className="mb-3 flex items-center gap-2">
                     <span className="text-[13px] font-medium text-white">{company} Assistant</span>
                     <span className="rounded-[6px] bg-ember px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-coral">AI</span>
@@ -249,7 +251,7 @@ export function Chat({
           <div ref={endRef} />
         </div>
       </div>
-      <div className="px-8 pb-6">
+      <div className="sticky bottom-0 bg-canvas px-3 pb-[max(12px,env(safe-area-inset-bottom))] pt-2 sm:px-8 sm:pb-6">
         <div className="mx-auto max-w-[720px]">
           <div className="flex items-center gap-2 rounded-[12px] bg-obsidian p-1.5 pl-4 shadow-[var(--shadow-key)] focus-within:shadow-[rgba(255,255,255,0.05)_0_1px_0_inset,rgba(255,255,255,0.45)_0_0_0_1px]">
             <input
@@ -257,13 +259,13 @@ export function Chat({
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && submit()}
               placeholder={`Ask ${company} anything…`}
-              className="min-w-0 flex-1 bg-transparent text-[15px] text-white placeholder:text-smoke focus:outline-none"
+              className="min-h-11 min-w-0 flex-1 bg-transparent text-[16px] sm:text-[15px] text-white placeholder:text-smoke focus:outline-none"
             />
-            <button onClick={submit} disabled={busy || !draft.trim()} className="btn-primary px-3 py-2">
+            <button onClick={submit} disabled={busy || !draft.trim()} className="btn-primary min-h-11 px-4 lg:min-h-0 lg:px-3 lg:py-2">
               Ask ↵
             </button>
           </div>
-          <div className="mt-2 text-center font-mono text-[11px] text-smoke">
+          <div className="mt-2 hidden text-center font-mono text-[11px] text-smoke sm:block">
             asking as {asker} | answers come only from {company}&apos;s graph | every answer is remembered
           </div>
         </div>
