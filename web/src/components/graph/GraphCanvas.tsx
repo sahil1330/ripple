@@ -139,7 +139,7 @@ export default function GraphCanvas({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search nodes by label or ID..."
-            className="w-48 bg-transparent text-xs text-slate-100 placeholder-slate-500 outline-none"
+            className="min-h-11 w-40 bg-transparent text-[16px] text-slate-100 sm:w-48 xl:min-h-0 xl:text-xs placeholder-slate-500 outline-none"
           />
           {searchQuery && (
             <button
@@ -154,7 +154,7 @@ export default function GraphCanvas({
         {/* Legend Toggle Button */}
         <button
           onClick={() => setIsLegendExpanded(!isLegendExpanded)}
-          className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition backdrop-blur shadow-md ${
+          className={`min-h-11 rounded-lg border px-2.5 py-1 text-xs font-medium xl:min-h-0 transition backdrop-blur shadow-md ${
             isLegendExpanded
               ? "border-indigo-500/40 bg-indigo-950/60 text-indigo-300"
               : "border-slate-800 bg-slate-900/90 text-slate-400 hover:text-slate-200"
@@ -166,7 +166,7 @@ export default function GraphCanvas({
         {selectedKindFilter && (
           <button
             onClick={() => setSelectedKindFilter(null)}
-            className="rounded-lg border border-rose-800/60 bg-rose-950/50 px-2 py-1 text-[11px] font-semibold text-rose-300 hover:bg-rose-900/70 transition"
+            className="min-h-11 rounded-lg border border-rose-800/60 xl:min-h-0 bg-rose-950/50 px-2 py-1 text-[11px] font-semibold text-rose-300 hover:bg-rose-900/70 transition"
           >
             Clear Filter: {selectedKindFilter} ✕
           </button>
@@ -177,14 +177,14 @@ export default function GraphCanvas({
       <div className="absolute bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-20 flex flex-col gap-1.5 rounded-lg border border-slate-800 bg-slate-900/90 p-1 backdrop-blur shadow-xl">
         <button
           onClick={handleZoomIn}
-          className="flex h-11 w-11 md:h-8 md:w-8 items-center justify-center rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition font-bold"
+          className="flex h-11 w-11 xl:h-8 xl:w-8 items-center justify-center rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition font-bold"
           title="Zoom In"
         >
           +
         </button>
         <button
           onClick={handleZoomOut}
-          className="flex h-11 w-11 md:h-8 md:w-8 items-center justify-center rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition font-bold"
+          className="flex h-11 w-11 xl:h-8 xl:w-8 items-center justify-center rounded-md text-slate-300 hover:bg-slate-800 hover:text-white transition font-bold"
           title="Zoom Out"
         >
           −
@@ -192,7 +192,7 @@ export default function GraphCanvas({
         <div className="h-px w-full bg-slate-800" />
         <button
           onClick={handleZoomReset}
-          className="flex h-11 w-11 md:h-8 md:w-8 items-center justify-center rounded-md text-[11px] font-mono text-slate-300 hover:bg-slate-800 hover:text-white transition"
+          className="flex h-11 w-11 xl:h-8 xl:w-8 items-center justify-center rounded-md text-[11px] font-mono text-slate-300 hover:bg-slate-800 hover:text-white transition"
           title="Recenter / Fit All"
         >
           ⛶
@@ -211,7 +211,7 @@ export default function GraphCanvas({
               <button
                 key={kind}
                 onClick={() => setSelectedKindFilter(isFilterActive ? null : kind)}
-                className={`flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-mono transition ${
+                className={`flex min-h-11 items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-mono xl:min-h-0 transition ${
                   isFilterActive
                     ? "bg-indigo-600 text-white shadow-md ring-1 ring-white/20"
                     : "border border-slate-800/80 bg-slate-950/60 text-slate-300 hover:border-slate-700 hover:bg-slate-800/80"
