@@ -1,0 +1,1234 @@
+{
+ "nodes": [
+  {
+   "id": "act:approve-phone-ap",
+   "kind": "Action",
+   "label": "Approve $95 phone bill (over $80, exception)",
+   "synthetic": true,
+   "risk": 0.6731,
+   "status": "pending"
+  },
+  {
+   "id": "act:approve-vpn-priya",
+   "kind": "Action",
+   "label": "Approve Priya's ExpressVPN claim ($150)",
+   "synthetic": true,
+   "risk": 1.0357,
+   "status": "pending"
+  },
+  {
+   "id": "act:book-emea-cowork",
+   "kind": "Action",
+   "label": "Book 4 co-working day passes in Berlin",
+   "synthetic": true,
+   "risk": null,
+   "status": "pending"
+  },
+  {
+   "id": "act:book-offsite-dinners",
+   "kind": "Action",
+   "label": "Book offsite dinners within $3,600",
+   "synthetic": true,
+   "risk": null,
+   "status": "pending"
+  },
+  {
+   "id": "act:issue-cards",
+   "kind": "Action",
+   "label": "Issue 3 \u00d7 $1,500 virtual cards",
+   "synthetic": true,
+   "risk": null,
+   "status": "pending"
+  },
+  {
+   "id": "agent:ap-approver",
+   "kind": "Agent",
+   "label": "ap-approver",
+   "synthetic": true,
+   "risk": 0.6,
+   "status": "impacted"
+  },
+  {
+   "id": "agent:concierge",
+   "kind": "Agent",
+   "label": "concierge",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "agent:fixer",
+   "kind": "Agent",
+   "label": "fixer",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "agent:it-helpdesk-bot",
+   "kind": "Agent",
+   "label": "it-helpdesk-bot",
+   "synthetic": true,
+   "risk": 0.025,
+   "status": "impacted"
+  },
+  {
+   "id": "agent:onboarding-bot",
+   "kind": "Agent",
+   "label": "onboarding-bot",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "agent:sentinel",
+   "kind": "Agent",
+   "label": "sentinel",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "agent:tracer",
+   "kind": "Agent",
+   "label": "tracer",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "agent:travel-planner",
+   "kind": "Agent",
+   "label": "travel-planner",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:faq-expenses",
+   "kind": "Doc",
+   "label": "Expenses FAQ (internal copy)",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:faq-remote",
+   "kind": "Doc",
+   "label": "Remote work FAQ",
+   "synthetic": true,
+   "risk": 0.0205,
+   "status": "impacted"
+  },
+  {
+   "id": "doc:hb:finance",
+   "kind": "Doc",
+   "label": "Finance",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:accounting",
+   "kind": "Doc",
+   "label": "Accounting and Reporting",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:accounting:finance-ops",
+   "kind": "Doc",
+   "label": "Financial Operations",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:accounting:finance-ops:billing-ops",
+   "kind": "Doc",
+   "label": "Billing Operations",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:accounting:finance-ops:billing-ops-GPO",
+   "kind": "Doc",
+   "label": "Billing Operations, GPO",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:accounting:finance-ops:teck-stack-guide-netsuite",
+   "kind": "Doc",
+   "label": "NetSuite Tech Stack Guide",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:accounts-payable",
+   "kind": "Doc",
+   "label": "Accounts Payable",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:accounts-payable:corp-credit-cards",
+   "kind": "Doc",
+   "label": "Navan Purchasing Card",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:accounts-payable:coupa-virtual-card-guide-for-accounts-payable",
+   "kind": "Doc",
+   "label": "Virtual Card Guide for Accounts Payable",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:accounts-payable:tech-stack-guide-coupa",
+   "kind": "Doc",
+   "label": "Coupa Tech Stack Guide",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:accounts-payable:tech-stack-guide-liquid",
+   "kind": "Doc",
+   "label": "Navan Expense Tech Stack Guide",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:authorization-matrix",
+   "kind": "Doc",
+   "label": "Authorization Matrix",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:committee-composition",
+   "kind": "Doc",
+   "label": "Committee Composition",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:expenses",
+   "kind": "Doc",
+   "label": "Global Travel and Expense Policy",
+   "synthetic": false,
+   "risk": 0.0318,
+   "status": "impacted"
+  },
+  {
+   "id": "doc:hb:finance:finance-team-performance-indicators",
+   "kind": "Doc",
+   "label": "Finance Team Performance Indicators",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:financial-planning-and-analysis",
+   "kind": "Doc",
+   "label": "Financial Planning & Analysis",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:financial-planning-and-analysis:adaptive-insights",
+   "kind": "Doc",
+   "label": "Adaptive Insights",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:financial-planning-and-analysis:corporate-finance",
+   "kind": "Doc",
+   "label": "Corporate FP&A",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:financial-planning-and-analysis:fpa-definitions",
+   "kind": "Doc",
+   "label": "FP&A Definitions",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:financial-planning-and-analysis:fpa-metrics",
+   "kind": "Doc",
+   "label": "FP&A Metrics",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:financial-planning-and-analysis:fpa-processes",
+   "kind": "Doc",
+   "label": "FP&A Processes",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:financial-planning-and-analysis:ga-finance",
+   "kind": "Doc",
+   "label": "G&A Finance",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:financial-planning-and-analysis:gtm-analytics-hub",
+   "kind": "Doc",
+   "label": "GTM Analytics Hub",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:financial-planning-and-analysis:headcount-metrics-and-processes",
+   "kind": "Doc",
+   "label": "Headcount Metrics and Processes",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:financial-planning-and-analysis:r-and-d-finance",
+   "kind": "Doc",
+   "label": "R&D Finance",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:financial-planning-and-analysis:r-and-d-finance:hosting-main",
+   "kind": "Doc",
+   "label": "Hosting",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:financial-planning-and-analysis:team-structure",
+   "kind": "Doc",
+   "label": "FP&A Team Structure",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:growth-and-development",
+   "kind": "Doc",
+   "label": "Finance Growth and Development",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:growth-and-development:career-growth",
+   "kind": "Doc",
+   "label": "Finance Learning and Development",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:growth-and-development:cfo-shadow-program",
+   "kind": "Doc",
+   "label": "CFO Shadow Program",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:growth-and-development:finbt-mentorship",
+   "kind": "Doc",
+   "label": "Under Construction - FinBT Mentorship Program",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:growth-and-development:learning-development",
+   "kind": "Doc",
+   "label": "Finance Learning and Development",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:growth-and-development:mentorship",
+   "kind": "Doc",
+   "label": "Finance Mentorship Program",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:internal-audit",
+   "kind": "Doc",
+   "label": "The Internal Audit Function",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:internal-audit:sarbanes-oxley",
+   "kind": "Doc",
+   "label": "Sarbanes-Oxley (SOX) Program",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:investor-relations",
+   "kind": "Doc",
+   "label": "Investor Relations",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:jihu-support",
+   "kind": "Doc",
+   "label": "JiHu Support",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:jihu-support:jihu-contribution-process",
+   "kind": "Doc",
+   "label": "JiHu contribution process",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:jihu-support:jihu-database-change-process",
+   "kind": "Doc",
+   "label": "JiHu guidelines for database changes",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:jihu-support:jihu-security-review-process",
+   "kind": "Doc",
+   "label": "JiHu Security Review Process",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:jihu-support:jihu-validation-pipelines",
+   "kind": "Doc",
+   "label": "JiHu validation pipelines",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:jihu-support:release-certification",
+   "kind": "Doc",
+   "label": "Release Certification",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:payroll",
+   "kind": "Doc",
+   "label": "Payroll",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:procurement",
+   "kind": "Doc",
+   "label": "The GitLab Procurement Team",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:procurement:charitable-contributions",
+   "kind": "Doc",
+   "label": "Charitable Contribution Requests",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:procurement:consultants",
+   "kind": "Doc",
+   "label": "External Consultant Orientation & Access Deprovisioning",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:procurement:contingent-worker-policy",
+   "kind": "Doc",
+   "label": "Contingent Worker Policy",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:procurement:coupa-faq",
+   "kind": "Doc",
+   "label": "Coupa FAQ",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:procurement:field-marketing-events",
+   "kind": "Doc",
+   "label": "Field Marketing and Events",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:procurement:individual-use-software",
+   "kind": "Doc",
+   "label": "Individual Use Software",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:procurement:office-equipment-supplies",
+   "kind": "Doc",
+   "label": "Home Office Equipment and Supplies",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:procurement:tips-for-submitting-a-zip-request",
+   "kind": "Doc",
+   "label": "Tips for Submitting a Zip Request",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:procurement:trial-agreement",
+   "kind": "Doc",
+   "label": "Non-Cost related Agreements",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:procurement:vendor-guidelines",
+   "kind": "Doc",
+   "label": "Vendor Guidelines",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:procurement:vendor-guidelines:legacy-vendor-agreement-v1",
+   "kind": "Doc",
+   "label": "Legacy Vendor Terms and Conditions v1",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:procurement:vendor-guidelines:mutual-non-disclosure-agreement",
+   "kind": "Doc",
+   "label": "MUTUAL NON-DISCLOSURE AGREEMENT",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:procurement:vendor-guidelines:po-terms",
+   "kind": "Doc",
+   "label": "PURCHASE ORDER TERMS AND CONDITIONS",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:procurement:vendor-guidelines:vendor-agreement",
+   "kind": "Doc",
+   "label": "Vendor Terms and Conditions",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:procurement:vendor-guidelines:vendor-security-addendum",
+   "kind": "Doc",
+   "label": "GitLab Vendor Security Addendum",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:procurement:virtual-cards",
+   "kind": "Doc",
+   "label": "Virtual Cards",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:readmes",
+   "kind": "Doc",
+   "label": "GitLab Finance Team READMEs",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:readmes:danielle-ritter",
+   "kind": "Doc",
+   "label": "Danielle Ritter's README",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:readmes:james-gladen",
+   "kind": "Doc",
+   "label": "James (Jim) Gladen's README",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:readmes:jessica-ross",
+   "kind": "Doc",
+   "label": "Jessica Ross - CFO - READ ME",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:readmes:julie-malloy",
+   "kind": "Doc",
+   "label": "Julie Malloy's README",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:readmes:simon-mundy",
+   "kind": "Doc",
+   "label": "Simon Mundy's README",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:readmes:yao-chew",
+   "kind": "Doc",
+   "label": "Yao Chew's README",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:readmes:yyugitlab",
+   "kind": "Doc",
+   "label": "yyugitlab",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:sales-comp-plan",
+   "kind": "Doc",
+   "label": "Sales Compensation Plan",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:spending-company-money",
+   "kind": "Doc",
+   "label": "Spending Company Money",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:tax",
+   "kind": "Doc",
+   "label": "The GitLab Tax Team",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:timekeeping",
+   "kind": "Doc",
+   "label": "Timekeeping Policies and Procedures",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:hb:finance:travel",
+   "kind": "Doc",
+   "label": "Travel Safety and Security",
+   "synthetic": false,
+   "risk": 0.0197,
+   "status": "impacted"
+  },
+  {
+   "id": "doc:hb:finance:travel:sponsored",
+   "kind": "Doc",
+   "label": "Sponsored Travel",
+   "synthetic": false,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:wiki-it-onboarding",
+   "kind": "Doc",
+   "label": "IT onboarding checklist",
+   "synthetic": true,
+   "risk": 0.0238,
+   "status": "impacted"
+  },
+  {
+   "id": "doc:wiki-new-hire",
+   "kind": "Doc",
+   "label": "New-hire week 1 guide",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:wiki-offsite-howto",
+   "kind": "Doc",
+   "label": "How to run a team offsite",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "doc:wiki-travel-security",
+   "kind": "Doc",
+   "label": "Security tips for travel",
+   "synthetic": true,
+   "risk": 0.0188,
+   "status": "impacted"
+  },
+  {
+   "id": "person:07",
+   "kind": "Person",
+   "label": "Zoe Becker",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "person:08",
+   "kind": "Person",
+   "label": "Chen Ivanova",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "person:09",
+   "kind": "Person",
+   "label": "Aarav Larsen",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "person:10",
+   "kind": "Person",
+   "label": "Hana Larsen",
+   "synthetic": true,
+   "risk": 0.0208,
+   "status": "impacted"
+  },
+  {
+   "id": "person:11",
+   "kind": "Person",
+   "label": "Gita Cruz",
+   "synthetic": true,
+   "risk": 0.0052,
+   "status": "impacted"
+  },
+  {
+   "id": "person:12",
+   "kind": "Person",
+   "label": "Gita Silva",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "person:13",
+   "kind": "Person",
+   "label": "Dara Becker",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "person:14",
+   "kind": "Person",
+   "label": "Chen Kim",
+   "synthetic": true,
+   "risk": 0.0208,
+   "status": "impacted"
+  },
+  {
+   "id": "person:15",
+   "kind": "Person",
+   "label": "Leo Costa",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "person:16",
+   "kind": "Person",
+   "label": "Sven Becker",
+   "synthetic": true,
+   "risk": 0.0208,
+   "status": "impacted"
+  },
+  {
+   "id": "person:17",
+   "kind": "Person",
+   "label": "Ben Larsen",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "person:18",
+   "kind": "Person",
+   "label": "Tara Nagy",
+   "synthetic": true,
+   "risk": 0.0026,
+   "status": "impacted"
+  },
+  {
+   "id": "person:19",
+   "kind": "Person",
+   "label": "Mateo Mensah",
+   "synthetic": true,
+   "risk": 0.0208,
+   "status": "impacted"
+  },
+  {
+   "id": "person:20",
+   "kind": "Person",
+   "label": "Ana Okafor",
+   "synthetic": true,
+   "risk": 0.0208,
+   "status": "impacted"
+  },
+  {
+   "id": "person:21",
+   "kind": "Person",
+   "label": "Aarav Moreau",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "person:22",
+   "kind": "Person",
+   "label": "Ben Moreau",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "person:23",
+   "kind": "Person",
+   "label": "Femi Moreau",
+   "synthetic": true,
+   "risk": 0.0208,
+   "status": "impacted"
+  },
+  {
+   "id": "person:24",
+   "kind": "Person",
+   "label": "Gita Becker",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "person:25",
+   "kind": "Person",
+   "label": "Rosa Silva",
+   "synthetic": true,
+   "risk": 0.0208,
+   "status": "impacted"
+  },
+  {
+   "id": "person:26",
+   "kind": "Person",
+   "label": "Yuki Kim",
+   "synthetic": true,
+   "risk": 0.0208,
+   "status": "impacted"
+  },
+  {
+   "id": "person:27",
+   "kind": "Person",
+   "label": "Aarav Cruz",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "person:28",
+   "kind": "Person",
+   "label": "Sven Moreau",
+   "synthetic": true,
+   "risk": 0.0208,
+   "status": "impacted"
+  },
+  {
+   "id": "person:priya",
+   "kind": "Person",
+   "label": "Priya Sharma",
+   "synthetic": true,
+   "risk": 0.0208,
+   "status": "impacted"
+  },
+  {
+   "id": "person:ravi",
+   "kind": "Person",
+   "label": "Ravi Iyer",
+   "synthetic": true,
+   "risk": 0.5,
+   "status": "impacted"
+  },
+  {
+   "id": "plan:ap-queue",
+   "kind": "Plan",
+   "label": "Expense approvals queue (AP worker agent)",
+   "synthetic": true,
+   "risk": 0.5441,
+   "status": "active"
+  },
+  {
+   "id": "plan:emea-trips",
+   "kind": "Plan",
+   "label": "EMEA sales trip bookings",
+   "synthetic": true,
+   "risk": null,
+   "status": "active"
+  },
+  {
+   "id": "plan:offsite",
+   "kind": "Plan",
+   "label": "Q4 Bengaluru offsite: meal budget",
+   "synthetic": true,
+   "risk": null,
+   "status": "active"
+  },
+  {
+   "id": "plan:onboard-nov",
+   "kind": "Plan",
+   "label": "Onboard 3 new hires in Nov: stipend cards",
+   "synthetic": true,
+   "risk": null,
+   "status": "active"
+  },
+  {
+   "id": "team:ap",
+   "kind": "Team",
+   "label": "Accounts Payable",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "team:eng",
+   "kind": "Team",
+   "label": "Engineering",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "team:it",
+   "kind": "Team",
+   "label": "IT",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "team:people",
+   "kind": "Team",
+   "label": "People Ops",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  },
+  {
+   "id": "team:sales",
+   "kind": "Team",
+   "label": "Sales",
+   "synthetic": true,
+   "risk": null,
+   "status": null
+  }
+ ],
+ "links": [
+  {
+   "source": "act:approve-phone-ap",
+   "target": "plan:ap-queue",
+   "type": "PART_OF"
+  },
+  {
+   "source": "act:approve-vpn-priya",
+   "target": "plan:ap-queue",
+   "type": "PART_OF"
+  },
+  {
+   "source": "act:book-emea-cowork",
+   "target": "plan:emea-trips",
+   "type": "PART_OF"
+  },
+  {
+   "source": "act:book-offsite-dinners",
+   "target": "plan:offsite",
+   "type": "PART_OF"
+  },
+  {
+   "source": "act:issue-cards",
+   "target": "plan:onboard-nov",
+   "type": "PART_OF"
+  },
+  {
+   "source": "agent:ap-approver",
+   "target": "act:approve-phone-ap",
+   "type": "OWNS"
+  },
+  {
+   "source": "agent:ap-approver",
+   "target": "act:approve-vpn-priya",
+   "type": "OWNS"
+  },
+  {
+   "source": "agent:onboarding-bot",
+   "target": "act:issue-cards",
+   "type": "OWNS"
+  },
+  {
+   "source": "agent:travel-planner",
+   "target": "act:book-emea-cowork",
+   "type": "OWNS"
+  },
+  {
+   "source": "agent:travel-planner",
+   "target": "act:book-offsite-dinners",
+   "type": "OWNS"
+  },
+  {
+   "source": "person:07",
+   "target": "team:ap",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:08",
+   "target": "team:ap",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:09",
+   "target": "team:ap",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:10",
+   "target": "doc:faq-remote",
+   "type": "OWNS"
+  },
+  {
+   "source": "person:10",
+   "target": "doc:wiki-new-hire",
+   "type": "OWNS"
+  },
+  {
+   "source": "person:10",
+   "target": "doc:wiki-offsite-howto",
+   "type": "OWNS"
+  },
+  {
+   "source": "person:10",
+   "target": "team:people",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:11",
+   "target": "plan:onboard-nov",
+   "type": "OWNS"
+  },
+  {
+   "source": "person:11",
+   "target": "team:people",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:12",
+   "target": "team:people",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:13",
+   "target": "team:people",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:14",
+   "target": "doc:wiki-it-onboarding",
+   "type": "OWNS"
+  },
+  {
+   "source": "person:14",
+   "target": "doc:wiki-travel-security",
+   "type": "OWNS"
+  },
+  {
+   "source": "person:14",
+   "target": "team:it",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:15",
+   "target": "team:it",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:16",
+   "target": "team:it",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:17",
+   "target": "team:it",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:18",
+   "target": "plan:offsite",
+   "type": "OWNS"
+  },
+  {
+   "source": "person:18",
+   "target": "team:eng",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:19",
+   "target": "team:eng",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:20",
+   "target": "team:eng",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:21",
+   "target": "team:eng",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:22",
+   "target": "team:eng",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:23",
+   "target": "team:eng",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:24",
+   "target": "plan:emea-trips",
+   "type": "OWNS"
+  },
+  {
+   "source": "person:24",
+   "target": "team:sales",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:25",
+   "target": "team:sales",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:26",
+   "target": "team:sales",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:27",
+   "target": "team:sales",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:28",
+   "target": "team:sales",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:priya",
+   "target": "team:eng",
+   "type": "MEMBER_OF"
+  },
+  {
+   "source": "person:ravi",
+   "target": "doc:faq-expenses",
+   "type": "OWNS"
+  },
+  {
+   "source": "person:ravi",
+   "target": "plan:ap-queue",
+   "type": "OWNS"
+  },
+  {
+   "source": "person:ravi",
+   "target": "team:ap",
+   "type": "MEMBER_OF"
+  }
+ ]
+}
