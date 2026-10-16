@@ -109,6 +109,7 @@ Every query the product runs is a parameterised `.cypher` file in [`graph/querie
 | `check_fresh`: `PART_OF*0..1`, `DERIVED_FROM*0..5`, `SUPERSEDES*1..10` | worker agents over MCP | freshness guard: any row means the plan/action depends on a closed version, so it is BLOCKED with the path and source |
 | `who_holds` | MCP tool | people and agents told or caching a superseded version and not yet resolved |
 | `fact_current`, `earlier_told`, `record_answer` | Concierge, `/api/ask` | answer only from the current version; read back "earlier I told you"; log `Answer`, `ANSWERED`, `WAS_TOLD {at, channel}` |
+| `ask_search`, `ask_neighbours`, `ask_by_kind`, `record_answer_note` | Concierge, `/api/ask` | general company questions: retrieve matching entities + their neighbourhood from the tenant graph and answer with citations |
 | `fix_*` (`fix_resolve`, `fix_replace_derived`, `fix_repoint_dependency`, `fix_replan_actions`, `fix_refresh_agent_cache`, `fix_doc_patch`, ...) | Fixer | re-answer, refresh agent memory, draft doc patches, rebuild the derived rule and replan, write `RESOLVED {at, by, how}` |
 | `coverage` | Fixer, `/api/changes/{id}/coverage` | impacted vs resolved per kind (`IMPACTS` vs `RESOLVED`) |
 | `explain_path`: `shortestPath` over the dependency types | "Why?" drawer, `/api/explain` | shortest path between two entities, returned with the Cypher itself |
