@@ -1,91 +1,125 @@
 @import "tailwindcss";
 
-:root {
-  --background: #060911;
-  --foreground: #f1f5f9;
-  --card: #0b1120;
-  --card-border: #1e293b;
+/* Raycast style tokens (styles.refero.design/style/3b6a17f0…) */
+@theme {
+  --color-canvas: #040506;
+  --color-ink: #07080a;
+  --color-obsidian: #111214;
+  --color-graphite: #1b1c1e;
+  --color-slate: #2f3031;
+  --color-line: #363739;
+  --color-iron: #454647;
+  --color-smoke: #6a6b6c;
+  --color-ash: #9c9c9d;
+  --color-mist: #e6e6e6;
+  --color-coral: #ff6363;
+  --color-ember: #452324;
+  --color-sky: #56c2ff;
+  --color-mint: #59d499;
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-geist-mono), "JetBrains Mono", Menlo, monospace;
+  --radius-badge: 6px;
+  --radius-ctl: 8px;
+  --radius-card: 16px;
+  --radius-card-lg: 20px;
+  --shadow-key: rgba(255, 255, 255, 0.05) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.25) 0px 0px 0px 1px,
+    rgba(0, 0, 0, 0.2) 0px -1px 0px 0px inset;
+  --shadow-soft: rgba(255, 255, 255, 0.05) 0px 1px 0px 0px inset, rgba(255, 255, 255, 0.08) 0px 0px 0px 1px;
+  --shadow-btn: rgba(0, 0, 0, 0.03) 0px 7px 3px 0px, rgba(0, 0, 0, 0.25) 0px 4px 4px 0px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--color-canvas);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-feature-settings: "calt", "kern", "liga", "ss03";
   overflow: hidden;
-  user-select: none;
 }
 
-/* Custom Sleek Scrollbar */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-smoke);
+}
+
+.card-key {
+  background: var(--color-ink);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-key);
+}
+
+.btn-primary {
+  background: var(--color-mist);
+  color: var(--color-iron);
+  border-radius: var(--radius-ctl);
+  font-weight: 500;
+  font-size: 13px;
+  box-shadow: var(--shadow-btn);
+  transition: background 120ms;
+}
+.btn-primary:hover {
+  background: #fff;
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+}
+
+.btn-ghost {
+  border-radius: var(--radius-ctl);
+  border: 1px solid var(--color-slate);
+  color: var(--color-ash);
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 120ms, border-color 120ms, background 120ms;
+}
+.btn-ghost:hover {
+  color: #fff;
+  border-color: var(--color-line);
+  background: var(--color-obsidian);
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.2);
-  border-radius: 9999px;
+  background: var(--color-graphite);
+  border-radius: 8px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.4);
-}
-
-/* Glassmorphic Panel Styles */
-.glass-panel {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.glass-card {
-  background: rgba(30, 41, 59, 0.4);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.glass-card:hover {
-  background: rgba(30, 41, 59, 0.65);
-  border-color: rgba(255, 255, 255, 0.12);
-}
-
-/* Subtle Glowing Accents */
-@keyframes pulse-slow {
-  0%, 100% {
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
     opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.6;
-    transform: scale(1.08);
+    transform: none;
   }
 }
-
-.animate-pulse-slow {
-  animation: pulse-slow 3s infinite ease-in-out;
+.rise {
+  animation: rise 180ms ease-out;
 }
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
+@keyframes blink {
+  0%,
+  80%,
   100% {
-    background-position: 200% 0;
+    opacity: 0.2;
+  }
+  40% {
+    opacity: 1;
   }
 }
-
-.animate-shimmer {
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0) 100%);
-  background-size: 200% 100%;
-  animation: shimmer 2.5s infinite;
+.dot {
+  animation: blink 1.2s infinite;
 }
