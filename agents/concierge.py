@@ -7,8 +7,9 @@ Every answer:
    ``(person)-[:WAS_TOLD {at, channel, answer_id}]->(version)``,
 4. if Ripple previously told this person an older version, says so ("earlier I told you ...").
 
-Phrasing is templated (no LLM key needed); an LLM could rephrase ``answer`` later, but the
-cited version and memory line always come from the graph.
+This module is the deterministic template path. ``agents.llm_concierge`` puts an LLM in front of it
+(tool selection over the graph + grounded phrasing) and falls back here on missing key, error or timeout.
+``person_id`` may be None (anonymous asker): the answer is then not logged and has no memory line.
 """
 
 from __future__ import annotations
@@ -54,7 +55,7 @@ def _mr_label(url: str | None) -> str:
 
 def record_answer(
     tenant: str,
-    person_id: str,
+    person_id: str | None,
     question: str,
     text: str,
     version_ids: list[str],
@@ -63,6 +64,8 @@ def record_answer(
 ) -> str:
     """Log an answer as episodic memory (Answer + ANSWERED + WAS_TOLD + FEEDS). Returns the answer id."""
     answer_id = f"ans:{uuid.uuid4().hex[:12]}"
+    if person_id is None:
+        return answer_id  # anonymous: nothing to remember
     at = now_ms() if now is None else now
     params = {"person_id": person_id, "answer_id": answer_id, "question": question, "text": text,
               "at": at, "channel": channel, "version_ids": version_ids}  # fmt: skip
@@ -71,7 +74,9 @@ def record_answer(
     return answer_id
 
 
-def ask(tenant: str, person_id: str, question: str, channel: str = "web", now: int | None = None) -> dict:
+def ask(
+    tenant: str, person_id: str | None, question: str, channel: str = "web", now: int | None = None
+) -> dict:
     """Answer ``question`` for ``person_id`` and log it. Returns the /api/ask response shape:
 
     ``{answer, versions, source_url, earlier_told, answer_id}``; ``earlier_told`` is None
@@ -88,6 +93,22 @@ def ask(tenant: str, person_id: str, question: str, channel: str = "web", now: i
     title, vid, value, excerpt, source, valid_from = rows[0]
     at = now_ms() if now is None else now
 
+    earlier = earlier_told(tenant, person_id, key, vid, valid_from, source)
+    answer = f"{title}: {value}. Policy text: \u201c{excerpt}\u201d (source: {source})"
+    if earlier:
+        answer = f"{earlier['text']} {answer}"
+    answer_id = record_answer(tenant, person_id, question, answer, [vid], channel=channel, now=at)
+    return {"answer": answer, "versions": [vid], "source_url": source, "earlier_told": earlier,
+            "answer_id": answer_id}  # fmt: skip
+
+
+def earlier_told(
+    tenant: str, person_id: str | None, key: str, vid: str, valid_from: int, source: str | None
+) -> dict | None:
+    """The memory line: what Ripple told this person about ``key`` before the current version, if anything."""
+    if person_id is None:
+        return None
+    g = tenant_graph(tenant)
     earlier = None
     prev = g.query(cypher("earlier_told"), {"person_id": person_id, "key": key, "current_id": vid}).result_set
     if prev:
@@ -99,13 +120,7 @@ def ask(tenant: str, person_id: str, question: str, channel: str = "web", now: i
             "at": told_at,
             "text": f"Earlier I told you: {old_value}. {changed}",
         }
-
-    answer = f"{title}: {value}. Policy text: \u201c{excerpt}\u201d (source: {source})"
-    if earlier:
-        answer = f"{earlier['text']} {answer}"
-    answer_id = record_answer(tenant, person_id, question, answer, [vid], channel=channel, now=at)
-    return {"answer": answer, "versions": [vid], "source_url": source, "earlier_told": earlier,
-            "answer_id": answer_id}  # fmt: skip
+    return earlier
 
 
 STOPWORDS = set(
@@ -142,7 +157,7 @@ def _describe(rel: str, outgoing: bool, label: str, kind: str) -> str:
 
 
 def ask_general(
-    tenant: str, person_id: str, question: str, channel: str = "web", now: int | None = None
+    tenant: str, person_id: str | None, question: str, channel: str = "web", now: int | None = None
 ) -> dict:
     """Answer any company question from this tenant's graph only: match entities by text, add their
     organisational/dependency neighbours, and cite every node used. Policy facts cite the current
@@ -205,9 +220,17 @@ LIST_KINDS = {
 }  # fmt: skip
 
 
-def _log_note(g, person_id: str, question: str, answer: str, channel: str, now: int | None) -> dict:
+def _log_note(g, person_id: str | None, question: str, answer: str, channel: str, now: int | None) -> dict:
     """Log a general answer (no fact version handed out) and return the AskResponse shape."""
     answer_id = f"ans:{uuid.uuid4().hex[:12]}"
+    if person_id is None:
+        return {
+            "answer": answer,
+            "versions": [],
+            "source_url": None,
+            "earlier_told": None,
+            "answer_id": answer_id,
+        }
     params = {"person_id": person_id, "answer_id": answer_id, "question": question, "text": answer,
               "at": now_ms() if now is None else now, "channel": channel}  # fmt: skip
     if not g.query(cypher("record_answer_note"), params).result_set[0][0]:
