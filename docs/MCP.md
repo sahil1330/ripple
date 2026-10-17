@@ -27,6 +27,7 @@ FalkorDB graph (`ripple:<tenant>`).
 |---|---|---|
 | `impact_of(tenant, change_id?, version_id?, max_hops?)` | read | Everything that relies on the old version of a change (multi-hop), ranked by time-to-harm. |
 | `who_holds(tenant, version_id)` | read | People and agents still holding a superseded version (told or cached, unresolved). |
+| `holders_of(tenant, version_id)` | read | Who and what relies on a version now (current or old): people told it, agents caching it, actions/plans/docs depending on it. |
 | `check_fresh(tenant, plan_id?, action_id?, now?)` | read | Freshness guard: `fresh=false` lists each stale dependency with the current value and source. Call before every action. |
 | `explain_path(tenant, from_id, to_id)` | read | Shortest "why" path between two entities, with the Cypher used. |
 | `coverage(tenant, change_id)` | read | Impacted vs resolved counts for a change. |
@@ -70,7 +71,7 @@ python examples/mcp_client.py
 Output (verified against a local FalkorDB):
 
 ```
-['impact_of', 'who_holds', 'check_fresh', 'explain_path', 'coverage', 'rank_amplifiers', 'dark_pockets']
+['impact_of', 'who_holds', 'holders_of', 'check_fresh', 'explain_path', 'coverage', 'rank_amplifiers', 'dark_pockets']
 {
   "fresh": false,
   "stale": [

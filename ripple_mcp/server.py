@@ -21,7 +21,8 @@ from graph.impact import MAX_HOPS
 from graph.impact import impact_of as graph_impact_of
 
 READ_ONLY_TOOLS = (
-    "impact_of", "who_holds", "check_fresh", "explain_path", "coverage", "rank_amplifiers", "dark_pockets",
+    "impact_of", "who_holds", "holders_of", "check_fresh", "explain_path", "coverage", "rank_amplifiers",
+    "dark_pockets",
 )  # fmt: skip
 
 
@@ -40,6 +41,12 @@ def impact_of(
 def who_holds(tenant: str, version_id: str) -> list[dict]:
     """People and agents still holding a superseded version (told or cached, not yet resolved)."""
     return graph_tools.who_holds(tenant, version_id)
+
+
+def holders_of(tenant: str, version_id: str) -> list[dict]:
+    """Who and what currently relies on a fact version (current or old): people told it, agents caching it,
+    and actions/plans/derived facts/docs depending on it (up to 3 hops)."""
+    return graph_tools.holders_of(tenant, version_id)
 
 
 def check_fresh(
@@ -100,7 +107,9 @@ def build_server(port: int = 8001, with_writes: bool = True):
     from mcp.server.fastmcp import FastMCP
 
     server = FastMCP("ripple-mcp", port=port)
-    read_only = (impact_of, who_holds, check_fresh, explain_path, coverage, rank_amplifiers, dark_pockets)
+    read_only = (
+        impact_of, who_holds, holders_of, check_fresh, explain_path, coverage, rank_amplifiers, dark_pockets,
+    )  # fmt: skip
     for fn in read_only:
         server.tool(name=fn.__name__, description=fn.__doc__)(fn)
     if with_writes:

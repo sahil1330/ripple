@@ -7,7 +7,7 @@ import jsonschema
 
 ROOT = Path(__file__).resolve().parents[2]
 EXPECTED = {
-    "impact_of", "who_holds", "check_fresh", "explain_path", "coverage",
+    "impact_of", "who_holds", "holders_of", "check_fresh", "explain_path", "coverage",
     "rank_amplifiers", "dark_pockets", "claim_task", "complete_task", "record_answer",
 }  # fmt: skip
 
