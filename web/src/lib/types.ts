@@ -121,6 +121,18 @@ export interface AskResponse {
   source_url?: string | null;
   earlier_told?: EarlierTold | null;
   answer_id: string;
+  /** LLM Concierge (additive, optional): true when an LLM chose the graph tools and wrote the answer. */
+  llm_used?: boolean;
+  model?: string | null;
+  fallback_reason?: string | null;
+  tool_trace?: ToolTraceStep[];
+}
+
+export interface ToolTraceStep {
+  tool: string;
+  args: Record<string, unknown>;
+  cypher: { name: string; query: string }[];
+  error?: string;
 }
 
 export interface SseEnvelope {
