@@ -138,6 +138,58 @@
       }
     },
     {
+      "name": "holders_of",
+      "write": false,
+      "description": "Who and what currently relies on a fact version (current or old): people told it, agents caching it, and actions/plans/derived facts/docs depending on it (up to 3 hops).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "type": "string",
+            "description": "Tenant id, e.g. handbook-demo"
+          },
+          "version_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "tenant",
+          "version_id"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "via": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "WAS_TOLD",
+                  "CACHED",
+                  "RELIES_ON"
+                ]
+              }
+            },
+            "hops": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
+    {
       "name": "check_fresh",
       "write": false,
       "description": "Freshness guard. Call before every action. fresh=false lists each stale dependency with the current value and source.",
