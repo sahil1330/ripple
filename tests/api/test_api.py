@@ -168,3 +168,12 @@ def test_stream_delivers_published_events(tenant, monkeypatch):  # noqa: F811
                     break
     finally:
         server.should_exit = True
+
+
+def test_ask_without_person_and_trace_fields(client, tenant, monkeypatch):  # noqa: F811
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    r = client.post("/api/ask", json={"tenant": tenant, "question": "Can I expense my ExpressVPN?"})
+    body = r.json()
+    validate(body, "AskResponse")
+    assert r.status_code == 200 and body["llm_used"] is False and body["earlier_told"] is None
+    assert body["tool_trace"][0]["cypher"] and body["fallback_reason"] == "OPENAI_API_KEY not set"

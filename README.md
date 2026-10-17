@@ -61,6 +61,22 @@ flowchart TD
 - **Deterministic Demo:** Fully reproducible scenario using real GitLab policy changes and seeded synthetic holders.
 
 <!-- A:start (owned by @sahil1330: data model, Cypher & algorithms, what breaks without FalkorDB) -->
+## LLM Concierge (graph context for the agent)
+
+`/api/ask` is an LLM agent over the graph (`agents/llm_concierge.py`):
+
+1. The question and a list of graph tools go to OpenAI with function calling: `lookup_policy`, `search_company`,
+   `list_entities`, plus the same read tools `ripple_mcp` exposes (`who_holds`, `explain_path`, `check_fresh`,
+   `impact_of`, `coverage`).
+2. The model chooses tools; each runs Cypher on the tenant's FalkorDB graph.
+3. The model writes the answer **only** from tool results, citing graph ids and source URLs. If Ripple told this
+   person an older version before (`WAS_TOLD`), the answer opens with "Earlier I told you ..." (enforced in code).
+4. The versions handed out are logged as episodic memory, exactly like the template path.
+
+The response adds `llm_used`, `model`, `tool_trace` (tool, args, Cypher run) and `fallback_reason`. With no
+`OPENAI_API_KEY`, or on an API error or timeout (`OPENAI_TIMEOUT_S`, default 15 s), it falls back to the
+deterministic template Concierge, so the demo never breaks. `person_id` is optional (anonymous askers are not logged).
+
 ## Graph data model
 One FalkorDB graph per tenant (`ripple:handbook-demo`, `ripple:acme-synthetic`). Every node carries `:Entity` plus one main label, and the properties `id` (prefixed by kind, e.g. `fv:vpn:v1`), `kind` and `synthetic`. All times are epoch-ms integers, and `valid_to = null` marks the current version of a fact.
 
@@ -111,6 +127,7 @@ Every query the product runs is a parameterised `.cypher` file in [`graph/querie
 | `who_holds` | MCP tool | people and agents told or caching a superseded version and not yet resolved |
 | `fact_current`, `earlier_told`, `record_answer` | Concierge, `/api/ask` | answer only from the current version; read back "earlier I told you"; log `Answer`, `ANSWERED`, `WAS_TOLD {at, channel}` |
 | `ask_search`, `ask_neighbours`, `ask_by_kind`, `record_answer_note` | Concierge, `/api/ask` | general company questions: retrieve matching entities + their neighbourhood from the tenant graph and answer with citations |
+| `version_fact_key` | LLM Concierge tool `lookup_policy` | map a full-text hit to its policy fact so the current version and memory line are used |
 | `fix_*` (`fix_resolve`, `fix_replace_derived`, `fix_repoint_dependency`, `fix_replan_actions`, `fix_refresh_agent_cache`, `fix_doc_patch`, ...) | Fixer | re-answer, refresh agent memory, draft doc patches, rebuild the derived rule and replan, write `RESOLVED {at, by, how}` |
 | `coverage` | Fixer, `/api/changes/{id}/coverage` | impacted vs resolved per kind (`IMPACTS` vs `RESOLVED`) |
 | `explain_path`: `shortestPath` over the dependency types | "Why?" drawer, `/api/explain` | shortest path between two entities, returned with the Cypher itself |

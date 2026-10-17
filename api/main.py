@@ -16,7 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
-from agents import concierge
+from agents import concierge, llm_concierge
 from agents.events import event
 from agents.ranking import rank
 from api import bus
@@ -179,7 +179,7 @@ def explain(tenant: str, from_: str = Query(alias="from"), to: str = Query()) ->
 
 class AskRequest(BaseModel):
     tenant: str
-    person_id: str
+    person_id: str | None = None  # optional: anonymous askers get an answer but no memory line / logging
     question: str
 
 
@@ -187,7 +187,7 @@ class AskRequest(BaseModel):
 def ask(req: AskRequest) -> dict:
     _graph(req.tenant)
     try:
-        res = concierge.ask(req.tenant, req.person_id, req.question)
+        res = llm_concierge.answer(req.tenant, req.person_id, req.question)
     except concierge.UnknownTopic as e:
         raise HTTPException(422, f"no policy fact matches this question: {e}") from e
     except KeyError as e:

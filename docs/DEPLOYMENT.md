@@ -38,3 +38,20 @@ FALKORDB_PASSWORD="your-secure-password"
 RIPPLE_DEFAULT_TENANT="handbook-demo"
 ```
 All variables are documented in [`.env.example`](file:///home/gupta/Documents/code/ripple/.env.example).
+
+
+---
+
+## LLM Concierge environment (backend)
+
+Set on the API service (Railway: backend service → **Variables**, then redeploy). Never commit the key.
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `OPENAI_API_KEY` | unset | Enables the LLM Concierge. Unset → deterministic template answers (`llm_used: false`). |
+| `OPENAI_MODEL` | `gpt-5.4-mini` | Any OpenAI chat model with function calling (e.g. `gpt-5.4-nano`, `gpt-4o-mini`). |
+| `OPENAI_TIMEOUT_S` | `15` | Total time budget per question; on timeout the template answer is returned. |
+| `OPENAI_BASE_URL` | unset | Optional OpenAI-compatible endpoint. |
+
+Check: `curl -X POST $API/api/ask -H 'content-type: application/json' -d '{"tenant":"handbook-demo","question":"Who is in Accounts Payable?"}'`
+returns `"llm_used": true` and a `tool_trace` when the key is set.
