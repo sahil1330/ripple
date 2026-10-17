@@ -124,3 +124,23 @@ def test_request_has_no_reasoning_effort(g, tenant):
     fake = FakeOpenAI([[_call("lookup_policy", {"question": "vpn"})], "Reimbursable up to $150 [fv:vpn:v1]."])
     llm_concierge.answer(tenant, None, Q, client=fake)
     assert all("reasoning_effort" not in r for r in fake.requests)
+
+
+def test_explain_path_tool_resolves_change_to_old_version(g, tenant):
+    """explain_path(chg:c1, person:priya) follows the same Change->old version rule as /api/explain."""
+    load_demo(tenant)
+    ask(tenant, "person:priya", Q, now=DEMO_NOW_MS - 3_600_000)
+    apply_change(tenant, "chg:c1")
+    fake = FakeOpenAI(
+        [[_call("explain_path", {"from_id": "chg:c1", "to_id": "person:priya"})], "Because [fv:vpn:v1]."]
+    )
+    llm_concierge.answer(tenant, None, "Why does chg:c1 affect Priya?", client=fake)
+    seen = json.loads(fake.requests[1]["messages"][3]["content"])
+    assert seen["hops"] == ["chg:c1", "fv:vpn:v1", "person:priya"] and seen["via"] == ["FROM", "WAS_TOLD"]
+
+
+def test_system_prompt_guards():
+    from agents.llm_concierge import SYSTEM
+
+    s = SYSTEM.format(company="Acme", asker="")
+    assert "do not substitute a similar name" in s and "who_holds" in s and "Never reveal" in s

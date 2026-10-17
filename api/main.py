@@ -20,10 +20,11 @@ from agents import concierge, llm_concierge
 from agents.events import event
 from agents.ranking import rank
 from api import bus
+from graph import tools as graph_tools
 from graph.client import tenant_graph
 from graph.cypher import cypher
 from graph.impact import impact_of
-from graph.tools import coverage, explain_path, now_ms
+from graph.tools import coverage, now_ms
 from ingest import handbook_changes
 
 app = FastAPI(title="Ripple API", version="1.0.0")
@@ -160,21 +161,7 @@ def explain(tenant: str, from_: str = Query(alias="from"), to: str = Query()) ->
     the reverse and flip the result.
     """
     _graph(tenant)
-    g = tenant_graph(tenant)
-    head: list[str] = []
-    src = from_
-    old = g.query(cypher("change_versions"), {"change_id": from_}).result_set
-    if old:
-        head, src = [from_], old[0][0]
-    res = explain_path(tenant, to, src)  # dependent -> dependency, then flip to read from the change
-    hops = [h["id"] for h in reversed(res["hops"])]
-    via = list(reversed(res["via"]))
-    if not hops:
-        res = explain_path(tenant, src, to)
-        hops, via = [h["id"] for h in res["hops"]], list(res["via"])
-    if head and hops:
-        hops, via = head + hops, ["FROM", *via]
-    return {"hops": hops, "via": via, "cypher": res["cypher"].strip()}
+    return graph_tools.explain_from(tenant, from_, to)
 
 
 class AskRequest(BaseModel):
