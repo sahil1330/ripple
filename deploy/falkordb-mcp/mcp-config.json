@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "ripple": {
+      "command": "python",
+      "args": [
+        "-m",
+        "ripple_mcp.server",
+        "--read-only"
+      ],
+      "cwd": "/path/to/ripple",
+      "env": {
+        "FALKORDB_HOST": "localhost",
+        "FALKORDB_PORT": "6379"
+      }
+    },
+    "falkordb-readonly": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@falkordb/mcpserver"
+      ],
+      "env": {
+        "FALKORDB_HOST": "localhost",
+        "FALKORDB_PORT": "6379",
+        "FALKORDB_DEFAULT_READONLY": "true"
+      }
+    }
+  }
+}
