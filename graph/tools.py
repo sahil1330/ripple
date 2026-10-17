@@ -59,3 +59,26 @@ def coverage(tenant: str, change_id: str) -> dict:
     resolved = sum(v["resolved"] for v in by_kind.values())
     pct = round(100.0 * resolved / impacted, 1) if impacted else 100.0
     return {"impacted": impacted, "resolved": resolved, "pct": pct, "by_kind": by_kind}
+
+
+def explain_from(tenant: str, from_id: str, to_id: str) -> dict:
+    """Shortest "why" path read from ``from_id`` to ``to_id`` (used by /api/explain and the LLM Concierge).
+
+    Dependency edges point dependent -> dependency, so a Change endpoint is replaced by its old version
+    (prepended back with its FROM edge), and if no path exists in one direction the reverse is searched.
+    """
+    g = tenant_graph(tenant)
+    head: list[str] = []
+    src = from_id
+    old = g.query(cypher("change_versions"), {"change_id": from_id}).result_set
+    if old:
+        head, src = [from_id], old[0][0]
+    res = explain_path(tenant, to_id, src)  # dependent -> dependency, then flip to read from the change
+    hops = [h["id"] for h in reversed(res["hops"])]
+    via = list(reversed(res["via"]))
+    if not hops:
+        res = explain_path(tenant, src, to_id)
+        hops, via = [h["id"] for h in res["hops"]], list(res["via"])
+    if head and hops:
+        hops, via = head + hops, ["FROM", *via]
+    return {"hops": hops, "via": via, "cypher": res["cypher"].strip()}
