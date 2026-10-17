@@ -1,171 +1,243 @@
-# Your AI Told Me the Old Policy. Here's How We Made It Come Back and Fix It (FalkorDB + Agents)
+# Your AI Told Me the Old Policy. So We Built One That Comes Back to Fix It
 
-**Authors:** Sahil Mane ([@sahil1330](https://github.com/sahil1330)) & Harsh Gupta ([@harsh-gupta-10](https://github.com/harsh-gupta-10))  
-**Hackathon:** WeMakeDevs × FalkorDB *Graph Hacks: Context for AI Agents* (October 2026)  
-**Track Submissions:** Track 01 (Connected Data), Track 02 (Agent Memory & Coordination), Track 03 (Company Brain)  
-**Repository:** [github.com/sahil1330/ripple](https://github.com/sahil1330/ripple)  
-**Live Demo:** [ripple-2.up.railway.app](https://ripple-2.up.railway.app) · **Demo Video:** TODO (link coming)
+*How Ripple uses FalkorDB to remember who was told what, and to come back and correct them when a policy changes.*
 
----
+**Team:** Sahil Mane ([@sahil1330](https://github.com/sahil1330)) and Harsh Gupta ([@harsh-gupta-10](https://github.com/harsh-gupta-10))
+**Hackathon:** WeMakeDevs × FalkorDB, *Graph Hacks: Context for AI Agents* (Oct 15–18, 2026), all three tracks
+**Live app:** [ripple-2.up.railway.app](https://ripple-2.up.railway.app) · **Code:** [github.com/sahil1330/ripple](https://github.com/sahil1330/ripple) · **Demo video:** _YouTube link coming soon_
 
-## 1. The Bug Nobody Tracks: Stale Knowledge
-
-In July 2026, GitLab updated its publicly accessible company handbook with commit `ddd39597` (Merge Request `!20421`): **Personal VPN services (like ExpressVPN) were no longer reimbursable up to $150/year**; team members had to transition to company-managed NordLayer.
-
-When that handbook page updated, git committed the diff, markdown rendered cleanly, and the documentation team considered the job done.
-
-**Except nobody informed:**
-- **Priya**, an engineer who had asked the company AI Concierge two hours earlier: *"Can I expense my ExpressVPN?"* and received the answer: *"Yes, up to $150 per year."*
-- **Alex**, who derived an annual team IT budget based on that $150 figure.
-- **The Accounts Payable Approver Agent (`ap-approver`)**, an autonomous worker bot with cached rules set to automatically approve expense claims under $200.
-- **Three internal wiki docs** citing the old reimbursement policy.
-
-This is the silent failure mode of modern enterprise AI: **AI tools distribute knowledge without recording who holds it.** When reality changes, old answers linger in employee minds, vector embeddings, and autonomous agent memory caches—causing real financial leakage, compliance violations, and bad operational decisions.
-
-We built **Ripple** to solve this.
+![Ripple title card](img/cover.png)
 
 ---
 
-## 2. Why a Graph? Knowledge Exposure is a Dependency Network
+## TL;DR
 
-A relational database or vector index can store facts, but it cannot model propagation.
-
-When a policy version changes, the blast radius isn't flat. It forms a directed multi-hop dependency cascade:
-$$\text{Policy Version} \longrightarrow \text{Exposed People / Agent Memory} \longrightarrow \text{Derived Facts} \longrightarrow \text{Pending Plans} \longrightarrow \text{Executable Actions}$$
-
-In **FalkorDB**, finding every affected entity across arbitrary hops is a single, lightning-fast graph traversal:
-
-```cypher
-// Discover all downstream entities impacted by the superseded version
-MATCH (target:Entity)-[:FEEDS*1..6]->(fv:FactVersion {id: $superseded_version_id})
-RETURN target.id AS id,
-       target.kind AS kind,
-       target.name AS name,
-       length(shortestPath((target)-[:FEEDS*]-(fv))) AS hops
-ORDER BY hops ASC;
-```
-
-Because FalkorDB runs GraphBLAS-accelerated sparse matrix operations directly in memory, traversing this multi-hop cascade takes **under 3 milliseconds**.
+- Company policies change. The **people and AI agents who learned the old answer keep acting on it**, and nothing tells them otherwise.
+- **Ripple** is a company's own AI assistant. It answers from a FalkorDB graph, **records every answer it gives** (`WAS_TOLD`), and when a fact changes it **finds everyone affected, blocks stale agent actions, and comes back to fix them**.
+- It runs on a **real change**: GitLab's handbook stopped reimbursing personal VPNs (MR !20421).
+- On our own evaluation set of **31 questions**, the LLM agent scored **100% with 0 hallucinations**, at a **p50 latency of about 1.66 s**.
 
 ---
 
-## 3. Data Model Walkthrough: Temporal Versions & Episodic Memory
+## 1. The bug nobody tracks: stale answers
 
-Ripple establishes one isolated FalkorDB graph per tenant (`ripple:<tenant>`). Core organizational state lives strictly in the graph—there is no secondary database.
+On **Jul 14, 2026**, GitLab merged [MR !20421](https://gitlab.com/gitlab-com/content-sites/handbook/-/merge_requests/20421) (commit `ddd39597`) into its public handbook. Before it, personal VPN subscriptions were *reimbursable up to $150 per year*. After it, starting **Jul 15, 2026**, they are *not reimbursable; use NordLayer, the company VPN*.
+
+The page got updated, and as far as most tools are concerned that's the end of the story. Now think about everything that still holds the old answer:
+
+- **Priya**, an engineer, asked the company assistant "Can I expense my ExpressVPN?" and was told **"yes, up to $150"**.
+- An **accounts-payable worker agent** has a cached rule, *"auto-approve personal VPN claims up to $150/year"*, and Priya's $150 claim sits in its queue, due in 40 minutes.
+- Internal wiki pages and FAQ copies **still cite the old rule**.
+
+Search can find the new page. A vector index can embed it. **Neither of them knows who was told the old version.** That is a relationship problem, so we solved it with a graph.
+
+> In our seeded demo company, **24 people, agents, docs, plans and actions** depend on that one old fact.
+
+---
+
+## 2. What Ripple does, in one minute
+
+1. **Ask.** Priya asks the assistant. It answers with citations, and the graph records `(Priya)-[:WAS_TOLD]->(VPN v1)`.
+2. **Change.** *Sentinel* replays the real handbook commit and writes `FactVersion v2`, which `SUPERSEDES` v1.
+3. **Trace.** *Tracer* finds all 24 affected entities in one traversal and ranks them by **time-to-harm**.
+4. **Guard.** The AP worker agent calls `check_fresh` over **MCP** before acting. The graph shows its rule derives from a superseded version, so the action is **BLOCKED**.
+5. **Fix.** *Fixer* agents claim `Task` nodes, patch docs, refresh caches, replan and re-brief. Coverage reaches **100% (24/24)**.
+6. **Correct.** Priya asks again, and the answer opens with: **"Earlier I told you: reimbursable up to $150 per year. That changed on Jul 14, 2026 (MR !20421)."**
+
+![The correction, live](img/earlier-told.png)
+
+---
+
+## 3. Architecture
 
 ```mermaid
-flowchart TD
-    Fact["Fact (Topic: IT / Reimbursements)"] -->|HAS_VERSION| V1["FactVersion v1 ($150/yr)"]
-    Fact -->|HAS_VERSION| V2["FactVersion v2 ($0 / NordLayer)"]
-    V2 -->|SUPERSEDES| V1
-
-    Person["Person (Priya Sharma)"] -->|WAS_TOLD {at: 1784048400000}| V1
-    WorkerAgent["Worker Agent (ap-approver)"] -->|CACHED {at: 1784048400000}| V1
-    WikiDoc["Doc (Finance FAQ)"] -->|CITES| V1
-
-    Plan["Plan (Q3 IT Expenses)"] -->|DEPENDS_ON| V1
-    Action["Action (Approve $150 VPN)"] -->|PART_OF| Plan
-    Action -->|DEPENDS_ON| V1
-
-    Change["Change (commit ddd39597)"] -->|FROM| V1
-    Change -->|TO| V2
-    Change -->|IMPACTS| Action
-    Change -->|IMPACTS| Person
+flowchart LR
+  H[GitLab handbook<br/>real commits C1–C5] -->|replay| S[Sentinel]
+  S -->|FactVersion + SUPERSEDES| G[(FalkorDB<br/>one graph per tenant)]
+  G --> T[Tracer<br/>algo.bfs + PageRank/betweenness]
+  T -->|Task nodes| F[Fixer agents]
+  F --> G
+  W[Worker agent] -->|check_fresh via MCP| M[ripple_mcp server]
+  M --> G
+  U[Employee] --> C[Concierge<br/>OpenAI tool calling]
+  C -->|Cypher tools| G
+  C -->|WAS_TOLD| G
+  G --> API[FastAPI + SSE] --> WEB[Next.js app<br/>chat · inbox · graph]
 ```
 
-### Key Innovations:
-1. **FactVersion & SUPERSEDES:** Facts are immutable temporal snapshots. When Sentinel ingests a policy change, it creates `FactVersion v2` and a `SUPERSEDES` edge pointing back to `v1`.
-2. **Episodic Memory (`WAS_TOLD`):** When Ripple's Concierge answers a question, it writes a `(Person)-[:WAS_TOLD {at, channel, answer_id}]->(FactVersion)` edge. It remembers not just what it said, but *which version of reality* it said it with.
-3. **Agent Memory (`CACHED`):** Worker agents log the specific fact version governing their operating assumptions.
+- **Backend:** Python and FastAPI. Every query is a parameterised `.cypher` file in `graph/queries/`, loaded by name.
+- **Agents:** Sentinel, Tracer, Fixer, a worker (`ap-approver`), and the Concierge LLM agent.
+- **MCP:** the `ripple_mcp` server exposes read-only graph tools (`check_fresh`, `who_holds`, `explain_path`, `impact_of`, `coverage`, ...).
+- **Frontend:** Next.js with a Raycast-style UI: a chat with the company assistant, a per-department inbox with **Get explanation**, and a graph tab.
+- **Deploy:** Railway (FalkorDB, API and web).
 
 ---
 
-## 4. Graph Algorithms as Autonomous Agent Tools
+## 4. The graph model
 
-Ripple doesn't just display graphs—our autonomous agent loop calls **FalkorDB built-in graph algorithms** directly via Cypher to plan remediation:
+Every node carries `:Entity` plus one main label, an `id` prefixed by kind (`fv:vpn:v1`), and epoch-ms times. `valid_to = null` marks the current version.
 
-| Algorithm | FalkorDB Procedure | Agent Decision & Use Case |
-|---|---|---|
-| **Breadth-First Search** | `algo.bfs` | Maps multi-hop blast radius across materialised `FEEDS` edges in a single traversal. |
-| **Shortest Path** | `shortestPath` / `algo.SPpaths` | Computes the exact, human-explainable causal chain displayed in the **"Why?"** drawer. |
-| **PageRank** | `algo.pageRank` | Measures documentation authority to prioritize which wiki pages need automated doc patches first. |
-| **Betweenness Centrality** | `algo.betweenness` | Detects organizational "amplifiers"—people whose communication bridges multiple teams. |
-| **Weakly Connected Components** | `algo.WCC` | Isolates "dark pockets": isolated teams with zero cross-department communication. |
-
-When Fixer agents work the queue, they brief the highest-betweenness hub in each dark pocket, ensuring that tribal knowledge spreads to isolated subgroups without spamming the entire organization.
-
----
-
-## 5. Agent Coordination: Zero Glue Code Through Task Nodes
-
-How do multi-agent systems avoid race conditions, split-brain logic, and messy message queues?
-
-**In Ripple, agents coordinate exclusively through `Task` nodes in FalkorDB:**
-
-1. **Task Creation:** Tracer creates `Task` nodes linked to the `Change`:
-   ```cypher
-   CREATE (t:Task {
-     id: $task_id,
-     kind: 'reanswer',
-     status: 'open',
-     target_id: $person_id,
-     created_at: $now_ms
-   })-[:ABOUT]->(c:Change {id: $change_id})
-   ```
-2. **Atomic Claiming:** Multiple concurrent Fixer agents compete for work using FalkorDB's atomic transactional guarantees:
-   ```cypher
-   MATCH (t:Task {id: $task_id, status: 'open'})
-   SET t.status = 'claimed',
-       t.claimed_by = $agent_id,
-       t.claimed_at = $now_ms
-   RETURN t;
-   ```
-   If another agent claimed it in the same millisecond, zero rows return, and the losing agent gracefully moves to the next task.
-3. **Resolution:** Upon completing the fix (drafting a PR or updating user memory), the agent updates `t.status = 'resolved'` and records a `RESOLVED` edge.
-
-### The Hero Moment: MCP Freshness Guard
-Autonomous workers (like Accounts Payable bots) must consult Ripple's freshness guard over the **Model Context Protocol (`check_fresh`)** before executing every financial or operational action:
 ```
-Worker Agent ──► MCP: check_fresh(action_id='act:c1:ap:1')
-                    │
-                    ├──► FalkorDB checks DEPENDS_ON ──► fv:vpn:v1 (SUPERSEDED!)
-                    │
-Worker Agent ◄──────┴── Stale! Status: BLOCKED. Replan Task Opened.
+(Fact)-[:HAS_VERSION]->(FactVersion)          (v2)-[:SUPERSEDES]->(v1)
+(Change)-[:FROM]->(v1)  (Change)-[:TO]->(v2)  (Doc)-[:STATES|CITES]->(FactVersion)
+(Person)-[:WAS_TOLD {at, channel}]->(FactVersion)
+(Agent)-[:CACHED]->(FactVersion)              (DerivedFact)-[:DERIVED_FROM]->(FactVersion)
+(Plan)-[:DEPENDS_ON]->(DerivedFact)           (Action)-[:PART_OF]->(Plan)
+(Person)-[:MEMBER_OF]->(Team)                 (Agent)-[:OWNS]->(Plan|Action)
+(Task)-[:ABOUT]->(Change)  (Task)-[:TARGETS]->(x)  (Agent)-[:CREATED|CLAIMED]->(Task)
+(Change)-[:IMPACTS {hops, risk, tth_ms}]->(x) (Person)-[:RESOLVED {at, by, how}]->(Change)
 ```
-Result: The bot's scheduled approval of the $150 VPN expense is **blocked 40 minutes before execution**.
+
+Dependency edges point **dependent → dependency** (Priya `WAS_TOLD` v1). Ingest mirrors each one with a `FEEDS {w:1}` edge in the opposite direction, so graph algorithms, which follow outgoing edges only, can ask "what does this version feed?" over a single relationship type.
+
+**Data:** the fact versions are real. They come from five changes (C1–C5) to GitLab's `finance/expenses.md`, and the docs are 74 real handbook finance pages with their links. The people and agents holding those versions are synthetic and seeded: 24 people, 8 agents, plans, actions and answers.
 
 ---
 
-## 6. What We Learned: FalkorDB Gotchas & Best Practices
+## 5. Why this needs FalkorDB (with the real Cypher)
 
-Building Ripple in four intense hackathon days gave us deep respect for FalkorDB's speed and unique architecture. Here are key patterns we learned:
+### 5.1 Blast radius in one traversal
 
-1. **Epoch-ms Integers for Time:** FalkorDB does not have native temporal arithmetic in Cypher. Store all timestamps as epoch milliseconds (`1784048400000`). Calculate time-to-harm differences (`tth_ms = due_at - detected_at`) using standard integer subtraction.
-2. **Materialised `FEEDS` Edges for GraphBLAS:** FalkorDB graph algorithms like `algo.bfs` traverse a single relationship type. Rather than trying to union disparate edges (`DEPENDS_ON`, `WAS_TOLD`, `CITES`) inside the algorithm call, we materialise a lightweight `FEEDS {w:1}` edge during ingestion.
-3. **Relationship Aliasing in Aggregations:** When counting relationships in Cypher, always alias the relationship (`MATCH (a)-[r:WAS_TOLD]->(b) RETURN count(r)`) to avoid known parser limitations with naked pattern counts.
-4. **Parameterise Everything:** Pass all filters and entity IDs via query `$parameters` for maximum query cache hit rate and zero injection vulnerability.
+The Tracer's whole impact set is one query (`impact_bfs.cypher`):
+
+```cypher
+MATCH (old:FactVersion {id: $old_id})
+CALL algo.bfs(old, 6, 'FEEDS') YIELD nodes
+UNWIND nodes AS x
+MATCH p = (old)-[:FEEDS*1..6]->(x)
+WITH x, min(length(p)) AS hops
+WHERE NOT 'FactVersion' IN labels(x)
+RETURN x.id AS id, x.kind AS kind,
+       coalesce(x.name, x.title, x.statement, x.id) AS label, hops
+ORDER BY hops, id
+```
+
+For C1 it returns **24 entities** with their hop distance: people who were told, agents that cached the rule, the derived auto-approve rule, the plan and actions behind it, and docs that cite it.
+
+### 5.2 Graph algorithms as ranking tools
+
+Not everything is equally urgent. Ripple's **time-to-harm** ranking is:
+
+```
+risk(x) = severity(kind) × urgency(x) × (1 + reach(x))
+```
+
+*Severity* runs from a money-moving Action (1.0) down to a Doc (0.4). *Urgency* comes from deadlines, inherited through `OWNS`. *Reach* comes straight from FalkorDB's algorithms:
+
+```cypher
+CALL algo.pageRank('Doc', 'LINKS_TO') YIELD node, score
+RETURN node.id AS id, node.title AS title, score ORDER BY score DESC, id
+```
+
+```cypher
+CALL algo.betweenness({nodeLabels: ['Entity'], relationshipTypes: ['FEEDS'],
+                       samplingSize: 100000, samplingSeed: 42})
+YIELD node, score WHERE score > 0
+RETURN node.id AS id, score
+```
+
+PageRank runs over the real handbook link graph, and betweenness finds the hubs that relay a stale fact. Priya's pending $150 approval comes out on top, because it auto-approves soonest and moves money.
+
+### 5.3 The freshness guard (served over MCP)
+
+Before any worker agent acts, it calls `check_fresh`. Any row returned means stale:
+
+```cypher
+MATCH (s:Entity {id: $target_id})
+WHERE 'Plan' IN labels(s) OR 'Action' IN labels(s)
+WITH s
+MATCH (s)-[:PART_OF*0..1]->(owner)-[:DEPENDS_ON]->(d)
+MATCH (d)-[:DERIVED_FROM*0..5]->(fv:FactVersion)
+WHERE fv.valid_to IS NOT NULL AND fv.valid_to <= $now
+MATCH (cur:FactVersion)-[:SUPERSEDES*1..10]->(fv)
+WHERE cur.valid_to IS NULL
+RETURN DISTINCT d.id AS via, fv.id AS stale_version, cur.id AS current_version,
+       coalesce(cur.mr_url, cur.source_url) AS source
+```
+
+An action inherits its plan's dependencies. In the demo, both Priya's VPN claim and a $95 phone approval in the same AP queue get paused, because the queue's plan relies on the stale VPN rule. Each one gets a `replan` Task, and the block event carries the stale version, the current version and the source MR.
+
+![check_fresh blocks the action](img/blocked.png)
+
+### 5.4 Episodic memory and "why?"
+
+The correction is plain Cypher over `WAS_TOLD`:
+
+```cypher
+MATCH (p:Person {id: $person_id})-[t:WAS_TOLD]->(old:FactVersion {fact_key: $key})
+WHERE old.id <> $current_id
+RETURN old.id AS version_id, old.value AS value, t.at AS at, t.channel AS channel
+ORDER BY t.at DESC LIMIT 1
+```
+
+The "why does this affect me?" explanation is a `shortestPath` over the dependency edges, rendered as a path like `chg:c1 → fv:vpn:v1 → doc:hb:finance:expenses`.
+
+![Get explanation: before/after, path, affected items, AI summary](img/explanation.png)
+
+### 5.5 One graph per company
+
+Each tenant is its own FalkorDB graph (`ripple:handbook-demo`, `ripple:acme-synthetic`) in one instance. Switch the company in the UI and you get a different graph, different people and a different assistant, with no filtering to get wrong. `agents/concurrent.py` runs the whole agent loop on both tenants at once in parallel threads.
+
+**The vector-only alternative** can find the new policy. It cannot answer *who was told the old one*, *which agent cached it*, or *which pending action depends on it*. Those answers are edges, not embeddings.
 
 ---
 
-## 7. Prior Art & Standing on Giants' Shoulders
+## 6. The Concierge: an LLM agent grounded in Cypher
 
-Ripple builds upon ideas pioneered in academia and open source:
-- **Graphiti ([getzep/graphiti](https://github.com/getzep/graphiti)):** Pioneered bi-temporal fact invalidation on FalkorDB. Ripple extends invalidation by tracking *downstream exposure* to people and autonomous agents.
-- **Lethe ([WeMakeDevs Hangover](https://www.wemakedevs.org/blogs/hangover-wrap-up-blog)):** Demonstrated forgetting mechanisms within agent state. Ripple focuses on active remediation across organizational holders.
-- **PlanFence & STALE Papers ([arXiv:2609.03340](https://arxiv.org/abs/2609.03340)):** Formalized safety barriers for planning agents operating in non-stationary environments.
+`/api/ask` is an OpenAI function-calling agent. The model receives the question and a list of graph tools: `lookup_policy`, `search_company`, `list_entities`, `holders_of`, plus the same read tools `ripple_mcp` exposes. It picks the tools it needs, each tool runs Cypher on the tenant's graph, and it **writes the answer only from tool results**, citing graph ids and source URLs.
 
----
+- Every response includes a **tool trace** (tool, arguments and the Cypher it ran), which the UI shows as a collapsible **"How I found this"** panel.
+- If Ripple told this person an older version before, the answer **must** open with "Earlier I told you…". This is enforced in code, not left to the prompt.
+- If there's no API key, or on an error or timeout, it falls back to a deterministic template agent, so the demo never breaks and CI needs no key.
 
-## 8. Try It Yourself
-
-- **Interactive Live Dashboard:** [ripple-2.up.railway.app](https://ripple-2.up.railway.app) (Run demo mode with `?demo=1`)
-- **Code & Deploy:** [github.com/sahil1330/ripple](https://github.com/sahil1330/ripple) (Launch locally in `< 10 minutes` with Docker)
-- **Watch the 2:45 Walkthrough:** TODO: video link coming
+![An AI answer with the Cypher trace](img/trace.png)
 
 ---
 
-## Disclosure & Team
+## 7. How it maps to the three tracks
 
-Ripple was built collaboratively for the **WeMakeDevs × FalkorDB Graph Hacks Hackathon** by **Sahil Mane** (`@sahil1330`) and **Harsh Gupta** (`@harsh-gupta-10`).
+| Track | What Ripple does |
+|---|---|
+| **Agents That Act on Connected Data** | Multi-hop impact traversal; `check_fresh` over MCP blocks stale actions; BFS, PageRank, betweenness and shortestPath as agent tools; explainable paths on every answer |
+| **Agent Memory & Coordination** | Episodic `WAS_TOLD` memory across sessions; Fixer agents hand off work through `Task` nodes with atomic claims (no double-claims); separate memory per tenant; concurrent tenants |
+| **Company Brain** | Docs, people, teams and ownership in one graph; every fact traced to its source MR; answers with citations; the graph stays current as the handbook changes |
 
-In compliance with hackathon guidelines, we used **Cursor** (the Cursor IDE editor, Cursor agent, and Cursor cloud agents) alongside Antigravity pair programming for boilerplate, Cypher query optimization, Next.js UI integration, and CI automation. Every architecture choice, query pattern, and merged line of code was authored, reviewed, and verified by our human team.
+---
+
+## 8. Did it actually work? Our eval
+
+We wrote a live evaluation (`tests/eval/live_eval.py`) that runs against the deployed API. It's **our own eval set**, not a public benchmark.
+
+- **Agent pipeline:** after each demo step it checks graph state and SSE events: v2 written and v1 closed, 24 impacted, stale actions blocked with a reason, Task created/claimed/done events, and coverage reaching exactly 100%.
+- **Concierge quality:** 31 questions across both tenants. They cover policy before and after the change, team membership, ownership, multi-hop ("which agents rely on the VPN rule?"), explain-why, coverage, "Earlier I told you" corrections, unknown questions, a prompt-injection attempt, a cross-tenant leak attempt and typo'd questions.
+
+**Result: 100% correct on 31 questions, 0 hallucinations, p50 latency about 1.66 s**, with `llm_used: true` on every answer.
+
+The eval also earned its keep. Early runs caught the model swapping names, a cross-tenant leak in an answer, and the "why" tool resolving a change id differently from the API. We fixed each one in the prompt or the code, then re-ran.
+
+---
+
+## 9. Lessons learned (FalkorDB v4 vs v6)
+
+We tested against FalkorDB **v4.18.3 and v6.0.2** and kept notes in `graph/NOTES.md`:
+
+- **`algo.bfs` follows outgoing edges only, and doesn't return the start node.** That's why we mirror every dependency with a `FEEDS` edge.
+- **A v6.0 planner quirk:** `WHERE 'X' IN labels(s)` right after `MATCH (s {id:$id})` was applied to a later scan and silently returned no rows. A `WITH s` barrier fixed it (you can see it in `check_fresh` above).
+- **`algo.betweenness` raw scores differ between v4 and v6**, and its default sampling changed the ranking between reloads. We now run it exhaustively (`samplingSize: 100000`, `samplingSeed: 42`), normalise the scores and rely only on the ranking order.
+- **Full-text index:** `db.idx.fulltext.createNodeIndex` failed on `latest`; `CREATE FULLTEXT INDEX FOR (d:Doc) ON (d.title)` works on both versions.
+- **Atomic task claims come free:** writes are serialised per graph, so `MATCH (t:Task {status:'open'}) ... SET t.status='claimed'` can't be claimed twice.
+- **SSpaths `pathCount` caps the total paths returned, not paths per target.** For hop distance we use plain `min(length(p))`.
+
+---
+
+## 10. Try it
+
+- **Live:** [ripple-2.up.railway.app](https://ripple-2.up.railway.app). Ask "Can I expense my ExpressVPN?", click **Next step** through the demo, then ask again.
+- **Code:** [github.com/sahil1330/ripple](https://github.com/sahil1330/ripple) (`docs/MCP.md` shows how to plug `ripple_mcp` into your MCP client)
+- **Video:** _YouTube link coming soon_
+
+**Team:** Sahil Mane (graph, agents, MCP, API) and Harsh Gupta (web UI, deployment, docs, demo video).
+
+**AI disclosure:** we used AI coding assistants, **Cursor** and **Antigravity**, while building Ripple. We reviewed, tested and can explain every part of the code and architecture.
+
+*Built with [FalkorDB](https://www.falkordb.com/).*
