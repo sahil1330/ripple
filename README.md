@@ -66,7 +66,7 @@ flowchart TD
 `/api/ask` is an LLM agent over the graph (`agents/llm_concierge.py`):
 
 1. The question and a list of graph tools go to OpenAI with function calling: `lookup_policy`, `search_company`,
-   `list_entities`, plus the same read tools `ripple_mcp` exposes (`who_holds`, `explain_path`, `check_fresh`,
+   `list_entities`, `holders_of`, plus the same read tools `ripple_mcp` exposes (`who_holds`, `explain_path`, `check_fresh`,
    `impact_of`, `coverage`).
 2. The model chooses tools; each runs Cypher on the tenant's FalkorDB graph.
 3. The model writes the answer **only** from tool results, citing graph ids and source URLs. If Ripple told this
@@ -129,6 +129,7 @@ Every query the product runs is a parameterised `.cypher` file in [`graph/querie
 | `who_holds` | MCP tool | people and agents told or caching a superseded version and not yet resolved |
 | `fact_current`, `earlier_told`, `record_answer` | Concierge, `/api/ask` | answer only from the current version; read back "earlier I told you"; log `Answer`, `ANSWERED`, `WAS_TOLD {at, channel}` |
 | `ask_search`, `ask_neighbours`, `ask_by_kind`, `record_answer_note` | Concierge, `/api/ask` | general company questions: retrieve matching entities + their neighbourhood from the tenant graph and answer with citations |
+| `holders_of` | LLM Concierge tool `holders_of` | who/what relies on a version now: people told it, agents caching it, actions/plans/docs depending on it (works before and after a change) |
 | `version_fact_key` | LLM Concierge tool `lookup_policy` | map a full-text hit to its policy fact so the current version and memory line are used |
 | `fix_*` (`fix_resolve`, `fix_replace_derived`, `fix_repoint_dependency`, `fix_replan_actions`, `fix_refresh_agent_cache`, `fix_doc_patch`, ...) | Fixer | re-answer, refresh agent memory, draft doc patches, rebuild the derived rule and replan, write `RESOLVED {at, by, how}` |
 | `coverage` | Fixer, `/api/changes/{id}/coverage` | impacted vs resolved per kind (`IMPACTS` vs `RESOLVED`) |

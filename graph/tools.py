@@ -51,6 +51,15 @@ def explain_path(tenant: str, from_id: str, to_id: str) -> dict:
     return {"hops": rows[0][0], "via": rows[0][1], "cypher": query}
 
 
+def holders_of(tenant: str, version_id: str) -> list[dict]:
+    """Who and what currently relies on a fact version: people told it (WAS_TOLD), agents caching it
+    (CACHED), and actions/plans/derived facts/docs depending on it (up to 3 hops). Works for the current
+    version (unlike ``who_holds``, which lists holders of superseded versions only)."""
+    res = tenant_graph(tenant).query(cypher("holders_of"), {"version_id": version_id})
+    keys = ["id", "kind", "label", "via", "hops"]
+    return [dict(zip(keys, r, strict=True)) for r in res.result_set]
+
+
 def coverage(tenant: str, change_id: str) -> dict:
     """``{impacted, resolved, pct, by_kind}`` from IMPACTS and RESOLVED edges of a change."""
     rows = tenant_graph(tenant).query(cypher("coverage"), {"change_id": change_id}).result_set

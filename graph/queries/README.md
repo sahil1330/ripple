@@ -55,6 +55,7 @@ Draft queries from `RIPPLE_PLAN.md` §4.4 (untested until the smoke-test issue c
 
 Load a query from Python with `graph.cypher.cypher("<name>")`.
 | `version_fact_key.cypher` | LLM Concierge: map a full-text FactVersion hit to its fact key |
+| `holders_of.cypher` | current holders/dependents of a version: WAS_TOLD, CACHED, and up to 3 dependency hops |
 | `ask_search.cypher` | general Concierge retrieval: entities matching question terms (current versions only) |
 | `ask_neighbours.cypher` | general Concierge context: MEMBER_OF/OWNS/PART_OF/DEPENDS_ON/... neighbours of a hit |
 | `record_answer_note.cypher` | log a general answer (Answer + ANSWERED, no WAS_TOLD) |

@@ -144,3 +144,31 @@ def test_system_prompt_guards():
 
     s = SYSTEM.format(company="Acme", asker="")
     assert "do not substitute a similar name" in s and "who_holds" in s and "Never reveal" in s
+
+
+@pytest.mark.parametrize("applied", [False, True])
+def test_holders_of_finds_agents_relying_on_current_vpn_rule(g, tenant, applied):
+    """'Which agents rely on the VPN rule?' works before (v1 current) and after C1 (v2 current)."""
+    from graph.tools import holders_of
+
+    load_demo(tenant)
+    if applied:
+        apply_change(tenant, "chg:c1")
+    turns = [
+        [_call("lookup_policy", {"question": "vpn"})],
+        [_call("holders_of", {"version_id": "X"}, 1)],
+        "ok",
+    ]
+    fake = FakeOpenAI(turns)
+    # the model passes the version it got from lookup_policy; emulate that by patching the second call's args
+    current = "fv:vpn:v2" if applied else "fv:vpn:v1"
+    fake.turns[1][0].function.arguments = json.dumps({"version_id": current})
+    res = llm_concierge.answer(tenant, None, "Which agents rely on the VPN rule?", client=fake)
+    assert [t["tool"] for t in res["tool_trace"]] == ["lookup_policy", "holders_of"]
+    assert "holders_of" in [c["name"] for c in res["tool_trace"][1]["cypher"]]
+    rows = holders_of(tenant, current)
+    agents = {r["id"] for r in rows if r["kind"] == "Agent"}
+    if not applied:
+        assert {"agent:ap-approver", "agent:it-helpdesk-bot"} <= agents
+        assert "act:approve-vpn-priya" in {r["id"] for r in rows}
+    assert all(r["kind"] not in ("Answer", "Task") for r in rows)

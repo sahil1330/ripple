@@ -197,7 +197,9 @@ CASES = [
          want=[r"ap-approver", r"travel-planner", r"onboarding-bot", r"it-helpdesk"], tool="list_entities|search_company"),
     # multi-hop / why / guard / coverage
     dict(id="hop-vpn-agents", t=HB, phase="pre", q="Which agents rely on the VPN rule?",
-         want=[r"ap-approver", r"it-helpdesk"], tool="search_company|who_holds|impact_of|lookup_policy"),
+         want=[r"ap-approver", r"it-helpdesk"], tool="holders_of|search_company|who_holds|impact_of|lookup_policy"),
+    dict(id="hop-vpn-agents-post", t=HB, phase="post", q="Which agents rely on the VPN rule now?",
+         want=[r"ap-approver", r"it-helpdesk"], tool="holders_of"),
     dict(id="hold-post", t=HB, phase="mid", q="Who still holds the old VPN policy fv:vpn:v1?",
          want=[r"person:|agent:|Priya|ap-approver|it-helpdesk"], tool="who_holds"),
     dict(id="why-priya", t=HB, phase="post", q="Why does the VPN change chg:c1 affect person:priya?",
