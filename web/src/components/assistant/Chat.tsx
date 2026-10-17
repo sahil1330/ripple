@@ -41,15 +41,27 @@ function parseAnswer(a: AskResponse) {
   body = body.replace(/^From the company graph:\s*/, "");
   const policy = body.match(/^(.*?): (.*?)\. Policy text: “([\s\S]*)”$/);
   const parts = policy ? [] : body.split(" | ");
-  return { policy: policy ? { title: policy[1], value: policy[2], quote: policy[3] } : null, parts, sources };
+  let llmText = a.answer;
+  if (a.earlier_told && llmText.startsWith(a.earlier_told.text)) llmText = llmText.slice(a.earlier_told.text.length).trim();
+  return { policy: policy ? { title: policy[1], value: policy[2], quote: policy[3] } : null, parts, sources, llmText };
 }
 
 function AnswerBody({ answer }: { answer: AskResponse }) {
   const p = parseAnswer(answer);
   return (
     <div className="space-y-3">
+      {answer.llm_used && (
+        <span
+          title={answer.model ? `Written by ${answer.model} from graph tool results` : "Written by an LLM from graph tool results"}
+          className="inline-flex items-center gap-1 rounded-[6px] bg-ember px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wide text-coral"
+        >
+          ✦ AI
+        </span>
+      )}
       {answer.earlier_told && <EarlierTold answer={answer} />}
-      {p.policy ? (
+      {answer.llm_used ? (
+        <p className="whitespace-pre-line text-[15px] leading-relaxed text-white">{p.llmText}</p>
+      ) : p.policy ? (
         <div className="space-y-2">
           <div className="text-[15px] leading-relaxed text-white">
             <span className="text-ash">{p.policy.title}: </span>
@@ -86,7 +98,45 @@ function AnswerBody({ answer }: { answer: AskResponse }) {
           </a>
         )}
       </div>
+      {answer.tool_trace && answer.tool_trace.length > 0 && <HowIFound steps={answer.tool_trace} />}
     </div>
+  );
+}
+
+/** Collapsible "How I found this": the graph tools the agent called, their arguments and the Cypher they ran. */
+function HowIFound({ steps }: { steps: NonNullable<AskResponse["tool_trace"]> }) {
+  return (
+    <details className="group rounded-[12px] bg-obsidian px-3 py-2">
+      <summary className="flex min-h-[32px] cursor-pointer list-none items-center gap-2 text-[12px] text-ash hover:text-white">
+        <span className="transition-transform group-open:rotate-90">›</span>
+        How I found this · {steps.length} graph {steps.length === 1 ? "step" : "steps"}
+      </summary>
+      <ol className="mt-2 space-y-3">
+        {steps.map((s, i) => (
+          <li key={i} className="space-y-1.5">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <Badge tone="text-sky">{s.tool}</Badge>
+              {Object.entries(s.args)
+                .filter(([, v]) => v !== null && v !== "")
+                .map(([k, v]) => (
+                  <Badge key={k}>
+                    {k}={typeof v === "string" ? v : JSON.stringify(v)}
+                  </Badge>
+                ))}
+              {s.error && <Badge tone="text-coral">error</Badge>}
+            </div>
+            {s.cypher.map((c) => (
+              <div key={c.name}>
+                <div className="font-mono text-[10px] text-smoke">{c.name}.cypher</div>
+                <pre className="mt-0.5 max-h-48 overflow-auto whitespace-pre-wrap break-words rounded-[8px] bg-graphite p-2 font-mono text-[11px] leading-snug text-ash">
+                  {c.query}
+                </pre>
+              </div>
+            ))}
+          </li>
+        ))}
+      </ol>
+    </details>
   );
 }
 
