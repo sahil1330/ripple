@@ -226,7 +226,6 @@ def ask_llm(
         {"role": "system", "content": SYSTEM.format(company=_company(tenant), asker=asker)},
         {"role": "user", "content": question},
     ]
-    extra = {"reasoning_effort": "low"} if model.startswith(("gpt-5", "o")) else {}
     text = None
     for round_no in range(MAX_ROUNDS + 1):
         left = deadline - time.monotonic()
@@ -235,7 +234,7 @@ def ask_llm(
         resp = client.chat.completions.create(
             model=model, messages=messages, tools=TOOL_SCHEMAS,
             tool_choice="required" if round_no == 0 else ("none" if round_no == MAX_ROUNDS else "auto"),
-            timeout=left, **extra,
+            timeout=left,
         )  # fmt: skip
         msg = resp.choices[0].message
         calls = msg.tool_calls or []
