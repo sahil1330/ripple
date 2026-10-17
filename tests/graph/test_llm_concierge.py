@@ -116,3 +116,11 @@ def test_anonymous_ask_is_not_logged(g, tenant):
     res = llm_concierge.answer(tenant, None, Q)
     assert res["versions"] == ["fv:vpn:v1"] and res["earlier_told"] is None
     assert g.query("MATCH (a:Answer {id: $id}) RETURN a", {"id": res["answer_id"]}).result_set == []
+
+
+def test_request_has_no_reasoning_effort(g, tenant):
+    """Chat Completions rejects function tools combined with reasoning_effort on gpt-5.4-mini (live 400)."""
+    load_demo(tenant)
+    fake = FakeOpenAI([[_call("lookup_policy", {"question": "vpn"})], "Reimbursable up to $150 [fv:vpn:v1]."])
+    llm_concierge.answer(tenant, None, Q, client=fake)
+    assert all("reasoning_effort" not in r for r in fake.requests)
