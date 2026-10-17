@@ -261,7 +261,7 @@ export function Chat({
               placeholder={`Ask ${company} anything…`}
               className="min-h-11 min-w-0 flex-1 bg-transparent text-[16px] sm:text-[15px] text-white placeholder:text-smoke focus:outline-none"
             />
-            <button onClick={submit} disabled={busy || !draft.trim()} className="btn-primary min-h-11 px-4 lg:min-h-0 lg:px-3 lg:py-2">
+            <button onClick={submit} disabled={busy || !draft.trim()} className="btn-primary min-h-11 px-4 xl:min-h-0 xl:px-3 xl:py-2">
               Ask ↵
             </button>
           </div>

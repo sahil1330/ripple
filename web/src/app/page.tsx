@@ -27,8 +27,10 @@ import {
 import { GraphCanvas } from "@/components/graph";
 import { Chat } from "@/components/assistant/Chat";
 import { ChatMessage } from "@/components/assistant/types";
+import { IconChat, IconGraph, IconInbox, IconMore, IconTeams } from "@/components/assistant/AppIcons";
 
 type Tab = "assistant" | "graph";
+type AppView = "chat" | "inbox" | "departments" | "graph" | "more";
 const PREFERRED_ASKERS = ["person:priya", "person:ravi"];
 let seq = 0;
 const nid = () => `m${++seq}`;
@@ -53,6 +55,15 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<"mock" | "live">("mock");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [view, setView] = useState<AppView>("chat");
+  const [isDesktop, setIsDesktop] = useState(true);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1280px)");
+    const on = () => setIsDesktop(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
   const [mobileView, setMobileView] = useState<"chat" | "inbox">("chat");
   const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -257,6 +268,7 @@ export default function Home() {
           unread={!read.has(`${dept}|${n.changeId}`)}
           onExplain={() => {
             setMobileView("chat");
+            setView("chat");
             if (activeDept) explain(n, activeDept.name, activeDept.id);
           }}
           disabled={busy}
@@ -272,6 +284,7 @@ export default function Home() {
               unread={!read.has(`${COMPANY_WIDE}|${n.changeId}`)}
               onExplain={() => {
                 setMobileView("chat");
+            setView("chat");
                 explain(n, "the whole company", COMPANY_WIDE);
               }}
               disabled={busy}
@@ -282,6 +295,192 @@ export default function Home() {
       )}
     </>
   );
+
+  // ---------- Phone + tablet app shell (< 1280px) ----------
+  const NAV: { id: AppView; label: string; icon: React.ReactNode; badge?: number }[] = [
+    { id: "chat", label: "Chat", icon: <IconChat /> },
+    { id: "inbox", label: "Inbox", icon: <IconInbox />, badge: activeDept ? unread(activeDept.id) : 0 },
+    { id: "departments", label: "Teams", icon: <IconTeams />, badge: totalUnread },
+    { id: "graph", label: "Graph", icon: <IconGraph /> },
+    { id: "more", label: "More", icon: <IconMore /> },
+  ];
+  const TITLES: Record<AppView, [string, string]> = {
+    chat: [`Ask ${company}`, `${askerLabel} · ${activeDept?.name ?? ""}`],
+    inbox: ["Inbox", `${activeDept?.name ?? "—"} · ${notifications.length} changes`],
+    departments: ["Departments", `${departments.length} teams at ${company}`],
+    graph: ["Company graph", graph ? `${graph.nodes.length} entities · ${graph.links.length} relationships` : "Loading…"],
+    more: ["Settings", current?.name ?? company],
+  };
+  const go = (v: AppView) => setView(v);
+  const badge = (n?: number) =>
+    n ? (
+      <span className="absolute -right-2 -top-1 min-w-[18px] rounded-full bg-coral px-1 text-center font-mono text-[10px] font-medium leading-[18px] text-canvas">
+        {n}
+      </span>
+    ) : null;
+
+  const deptList = (
+    <div className="space-y-2 overflow-y-auto p-3 md:grid md:grid-cols-2 md:gap-2 md:space-y-0">
+      {departments.map((d) => {
+        const u = unread(d.id);
+        const n = (inbox.get(d.id) ?? []).length;
+        return (
+          <button
+            key={d.id}
+            onClick={() => {
+              setDept(d.id);
+              go("inbox");
+            }}
+            className={`card-key flex min-h-[64px] w-full items-center gap-3 px-4 text-left transition active:scale-[0.99] ${dept === d.id ? "!shadow-[rgba(255,255,255,0.05)_0_1px_0_inset,rgba(255,99,99,0.55)_0_0_0_1px]" : ""}`}
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-graphite text-[14px] font-semibold text-white">
+              {d.name.charAt(0)}
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-[15px] font-medium text-white">{d.name}</span>
+              <span className="block font-mono text-[11px] text-smoke">
+                {d.members.length} people · {n} changes
+              </span>
+            </span>
+            {u > 0 && <span className="rounded-full bg-coral px-2 font-mono text-[11px] leading-[20px] text-canvas">{u} new</span>}
+            <span className="text-smoke">›</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  const field = "min-h-11 w-full appearance-none rounded-[10px] bg-obsidian px-3 text-[15px] text-white shadow-[var(--shadow-soft)] focus:outline-none";
+  const settings = (
+    <div className="space-y-6 overflow-y-auto p-4">
+      <section className="space-y-2">
+        <div className="eyebrow">Company</div>
+        <select value={tenant} onChange={(e) => setTenant(e.target.value)} className={field} aria-label="Company">
+          {(tenants.length ? tenants : [{ id: tenant, name: tenant }]).map((t) => (
+            <option key={t.id} value={t.id}>
+              {companyName(t.name, t.id)}: {t.name}
+            </option>
+          ))}
+        </select>
+        <p className="text-[12px] text-smoke">Answers come only from this company&apos;s graph.</p>
+      </section>
+      <section className="space-y-2">
+        <div className="eyebrow">Department</div>
+        <select value={dept ?? ""} onChange={(e) => setDept(e.target.value)} className={field} aria-label="Department">
+          {departments.map((d) => (
+            <option key={d.id} value={d.id}>
+              {d.name}
+            </option>
+          ))}
+        </select>
+        <div className="eyebrow pt-2">Asking as</div>
+        <select value={asker ?? ""} onChange={(e) => setAsker(e.target.value)} className={field} aria-label="Asking as">
+          {(activeDept?.members ?? []).map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.label}
+            </option>
+          ))}
+        </select>
+      </section>
+      <section className="card-key space-y-3 p-4">
+        <div className="flex items-center justify-between">
+          <div className="eyebrow">Demo · C1 VPN policy</div>
+          <span className={`rounded-[6px] bg-graphite px-1.5 py-0.5 font-mono text-[10px] uppercase ${mode === "live" ? "text-mint" : "text-ash"}`}>{mode}</span>
+        </div>
+        <div className="text-[14px] text-white">{demo ? `Step ${demo.step} of ${demo.total}: ${demo.name}` : "Ready to start"}</div>
+        <div className="flex gap-2">
+          <button onClick={() => runDemo(false)} disabled={demoBusy} className="btn-primary min-h-11 flex-1">
+            Next step
+          </button>
+          <button onClick={() => runDemo(true)} disabled={demoBusy} className="btn-ghost min-h-11 px-4">
+            Reset
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+
+  const chatPane = <Chat company={company} asker={askerLabel} messages={messages} busy={busy} starters={starters} onSend={send} />;
+  const inboxPane = (
+    <div className="h-full space-y-2 overflow-y-auto p-3">{inboxList}</div>
+  );
+
+  const compact = (
+    <div className="flex h-dvh overflow-hidden bg-canvas">
+      {/* Tablet navigation rail */}
+      <nav className="hidden w-[88px] shrink-0 flex-col items-center gap-1 border-r border-graphite py-4 pl-[env(safe-area-inset-left)] md:flex">
+        <span className="mb-4 h-3.5 w-3.5 rotate-45 rounded-[3px] bg-coral" aria-label="Ripple" />
+        {NAV.map((n) => (
+          <button
+            key={n.id}
+            onClick={() => go(n.id)}
+            aria-current={view === n.id ? "page" : undefined}
+            className={`flex min-h-[60px] w-[72px] flex-col items-center justify-center gap-1 rounded-[12px] text-[11px] font-medium transition ${view === n.id ? "bg-graphite text-coral shadow-[var(--shadow-soft)]" : "text-ash hover:text-white"}`}
+          >
+            <span className="relative">
+              {n.icon}
+              {badge(n.badge)}
+            </span>
+            {n.label}
+          </button>
+        ))}
+      </nav>
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* Compact app header */}
+        <header className="flex shrink-0 items-center gap-3 border-b border-graphite px-4 pb-2 pt-[max(10px,env(safe-area-inset-top))]">
+          <span className="h-3 w-3 shrink-0 rotate-45 rounded-[3px] bg-coral md:hidden" />
+          <div className="min-w-0 flex-1">
+            <h1 className="truncate text-[17px] font-semibold leading-tight text-white">{TITLES[view][0]}</h1>
+            <p className="truncate font-mono text-[11px] text-smoke">{TITLES[view][1]}</p>
+          </div>
+          <button
+            onClick={() => go("more")}
+            className="flex min-h-11 items-center gap-2 rounded-full bg-obsidian pl-1.5 pr-3 shadow-[var(--shadow-soft)]"
+            aria-label="Switch company"
+          >
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-ember text-[12px] font-semibold text-coral">{company.charAt(0)}</span>
+            <span className="text-[13px] font-medium text-white">{company}</span>
+          </button>
+        </header>
+        {error && <div className="bg-ember/40 px-4 py-1.5 font-mono text-[11px] text-coral">{error}</div>}
+
+        <main key={view} className="rise min-h-0 flex-1">
+          {(view === "chat" || view === "inbox") && (
+            <div className="flex h-full">
+              {/* landscape tablet: two panes */}
+              <div className={`h-full min-w-0 lg:block lg:w-[340px] lg:shrink-0 lg:border-r lg:border-graphite ${view === "inbox" ? "block flex-1 lg:flex-none" : "hidden"}`}>
+                {inboxPane}
+              </div>
+              <div className={`h-full min-w-0 flex-1 lg:block ${view === "chat" ? "block" : "hidden"}`}>{chatPane}</div>
+            </div>
+          )}
+          {view === "departments" && <div className="h-full overflow-y-auto">{deptList}</div>}
+          {view === "graph" && <div className="relative h-full">{graph && <GraphCanvas nodes={graph.nodes} links={graph.links} />}</div>}
+          {view === "more" && <div className="mx-auto h-full max-w-[560px] overflow-y-auto">{settings}</div>}
+        </main>
+
+        {/* Phone bottom tab bar */}
+        <nav className="grid shrink-0 grid-cols-5 border-t border-graphite bg-ink/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden">
+          {NAV.map((n) => (
+            <button
+              key={n.id}
+              onClick={() => go(n.id)}
+              aria-current={view === n.id ? "page" : undefined}
+              className={`flex min-h-[56px] flex-col items-center justify-center gap-0.5 text-[10px] font-medium transition active:scale-95 ${view === n.id ? "text-coral" : "text-smoke"}`}
+            >
+              <span className="relative">
+                {n.icon}
+                {badge(n.badge)}
+              </span>
+              {n.label}
+            </button>
+          ))}
+        </nav>
+      </div>
+    </div>
+  );
+  if (!isDesktop) return compact;
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
@@ -475,7 +674,7 @@ function NotificationCard({
         {blocked > 0 && <span className="rounded-[6px] bg-graphite px-1.5 py-0.5 text-coral">{blocked} blocked</span>}
         {resolved > 0 && <span className="rounded-[6px] bg-graphite px-1.5 py-0.5 text-mint">{resolved} fixed</span>}
       </div>
-      <button onClick={onExplain} disabled={disabled} className="btn-primary mt-3 min-h-11 w-full lg:min-h-0 lg:py-2">
+      <button onClick={onExplain} disabled={disabled} className="btn-primary mt-3 min-h-11 w-full xl:min-h-0 xl:py-2">
         Get explanation
       </button>
     </div>
