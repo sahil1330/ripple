@@ -4,7 +4,7 @@
 **Hackathon:** WeMakeDevs × FalkorDB *Graph Hacks: Context for AI Agents* (October 2026)  
 **Track Submissions:** Track 01 (Connected Data), Track 02 (Agent Memory & Coordination), Track 03 (Company Brain)  
 **Repository:** [github.com/sahil1330/ripple](https://github.com/sahil1330/ripple)  
-**Live Demo:** [ripple-brain.vercel.app](https://ripple-brain.vercel.app) · **Demo Video:** [youtu.be/ripple-falkordb-demo](https://youtu.be/ripple-falkordb-demo)
+**Live Demo:** [ripple-2.up.railway.app](https://ripple-2.up.railway.app) · **Demo Video:** TODO (link coming)
 
 ---
 
@@ -158,9 +158,9 @@ Ripple builds upon ideas pioneered in academia and open source:
 
 ## 8. Try It Yourself
 
-- **Interactive Live Dashboard:** [ripple-brain.vercel.app](https://ripple-brain.vercel.app) (Run demo mode with `?demo=1`)
+- **Interactive Live Dashboard:** [ripple-2.up.railway.app](https://ripple-2.up.railway.app) (Run demo mode with `?demo=1`)
 - **Code & Deploy:** [github.com/sahil1330/ripple](https://github.com/sahil1330/ripple) (Launch locally in `< 10 minutes` with Docker)
-- **Watch the 2:45 Walkthrough:** [youtu.be/ripple-falkordb-demo](https://youtu.be/ripple-falkordb-demo)
+- **Watch the 2:45 Walkthrough:** TODO: video link coming
 
 ---
 

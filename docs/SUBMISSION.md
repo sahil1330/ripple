@@ -3,8 +3,9 @@
 **Project Name:** Ripple  
 **Tagline:** The company brain that remembers what it told you, and comes back to fix it when the truth changes. Built on FalkorDB.  
 **Repository:** [https://github.com/sahil1330/ripple](https://github.com/sahil1330/ripple)  
-**Live Application:** [https://ripple-brain.vercel.app](https://ripple-brain.vercel.app)  
-**Demo Video (2:45):** [https://youtu.be/ripple-falkordb-demo](https://youtu.be/ripple-falkordb-demo)  
+**Live Application:** [https://ripple-2.up.railway.app](https://ripple-2.up.railway.app)  
+**Live API:** [https://ripple-production-be6b.up.railway.app](https://ripple-production-be6b.up.railway.app) (health: `/api/health`)  
+**Demo Video:** **TODO: add the YouTube link once the demo video is recorded** (script: [`video/FINAL_DEMO.md`](./video/FINAL_DEMO.md))  
 **Blog Post:** [`docs/blog/POST.md`](./blog/POST.md)  
 **Team Members:** Sahil Mane ([@sahil1330](https://github.com/sahil1330)) & Harsh Gupta ([@harsh-gupta-10](https://github.com/harsh-gupta-10))
 
@@ -12,7 +13,7 @@
 
 ## 1. Tracks Entered
 
-Per Rule R5, Ripple is formally submitted to **all three main hackathon tracks**:
+The hackathon allows entering one, two or all three tracks ([FAQ](https://www.wemakedevs.org/hackathons/falkordb)). Ripple is submitted to **all three tracks**:
 
 ### 🏆 Track 03: Company Brain (Priority Track)
 - **Track Focus:** Knowledge from documentation, tickets, and communication in one graph; tracking who knows what; tracing decisions to source; **keeping knowledge current as things change**; providing grounded answers with verifiable provenance.
@@ -40,20 +41,16 @@ Per Rule R5, Ripple is formally submitted to **all three main hackathon tracks**
 
 ---
 
-## 2. Hackathon Rules Compliance Matrix
+## 2. Requirements Check (from the [hackathon page](https://www.wemakedevs.org/hackathons/falkordb))
 
-| Rule | Requirement | Ripple Compliance |
-|:---:|---|---|
-| **R1** | Team size $\le$ 4, one team per person | Exactly 2 team members (`@sahil1330` and `@harsh-gupta-10`). |
-| **R2** | FalkorDB is primary graph database | All facts, versions, holder relationships, tasks, and memories reside in FalkorDB Cloud & Docker. |
-| **R3** | Graph is not decoration (Rule 3) | If FalkorDB is removed, the product ceases to function: multi-hop dependency tracing, time-to-harm prioritization, and task handoffs depend entirely on FalkorDB GraphBLAS algorithms. |
-| **R5** | Name every track entered | Track 01, Track 02, and Track 03 explicitly declared in submission form and documentation. |
-| **R6** | Public / synthetic data only | Policy changes extracted from public GitLab Handbook (MIT/open license, © GitLab B.V.). Organization layer is clearly badged `synthetic: true`. |
-| **R7/R8**| Commits after kickoff | Initial commit and repository creation timestamped after Oct 15, 2026 12:01 AM IST. |
-| **R10**| Deliverables package | Public GitHub repository, comprehensive README with graph schema and Cypher list, 2:45 demo video, live deployed web URL. |
-| **R11**| AI assistance disclosed | Comprehensive AI disclosure in README and PR templates naming Cursor editor, Cursor agents, and Antigravity. |
-| **R12/13**| Human code understanding | Both human team members reviewed, understand, and can explain every merged line of code, schema, and query. |
-| **R17**| No plagiarism | Original code and architecture; proper attribution to prior art (Graphiti, Lethe, PlanFence). |
+| Page requirement | Ripple |
+|---|---|
+| Solo or teams of up to 4 | 2 members (`@sahil1330`, `@harsh-gupta-10`). |
+| FalkorDB must be the primary graph database and central to the product | All facts, versions, holders, tasks and memory live in FalkorDB; without it, impact tracing, the freshness guard and task handoffs stop working. |
+| Main FalkorDB implementation must be new work during the event | Repository created and all commits made after Oct 15, 2026 12:01 AM IST. |
+| Coding assistants allowed; team must be able to explain what was built | AI use disclosed in the README and every PR (Cursor, Antigravity); both members can explain the code. |
+| Live deployment preferred (otherwise local setup + working demo video) | Live on Railway (links above) plus local setup in the README. Demo video: TODO. |
+| Enter one, two or all three tracks | All three (section 1). |
 
 ---
 
