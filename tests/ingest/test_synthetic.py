@@ -39,3 +39,14 @@ def test_feeds_written_alongside_each_dependency_edge():
         if r in FEEDS_MIRRORED or r in FEEDS_REVERSED:
             assert (d, s) in feeds, (s, r, d)
     assert all(p == {"w": 1} for _, r, _, p in edges if r == "FEEDS")
+
+
+def test_wiki_urls_are_tenant_specific():
+    from ingest.synthetic import TENANT_WIKIS, generate
+
+    for tenant, base in TENANT_WIKIS.items():
+        urls = [
+            n["url"] for n in generate(wiki_base=base).nodes if n.get("url", "").startswith("https://wiki.")
+        ]
+        assert urls and all(u.startswith(base + "/") for u in urls), tenant
+    assert "acme" not in TENANT_WIKIS["handbook-demo"]

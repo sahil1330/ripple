@@ -147,7 +147,7 @@ def _agents(layer: Layer) -> None:
             layer.edge(f"agent:{name}", "CACHED", version, at=DEMO_NOW_MS - (3 + i) * DAY)
 
 
-def _docs(layer: Layer, roster: dict[str, list[str]]) -> None:
+def _docs(layer: Layer, roster: dict[str, list[str]], wiki_base: str) -> None:
     """Synthetic internal wiki pages that quote a policy version (clearly not GitLab's)."""
     docs = [
         ("doc:wiki-it-onboarding", "IT onboarding checklist", "synthetic_wiki", "STATES", VPN_V1, "team:it"),
@@ -158,7 +158,7 @@ def _docs(layer: Layer, roster: dict[str, list[str]]) -> None:
         ("doc:wiki-new-hire", "New-hire week 1 guide", "synthetic_wiki", "STATES", "fv:stipend:v1", "team:people"),
     ]  # fmt: skip
     for did, title, doc_kind, rel, version, owner_team in docs:
-        layer.node("Doc", did, title=title, url=f"https://wiki.acme.example/{did[4:]}", doc_kind=doc_kind)
+        layer.node("Doc", did, title=title, url=f"{wiki_base}/{did[4:]}", doc_kind=doc_kind)
         layer.edge(did, rel, version)
         layer.edge(roster[owner_team][0], "OWNS", did)
     layer.edge("doc:faq-remote", "LINKS_TO", "doc:wiki-it-onboarding")
@@ -227,15 +227,17 @@ def _plans(layer: Layer, roster: dict[str, list[str]]) -> None:
     _ = ap  # AP team is represented by Ravi (fixed demo character)
 
 
-def generate(seed: int = 42) -> Layer:
-    """Build the whole synthetic layer in memory. Same seed -> identical output."""
+def generate(seed: int = 42, wiki_base: str = "https://wiki.example.internal") -> Layer:
+    """Build the whole synthetic layer in memory. Same seed -> identical output.
+
+    ``wiki_base`` is the tenant's own (fictional) internal wiki host for the synthetic docs."""
     rng = random.Random(seed)
     layer = Layer()
     roster = _people(rng, layer)
     _chat_graph(rng, layer, roster)
     _answers(rng, layer, roster)
     _agents(layer)
-    _docs(layer, roster)
+    _docs(layer, roster, wiki_base)
     _plans(layer, roster)
     layer.edges = with_feeds(layer.edges)
     return layer
@@ -244,6 +246,11 @@ def generate(seed: int = 42) -> Layer:
 # Each tenant is its own company: a different seed gives different people, chat graph and
 # answers around the same public handbook facts. Unknown tenants (tests) use the default seed.
 TENANT_SEEDS = {"handbook-demo": 42, "acme-synthetic": 7}
+# Synthetic internal wiki per tenant (reserved .example hosts, never a real company's site).
+TENANT_WIKIS = {
+    "handbook-demo": "https://wiki.gitlab-demo.example",
+    "acme-synthetic": "https://wiki.acme.example",
+}
 
 
 def seed(tenant: str, seed: int | None = None) -> dict:
@@ -253,7 +260,10 @@ def seed(tenant: str, seed: int | None = None) -> dict:
     tenant's entry in ``TENANT_SEEDS`` (42 otherwise).
     """
     g = tenant_graph(tenant)
-    layer = generate(TENANT_SEEDS.get(tenant, 42) if seed is None else seed)
+    layer = generate(
+        TENANT_SEEDS.get(tenant, 42) if seed is None else seed,
+        wiki_base=TENANT_WIKIS.get(tenant, "https://wiki.example.internal"),
+    )
     return {"nodes": write_nodes(g, layer.nodes), "edges": write_edges(g, layer.edges)}
 
 
