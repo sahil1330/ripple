@@ -75,7 +75,9 @@ flowchart TD
 
 The response adds `llm_used`, `model`, `tool_trace` (tool, args, Cypher run) and `fallback_reason`. With no
 `OPENAI_API_KEY`, or on an API error or timeout (`OPENAI_TIMEOUT_S`, default 15 s), it falls back to the
-deterministic template Concierge, so the demo never breaks. `person_id` is optional (anonymous askers are not logged).
+deterministic template Concierge, so the demo never breaks.
+
+**Dates:** "That changed on …" is the date of the handbook commit that changed the fact, formatted in UTC (C1: commit `ddd39597`, Jul 14, 2026, MR !20421). The policy text itself may name a later effective date (C1: "Starting July 15, 2026"). `person_id` is optional (anonymous askers are not logged).
 
 ## Graph data model
 One FalkorDB graph per tenant (`ripple:handbook-demo`, `ripple:acme-synthetic`). Every node carries `:Entity` plus one main label, and the properties `id` (prefixed by kind, e.g. `fv:vpn:v1`), `kind` and `synthetic`. All times are epoch-ms integers, and `valid_to = null` marks the current version of a fact.

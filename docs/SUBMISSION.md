@@ -34,7 +34,7 @@ The hackathon allows entering one, two or all three tracks ([FAQ](https://www.we
 ### 🏆 Track 02: Agent Memory & Coordination
 - **Track Focus:** Episodic / semantic / procedural memory, persistent history, shared state and handoffs, high-concurrency execution, tenant isolation.
 - **How Ripple Satisfies Track 02:**
-  - **Episodic Memory:** Recorded via `(Person)-[:WAS_TOLD {at, channel, answer_id}]->(FactVersion)` edges. Ripple remembers historical interactions and self-corrects: *"Earlier I told you $150/year; that changed on July 15."*
+  - **Episodic Memory:** Recorded via `(Person)-[:WAS_TOLD {at, channel, answer_id}]->(FactVersion)` edges. Ripple remembers historical interactions and self-corrects: *"Earlier I told you $150/year; that changed on Jul 14, 2026 (MR !20421)."* (Jul 14 is the commit date; the new policy takes effect Jul 15, 2026.)
   - **Agent Memory:** Cached worker facts are tracked via `(Agent)-[:CACHED {at}]->(FactVersion)`.
   - **Decoupled Coordination:** Multi-agent systems coordinate exclusively through `Task` nodes in FalkorDB (`CREATE Task{status:'open'}` $\rightarrow$ atomic conditional claim `MATCH ... {status:'open'} SET status='claimed'` $\rightarrow$ complete and write `RESOLVED`). No inter-agent RPCs or fragile middleware.
   - **Multi-Tenancy:** Complete tenant isolation (`ripple:handbook-demo`, `ripple:acme-synthetic`) with concurrent agent execution.

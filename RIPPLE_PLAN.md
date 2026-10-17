@@ -440,7 +440,7 @@ sequenceDiagram
 | 4 | 0:55–1:20 | Graph lights up: 11 people, 2 agents, 3 docs, 1 plan in red. TTH queue ranks the `ap-approver` action first: "auto-approves in 40 min" | "Multi-hop impact in one FalkorDB traversal: who was told, what cached it, what was derived from it." |
 | 5 | 1:20–1:40 | **Hero moment:** the worker agent tries to approve a $150 VPN claim → `check_fresh` → **BLOCKED** with the path and source | "Agents can't act on stale facts. Every tool call goes through the freshness guard over MCP." |
 | 6 | 1:40–2:05 | Fixer works the queue: Concierge re-answers people, doc patch diff shown, dark-pocket hub briefed (WCC + betweenness). Coverage meter 0 → 100%, red → green | "Agents hand off through Task nodes in the graph. Shared state, no glue code." |
-| 7 | 2:05–2:20 | Priya asks again → correct answer + "Earlier I told you $150/yr; that changed on Jul 15 (MR !20421)" | "Memory that corrects itself." |
+| 7 | 2:05–2:20 | Priya asks again → correct answer + "Earlier I told you $150/yr; that changed on Jul 14, 2026 (MR !20421)" | "Memory that corrects itself." |
 | 8 | 2:20–2:35 | Click "Why?" on any node → explain_path + Cypher. Quick tenant switch shows isolation + concurrent agents | "Every decision is traceable. One graph per company." |
 | 9 | 2:35–2:45 | Track badges (01/02/03) + repo URL + "Built on FalkorDB" | |
 

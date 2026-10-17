@@ -42,7 +42,7 @@ Two complete takes were recorded back-to-back:
 | **0:55–1:20** | Scene 4: Graph Walk | 11 people, 2 agents, 3 docs pulse red; TTH queue ranks tasks | *"Multi-hop impact traversal in one query; time-to-harm prioritizes imminent risk."* |
 | **1:20–1:40** | Scene 5: Freshness Guard | `ap-approver` attempts $150 reimbursement → **BLOCKED** | *"Agents cannot act on stale facts. Freshness guard intercepts via MCP."* |
 | **1:40–2:05** | Scene 6: Resolution | Fixer agents draft patches, brief dark pockets; coverage → 100% | *"Autonomous coordination through Task nodes in the graph. 0 to 100% coverage."* |
-| **2:05–2:20** | Scene 7: Self-Correction | Priya asks again → *"Earlier I told you $150; that changed on Jul 15"* | *"Self-correcting memory grounded in the knowledge graph."* |
+| **2:05–2:20** | Scene 7: Self-Correction | Priya asks again → *"Earlier I told you $150; that changed on Jul 14, 2026 (MR !20421)"* | *"Self-correcting memory grounded in the knowledge graph."* |
 | **2:20–2:35** | Scene 8: Explainability | Node click opens 'Why?' drawer with exact Cypher query | *"Completely transparent. Every decision has an explainable graph path."* |
 | **2:35–2:45** | Scene 9: Tracks & Close | Track summary (01/02/03), GitHub repository, built on FalkorDB | *"Built for Graph Hacks on FalkorDB."* |
 

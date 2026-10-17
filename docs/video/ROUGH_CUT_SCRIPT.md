@@ -49,7 +49,7 @@
   > *"Autonomous Fixer agents pick up tasks from the graph. They draft doc patch pull requests, alert community hubs identified via betweenness centrality, and notify impacted holders. As each task resolves, the node turns green, driving the company-wide coverage meter to 100%."*
 
 ### Scene 7: Self-Correcting Memory (2:05 – 2:20)
-- **Visual:** Press `Space` to advance to Step 6. Ask panel opens as Priya again. The Concierge answers: *"No, personal VPNs are no longer reimbursable. Earlier I told you $150/year, but that policy was superseded on July 15 (MR !20421)."*
+- **Visual:** Press `Space` to advance to Step 6. Ask panel opens as Priya again. The Concierge answers: *"No, personal VPNs are no longer reimbursable. Earlier I told you $150/year, but that policy was superseded on Jul 14, 2026 (effective Jul 15) (MR !20421)."*
 - **Voiceover:**
   > *"When Priya returns to ask about her VPN, Ripple doesn't give a generic response. It recognizes that it previously gave her obsolete information, explicitly acknowledging the previous answer and explaining the change. Memory that corrects itself."*
 
