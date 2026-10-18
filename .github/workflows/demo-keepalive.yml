@@ -1,0 +1,95 @@
+# Temporary Graph Hacks keep-alive. Delete this file after judging; nothing else references it.
+#
+# What this does
+# --------------
+# Every 6 hours (and on manual dispatch) it GETs the live API graph:
+#   https://ripple-production-be6b.up.railway.app/api/graph?tenant=handbook-demo
+# That route runs the Cypher in graph/queries/api_nodes.cypher and api_links.cypher
+# against whatever FalkorDB FALKORDB_HOST points at. /api/health does not: it returns
+# {"ok": true} without opening a database connection. /api/tenants is a hardcoded list.
+# This job never calls /api/demo/step or /api/demo/reset, so it cannot move the demo.
+#
+# Which database that warms
+# -------------------------
+# Not FalkorDB Cloud instance-auv6sznnp. That instance was stopped for inactivity on
+# 17 Oct 2026 ~11:32 IST, and the API kept serving data. Probed again on 18 Oct 2026
+# 04:29 UTC: /api/graph returned 189 nodes and 261 links, and /api/changes returned
+# the five handbook changes. Those handlers have no fixture fallback, so the host in
+# FALKORDB_HOST was up and accepted the queries. The project blog
+# (docs/blog/POST.md) describes the live deploy as "Railway (FalkorDB, API and web)."
+# The older deploy/ and docs/DEPLOYMENT.md notes still say FalkorDB Cloud; the live
+# hostnames are *.up.railway.app. This ping therefore keeps the Railway FalkorDB
+# warm (the API opens a client connection and runs GRAPH.QUERY). It does not open a
+# TCP connection to the stopped Cloud instance, so it cannot start that instance or
+# reset its idle timer.
+#
+# FalkorDB Cloud free tier (docs.falkordb.com/cloud/tiers/free), hosted on Omnistrate:
+# an instance that is not utilized for 1 day is stopped, and deleted after 7 days.
+# The free tier has no snapshots. Omnistrate's basic auto-stop watches active TCP
+# connections on the database port (FalkorDB speaks the Redis protocol on 6379), not
+# HTTP requests to some other app. A new connection to that instance's own endpoint
+# is what counts as utilization, and what wakes a serverless-stopped instance. If the
+# console shows a hard stop that does not wake on connect, start it there. If the
+# instance is deleted, the data is gone. To keep *that* instance up, point something
+# at its host:6379 at least daily (the Railway API will, only if FALKORDB_HOST is
+# that host). It is not, today.
+#
+# Railway Serverless, if enabled on the API or the FalkorDB service, sleeps after
+# about 10 minutes with no network traffic, and the first request can 502. A 6-hour
+# ping wakes both (the graph call is traffic to the API and then to the database)
+# but they can sleep again between runs. For the judging window, turn Serverless off
+# on the web, API, and FalkorDB services. The public site badge is "mock" by default,
+# so the homepage does not query FalkorDB; live mode does, via this same API.
+#
+# The schedule runs only after this file is on the default branch. workflow_dispatch
+# works from the Actions tab once it is there.
+#
+# Failures
+# --------
+# The job always exits 0. A cold start, a 502, or a down database is logged as a
+# warning and retried a few times. It does not fail the workflow, so GitHub does not
+# email on a blip and does not disable the schedule for repeated failures.
+#
+# Remove after judging
+# --------------------
+# Delete .github/workflows/demo-keepalive.yml and merge that commit. No env vars,
+# secrets, app code, or Railway settings are part of this workflow.
+
+name: demo-keepalive
+
+on:
+  schedule:
+    # 00:17, 06:17, 12:17, 18:17 UTC. Offset from the hour so it misses the
+    # busiest GitHub Actions schedule slot. Well inside a 1-day idle window.
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Run a read-only graph query on the live API
+        run: |
+          set +e
+          url="https://ripple-production-be6b.up.railway.app/api/graph?tenant=handbook-demo"
+          ok=0
+          for attempt in 1 2 3 4; do
+            code=$(curl -sS -o /tmp/ripple-graph.json -w "%{http_code}" --max-time 90 "$url" || echo "000")
+            nodes=$(python3 -c 'import json; print(len(json.load(open("/tmp/ripple-graph.json")).get("nodes", [])))' 2>/dev/null || echo 0)
+            links=$(python3 -c 'import json; print(len(json.load(open("/tmp/ripple-graph.json")).get("links", [])))' 2>/dev/null || echo 0)
+            echo "attempt ${attempt}: http=${code} nodes=${nodes} links=${links}"
+            if [ "$code" = "200" ] && [ "$nodes" -gt 0 ] && [ "$links" -gt 0 ]; then
+              ok=1
+              break
+            fi
+            sleep 15
+          done
+          if [ "$ok" != "1" ]; then
+            echo "::warning::demo keep-alive did not get a graph payload (last http=${code}). Not failing the job."
+          else
+            echo "graph query ok: nodes=${nodes} links=${links}"
+          fi
+          exit 0
